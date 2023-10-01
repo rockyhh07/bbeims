@@ -18,14 +18,14 @@
          <!-- /.login-logo -->
          <div class="card card-outline card-info">
             <div class="card-header text-center">
-               <a href="index.html" class="brand-link">
+               <a href="." class="brand-link">
                <img src="asset/img/logo.png" alt="DSMS Logo" width="200">
                </a>
             </div>
             <div class="card-body" >
-               <form action="admin" method="post">
+               <form method="post" id="login-form">
                   <div class="input-group mb-3">
-                     <input type="text" class="form-control" placeholder="Username">
+                     <input name="username" type="text" class="form-control" placeholder="Username">
                      <div class="input-group-append">
                         <div class="input-group-text">
                            <span class="fas fa-user"></span>
@@ -33,7 +33,7 @@
                      </div>
                   </div>
                   <div class="input-group mb-3">
-                     <input type="password" class="form-control" placeholder="Password">
+                     <input name="password" type="password" class="form-control" placeholder="Password">
                      <div class="input-group-append">
                         <div class="input-group-text">
                            <span class="fas fa-lock"></span>
@@ -42,7 +42,7 @@
                   </div>
                   <div class="row">
                      <div class="col-6 offset-3">
-                        <button type="submit" class="btn btn-block btn-bg" style="background-color: rgb(183, 213, 235);">Sign In</button>
+                        <button id="login-button" type="submit" class="btn btn-block btn-bg" style="background-color: rgb(183, 213, 235);">Sign In</button>
                      </div>
                   </div>
                </form>
@@ -54,3 +54,22 @@
       <!-- /.login-box -->
    </body>
 </html>
+
+<script>
+   document.getElementById('login-button').addEventListener("click", function(e){
+      e.preventDefault();
+      const form = new FormData(document.getElementById('login-form'));
+      fetch('php/login.php', {
+         method : 'post',
+         body : form
+      })
+      .then(response=>response.json())
+      .then(response=>{
+         if(response.length > 0) window.location.href = "admin";
+         else alert('Invalid Username or password');
+      })
+      .catch(err=>{
+         console.log(err);
+      });
+   });
+</script>
