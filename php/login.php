@@ -1,5 +1,6 @@
 <?php
 require_once "bbeims.php";
+validate_POST($_POST);
 
-echo BBEIMS::login($_POST['username'], $_POST['password']);
+echo json_encode(["result" => BBEIMS::login($_POST)]);
 

@@ -1,5 +1,11 @@
 <?php
 
+function validate_POST(Array $post_result){
+    return empty($post_result) ? header("location: ../") : null;
+}
+
+validate_POST($_POST);
+
 if (session_status() === PHP_SESSION_NONE) session_start();
 
 function ERROR_MESSAGE(String $error){
@@ -32,6 +38,13 @@ class QUERY {
 
         $con->close();
         return $result;
+    }
+
+    public static function escape_str(Array & $post_result) : Array {
+        $con = QUERY::connection();
+        foreach($post_result as $key => $val) $post_result[$key] = $con->real_escape_string($val);
+        $con->close();
+        return $post_result;
     }
 
     public static function run(String $query)

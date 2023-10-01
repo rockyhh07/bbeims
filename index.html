@@ -65,6 +65,7 @@
       })
       .then(response=>response.json())
       .then(response=>{
+         response = JSON.parse(response.result);
          if(response.length > 0) window.location.href = "admin";
          else alert('Invalid Username or password');
       })

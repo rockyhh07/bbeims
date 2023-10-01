@@ -2,7 +2,12 @@
 require_once "config.php";
 
 class BBEIMS {
-    public static function login(String $username, String $password){
+
+    
+
+    public static function login(Array $post_result){
+        QUERY::escape_str($post_result);
+        extract($post_result);
         $query = "SELECT 
                     `username`,
                     `fullname`,
@@ -16,8 +21,7 @@ class BBEIMS {
                     u.`password` = PASSWORD('{$password}') AND
                     u.`deletedflag` = 0
                 ";
-        
-        return json_encode(QUERY::run($query));
+        return $_SESSION['user'] = json_encode(QUERY::run($query));
     }
 
     public static function new_user(Array $post_result){
