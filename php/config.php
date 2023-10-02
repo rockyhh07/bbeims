@@ -1,10 +1,12 @@
 <?php
 
-function validate_POST(Array $post_result){
-    return empty($post_result) ? header("location: ../") : null;
+function base_url(){
+    return "http://172.0.3.71/ojt/bbeims";
 }
 
-validate_POST($_POST);
+function validate_POST(Array $post_result){
+    return empty($post_result) ? header("location: ".base_url()) : null;
+}
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 
@@ -40,7 +42,14 @@ class QUERY {
         return $result;
     }
 
-    public static function escape_str(Array & $post_result) : Array {
+    public static function escape_str(String $str){
+        $con = QUERY::connection();
+        $str = $con->real_escape_string($str);
+        $con->close();
+        return $con;
+    }
+
+    public static function escape_str_all(Array & $post_result) : Array {
         $con = QUERY::connection();
         foreach($post_result as $key => $val) $post_result[$key] = $con->real_escape_string($val);
         $con->close();

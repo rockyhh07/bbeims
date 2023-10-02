@@ -12,6 +12,9 @@
       <link rel="stylesheet" href="asset/css/adminlte.min.css">
 
       <link rel="stylesheet" href="asset/css/login.css"> 
+
+      <script src="./asset/js/constants.js"></script>
+      <script src="./asset/js/redirect_to_admin.js"></script>
    </head>
    <body class="hold-transition login-page">
       <div class="login-box">
@@ -56,17 +59,17 @@
 </html>
 
 <script>
-   document.getElementById('login-button').addEventListener("click", function(e){
+   document.getElementById('login-button').addEventListener("click", async function(e){
       e.preventDefault();
       const form = new FormData(document.getElementById('login-form'));
-      fetch('php/login.php', {
+      await fetch('php/user_login.php', {
          method : 'post',
          body : form
       })
       .then(response=>response.json())
       .then(response=>{
-         response = JSON.parse(response.result);
-         if(response.length > 0) window.location.href = "admin";
+         let result = response.result;
+         if(result.length > 0) window.location.href = BASE_URL + 'admin/';
          else alert('Invalid Username or password');
       })
       .catch(err=>{

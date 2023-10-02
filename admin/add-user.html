@@ -9,7 +9,6 @@
    <link rel="stylesheet" href="../asset/fontawesome/css/all.min.css">
    <link rel="stylesheet" href="../asset/css/adminlte.min.css">
    <link rel="stylesheet" href="../asset/css/dashboard.css">
-   <link rel="stylesheet" href="../asset/css/style.css">
    <style type="text/css">
       td a.btn {
          font-size: 0.7rem;
@@ -28,6 +27,8 @@
          font-size: 13px;
       }
    </style>
+   <script src="../asset/js/constants.js"></script>
+   <script src="../asset/js/redirect_to_login.js"></script>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -224,7 +225,7 @@
                   </div>
                   <!-- /.card-header -->
                   <!-- form start -->
-                  <form method="post" action="../php/new_user.php">
+                  <form method="post" id="new-user-form">
                      <div class="card-body">
                         <div class="row">
                            <div class="col-md-12">
@@ -280,7 +281,7 @@
                      <!-- /.card-body -->
 
                      <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-primary" id="new-user-save">Save</button>
                      </div>
                   </form>
                </div>
@@ -299,3 +300,31 @@
 </body>
 
 </html>
+
+<script src="../asset/js/logout.js"></script>
+
+
+<script>
+   function add_user(e){
+      e.preventDefault();
+      const data = document.getElementById("new-user-form");
+      const form = new FormData(data);
+      fetch('../php/user_new.php',{
+         method : 'post',
+         body : form
+      })
+      .then(response => response.json())
+      .then(response => {
+         result = response.result;
+         if(result[0].result){
+            alert('User successfully added!');
+            data.reset();
+         }else{
+            let msg = 'ERROR: \n';
+            for(let err in result[0].error) msg += result[0].error[err].toUpperCase() + '\n';
+            alert(msg);
+         }
+      });
+   }
+   document.getElementById("new-user-save").addEventListener("click", add_user);
+</script>
