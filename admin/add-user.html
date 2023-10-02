@@ -321,7 +321,7 @@
             data.reset();
          }else{
             let msg = 'ERROR: \n';
-            for(let err in result[0].error) msg += result[0].error[err].toUpperCase() + '\n';
+            for(let err in result[0].error) msg += result[0].error[err] + '\n';
             alert(msg);
          }
       });

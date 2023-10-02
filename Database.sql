@@ -40,7 +40,8 @@ VALUES
 
 CREATE TABLE IF NOT EXISTS `calamity` (
     `id` INT(6) PRIMARY KEY AUTO_INCREMENT,
-    `name` VARCHAR(50)
+    `name` VARCHAR(50),
+    `deletedflag` INT(1) DEFAULT 0
 );
 
 INSERT INTO `calamity`
@@ -62,6 +63,7 @@ CREATE TABLE IF NOT EXISTS `evacuee` (
     `address` VARCHAR(255),
     `head_of_the_family` VARCHAR(50),
     `evac_id` INT(6),
+    `deletedflag` INT(1) DEFAULT 0,
     FOREIGN KEY (`evac_id`) REFERENCES `evac_center`(`id`)
 );
 
