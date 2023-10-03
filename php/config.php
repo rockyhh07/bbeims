@@ -17,7 +17,7 @@ function ERROR_MESSAGE(String $error){
     exit;
 }
 
-class MY_QUERY {
+class QUERY {
 
     private static function connection(){
         return new mysqli("localhost", "root", "", "bbeims_db");
@@ -25,7 +25,7 @@ class MY_QUERY {
     
     private static function perform(String $query)
     {
-        $con = MY_QUERY::connection();
+        $con = QUERY::connection();
         if (!$con) {
             ERROR_MESSAGE("Failed to connect ot database.");
             return false;
@@ -43,14 +43,14 @@ class MY_QUERY {
     }
 
     public static function escape_str(String $str){
-        $con = MY_QUERY::connection();
+        $con = QUERY::connection();
         $str = $con->real_escape_string($str);
         $con->close();
         return $con;
     }
 
     public static function escape_str_all(Array & $post_result) : Array {
-        $con = MY_QUERY::connection();
+        $con = QUERY::connection();
         foreach($post_result as $key => $val) $post_result[$key] = $con->real_escape_string($val);
         $con->close();
         return $post_result;
@@ -58,7 +58,7 @@ class MY_QUERY {
 
     public static function run(String $query)
     {
-        $result = MY_QUERY::perform($query);
+        $result = QUERY::perform($query);
         if (gettype($result) === gettype([])) return $result;
         $ret = [];
         while ($row = $result->fetch_assoc()) {
@@ -89,14 +89,19 @@ define("QUERY_DELETE", __QUERY_BUILDER__::QUERY_DELETE);
 class QueryBuilder {
 
     public $errors = [];
-    public $query = "";
+    public $sql = "";
 
-    public function __construct(__QUERY_BUILDER__ $type, String $table, Array $post_result, Array $required = [], Array $conditions = []) {
-        MY_QUERY::escape_str_all($post_result);
-        MY_QUERY::escape_str_all($required);
-        MY_QUERY::escape_str_all($conditions);
+    public function get_error_result() {
+        return [["result" => false, "error" => $this->errors]];
+    }
+
+    public function __construct(__QUERY_BUILDER__ $type, String $table, Array $post_result, Array $required = [], Array $conditions = [], $specials = []) {
+        QUERY::escape_str_all($post_result);
+        QUERY::escape_str_all($required);
+        QUERY::escape_str_all($conditions);
+        QUERY::escape_str_all($specials);
         switch ($type) {
-            case __QUERY_BUILDER__::QUERY_SELECT : QueryBuilder::select($table, $required, $conditions); break;
+            case __QUERY_BUILDER__::QUERY_SELECT : QueryBuilder::select($table, $required, $conditions, $specials); break;
             case __QUERY_BUILDER__::QUERY_INSERT : QueryBuilder::insert($table, $post_result, $required); break;
             case __QUERY_BUILDER__::QUERY_UPDATE : QueryBuilder::update($table, $post_result, $required, $conditions); break;
             case __QUERY_BUILDER__::QUERY_DELETE : QueryBuilder::delete($table, $post_result, $conditions); break;
@@ -104,36 +109,59 @@ class QueryBuilder {
         }
     }
 
-    private function select(String $table, Array $required = [], Array $condition = []) {
-
+    private function select(String $table, Array $required = [], Array $conditions = [], $specials = []) {
+        $condition = $this->as_valid_condition($conditions);
+        $data = $this->as_valid_required_select($required);
+        $special = $this->as_valid_special($specials);
+        $this->sql = "SELECT {$data} FROM {$table} WHERE {$condition} {$special}";
     }
 
     private function insert(String $table, Array $post_result, Array $required = []) {
-        $data = '';
-        foreach ($post_result as $key => $val) {
-            if(in_array($key, $required) && empty($val)) array_push($this->errors, "'".QueryBuilder::to_valid_text($key)."' cannot be empty!");
-            if($key === 'password') $data .= "`{$key}`=PASSWORD('{$val}'),";
-            else $data .= "`{$key}`='{$val}',";
-        }
-        $data = rtrim($data, ',');
-        $this->query = "INSERT INTO `{$table}` SET {$data}";
+        $data = $this->as_valid_data($post_result, $required);
+        $this->sql = "INSERT INTO `{$table}` SET {$data}";
     }
 
     private function update(String $table, Array $post_result, Array $required = [], Array $conditions = []) {
-        $condition = '1';
-        foreach ($conditions as $key => $val) $condition += " AND `{$key}`={$val}";
+        $condition = $this->as_valid_condition($conditions);
+        $data = $this->as_valid_data($post_result, $required);
+        $this->sql = "UPDATE `{$table}` SET {$data} WHERE {$condition}";
+    }
+
+    private function delete(String $table, $conditions = []) {
+        $this->update($table, ["deletedflag"=>"1"], ["deletedflag"], $conditions);
+    }
+
+
+    private function as_valid_required_select($required) {
+        $data = '';
+        foreach ($required as $key => $val) $data .= (is_int($key)) ? "`{$val}`," : "`{$key}` `{$val}`,";
+        return rtrim($data, ',');
+    }
+
+    private function as_valid_condition(Array $conditions) {
+        if (count($conditions) === 0) return "";
+        $data = '1';
+        foreach ($conditions as $key => $val) {
+            if($key === "password") $data .= " AND `{$key}`=PASSWORD('{$val}')";
+            else $data .= " AND `{$key}`='{$val}'";
+        }
+        return rtrim($data, ',');
+    }
+
+    private function as_valid_data(Array $post_result, Array $required){
         $data = '';
         foreach ($post_result as $key => $val) {
             if(in_array($key, $required) && empty($val)) array_push($this->errors, "'".QueryBuilder::to_valid_text($key)."' cannot be empty!");
             if($key === 'password') $data .= "`{$key}`=PASSWORD('{$val}'),";
             else $data .= "`{$key}`='{$val}',";
         }
-        $data = rtrim($data, ',');
-        $this->query = "UPDATE `{$table}` SET {$data} WHERE {$condition}`";
+        return rtrim($data, ','); 
     }
 
-    private function delete(String $table, $conditions = []) {
-
+    private function as_valid_special(Array $specials) {
+        $data = '';
+        foreach($specials as $key => $val) $data.= " {$key} {$val}";
+        return $data;
     }
 
     public static function to_valid_text(String & $str) {
