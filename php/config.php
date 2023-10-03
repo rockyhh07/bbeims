@@ -5,7 +5,11 @@ function base_url(){
 }
 
 function validate_POST(Array $post_result){
-    return empty($post_result) ? header("location: ".base_url()) : null;
+    if(empty($post_result)){
+        echo json_encode(["result"=>"Invalid request"]);
+        die();
+    }
+    return null;
 }
 
 if (session_status() === PHP_SESSION_NONE) session_start();
@@ -160,7 +164,7 @@ class QueryBuilder {
 
     private function as_valid_special(Array $specials) {
         $data = '';
-        foreach($specials as $key => $val) $data.= " {$key} {$val}";
+        foreach($specials as $val) $data.= " {$val}";
         return $data;
     }
 

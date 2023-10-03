@@ -76,7 +76,8 @@ class BBEIMS {
             "calamity",
             $post_result,
             ["id", "name"],
-            ["deletedflag"=>"0"]
+            ["deletedflag"=>"0"],
+            ["ORDER BY `id`", "DESC"]
         );
         return QUERY::run($query->sql);
     }
@@ -109,7 +110,8 @@ class BBEIMS {
             'evac_center',
             $post_result,
             ["id", "name", "address", "contact"],
-            ["deletedflag" => 0]
+            ["deletedflag" => 0],
+            ["ORDER BY `id`", "DESC"]
         );
         return QUERY::run($query->sql);
     }
@@ -141,7 +143,8 @@ class BBEIMS {
             'evacuee',
             $post_result,
             ["id", "lname", "fname", "mname", "contact", "age", "gender", "civil_status", "address", "head_of_the_family"],
-            ["deletedflag" => 0]
+            ["deletedflag" => 0],
+            ["ORDER BY `id`", "DESC"]
         );
         return QUERY::run($query->sql);
     }

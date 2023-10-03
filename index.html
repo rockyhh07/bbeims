@@ -69,8 +69,8 @@
       .then(response=>response.json())
       .then(response=>{
          let result = response.result;
-         if(result.length > 0) window.location.href = BASE_URL + 'admin/';
-         else alert('Invalid Username or password');
+         if(!result) alert('Invalid Username or password');
+         else window.location.href = BASE_URL + 'admin/';
       })
       .catch(err=>{
          console.log(err);

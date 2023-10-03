@@ -60,7 +60,7 @@
       <!-- Main Sidebar Container -->
       <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: rgba(44,62,80);">
          <!-- Brand Logo -->
-         <a href="index.php" class="brand-link animated swing">
+         <a href="index.html" class="brand-link animated swing">
             <img src="../asset/img/logo1.png" alt="DSMS Logo" width="200"
                style="margin-top: -20px;margin-bottom: -60px;">
          </a>
@@ -71,7 +71,7 @@
                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                   data-accordion="false">
                   <li class="nav-item">
-                     <a href="index.php" class="nav-link">
+                     <a href="index.html" class="nav-link">
                         <i class="nav-icon fa fa-tachometer-alt"></i>
                         <p>
                            Dashboard
@@ -225,7 +225,7 @@
                   </div>
                   <!-- /.card-header -->
                   <!-- form start -->
-                  <form>
+                  <form id="evacuee-add-form">
                      <div class="card-body">
                         <div class="row">
                            <div class="col-md-12">
@@ -233,75 +233,72 @@
                                  <div class="col-md-4">
                                     <div class="form-group">
                                        <label>Last Name</label>
-                                       <input type="text" class="form-control" placeholder="Last Name">
+                                       <input type="text" name="lname" class="form-control" placeholder="Last Name">
                                     </div>
                                  </div>
                                  <div class="col-md-4">
                                     <div class="form-group">
                                        <label>First Name</label>
-                                       <input type="text" class="form-control" placeholder="First Name">
+                                       <input name="fname" type="text" class="form-control" placeholder="First Name">
                                     </div>
                                  </div>
                                  <div class="col-md-4">
                                     <div class="form-group">
                                        <label>Middle Name</label>
-                                       <input type="text" class="form-control" placeholder="Middle Name">
+                                       <input name="mname" type="text" class="form-control" placeholder="Middle Name">
                                     </div>
                                  </div>
                                  <div class="col-md-3">
                                     <div class="form-group">
                                        <label>Contacts</label>
-                                       <input type="number" class="form-control" placeholder="ex. 09864723647">
+                                       <input name="contact" type="number" class="form-control" placeholder="ex. 09864723647">
                                     </div>
                                  </div>
                                  <div class="col-md-3">
                                     <div class="form-group">
                                        <label>Age</label>
-                                       <input type="number" class="form-control" placeholder="Age">
+                                       <input name="age" type="number" class="form-control" placeholder="Age">
                                     </div>
                                  </div>
                                  <div class="col-md-3">
                                     <div class="form-group">
                                        <label>Gender</label>
-                                       <select class="form-control">
-                                          <option>...</option>
-                                          <option>Male</option>
-                                          <option>Female</option>
+                                       <select  name="gender"class="form-control">
+                                          <option value="N">...</option>
+                                          <option value="M">Male</option>
+                                          <option value="F">Female</option>
                                        </select>
                                     </div>
                                  </div>
                                  <div class="col-md-3">
                                     <div class="form-group">
                                        <label>Civil Status</label>
-                                       <select class="form-control">
-                                          <option>...</option>
-                                          <option>Single</option>
-                                          <option>Married</option>
-                                          <option>Separated</option>
-                                          <option>Widowed</option>
+                                       <select  name="civil_status"class="form-control">
+                                          <option value="N">...</option>
+                                          <option value="Single">Single</option>
+                                          <option value="Married">Married</option>
+                                          <option value="Separated">Separated</option>
+                                          <option value="Widowed">Widowed</option>
                                        </select>
                                     </div>
                                  </div>
                                  <div class="col-md-12">
                                     <div class="form-group">
                                        <label>Address</label>
-                                       <textarea class="form-control"></textarea>
+                                       <textarea name="address" class="form-control"></textarea>
                                     </div>
                                  </div>
 
                                  <div class="col-md-6">
                                     <div class="form-group">
                                        <label>Head of Family</label>
-                                       <input type="text" class="form-control" placeholder="Head of Family">
+                                       <input name="head_of_the_family" type="text" class="form-control" placeholder="Head of Family">
                                     </div>
                                  </div>
                                  <div class="col-md-6">
                                     <div class="form-group">
                                        <label>Evacuation Center</label>
-                                       <select class="form-control">
-                                          <option>Evacuation Center 1</option>
-                                          <option>Evacuation Center 2</option>
-                                       </select>
+                                       <select  name="evac_id"class="form-control" id="evac-center-list"></select>
                                     </div>
                                  </div>
                               </div>
@@ -312,7 +309,7 @@
                      <!-- /.card-body -->
 
                      <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-primary" id="evacuee-add-btn">Save</button>
                      </div>
                   </form>
                </div>
@@ -330,6 +327,50 @@
 
 </body>
 
-</html>
+</html>  
 
 <script src="../asset/js/logout.js"></script>
+
+
+<script>
+   async function load_evac_center_list() {
+      await fetch('../php/evac_center_get_all.php')
+      .then(response => response.json())
+      .then(response => {
+         result = response.result;
+         let evac_options = '';
+         if(result.lenght === 0) alert("No Evacuation Center found.");
+         else for(let evac in result)
+            evac_options += `<option value="${result[evac].id}">${result[evac].name}</option>`;
+               
+         $("#evac-center-list").html(evac_options);
+      })
+      .catch(err => {
+         console.log("ERROR: " + err);
+      });
+   }
+
+   $("#evacuee-add-btn").on("click", async function(e) {
+      e.preventDefault();
+      const form = new FormData(document.getElementById("evacuee-add-form"));
+      await fetch('../php/evacuee_new.php', {
+         method : 'post',
+         body : form
+      })
+      .then(response => response.json())
+      .then(response => {
+         let result = response.result;
+         if (!result) alert("Something went wrong. Please try again later.");
+         else {
+            alert("Successsfully added new evacuee!");
+            document.getElementById("evacuee-add-form").reset();
+         }
+      })
+      .catch(err => {
+         console.log("ERROR: " + err);
+      });
+   });
+
+
+   load_evac_center_list();   
+</script>
