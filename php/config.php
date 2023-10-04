@@ -6,7 +6,7 @@ function base_url(){
 
 function validate_POST(Array $post_result){
     if(empty($post_result)){
-        echo json_encode(["result"=>"Invalid request"]);
+        echo json_encode(["result"=>["Bad request"]]);
         die();
     }
     return null;

@@ -220,19 +220,30 @@ class BBEIMS {
         return QUERY::run($query);
     }
 
+    public static function report_by_evacuee(Array $post_result){
+        $query = new QueryBuilder(
+            QUERY_SELECT,
+            'evacuee',
+            $post_result,
+            ["id", "fname", "mname", "lname", "address", "age"],
+            ["deletedflag" => 0]
+        );
 
-    public static function report_by_age($post_result) {
-        QUERY::escape_str_all($post_result);
-        $query = "SELECT
-                    e.`age`
-                FROM `evacuee` e
-                WHERE
-                    e.`deletedflag` = 0
-        ";
-        return QUERY::run($query);
+        return QUERY::run($query->sql);
+    }
+
+    public static function report_by_age(Array $post_result) {
+        $query = new QueryBuilder(
+            QUERY_SELECT,
+            'evacuee',
+            $post_result,
+            ["age"],
+            ["deletedflag" => 0]
+        );
+        return QUERY::run($query->sql);
     }
     
-    public static function report_by_gender($post_result) {
+    public static function report_by_gender(Array $post_result) {
         QUERY::escape_str_all($post_result);
         $query = "SELECT
                     (SELECT 

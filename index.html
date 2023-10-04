@@ -62,7 +62,7 @@
    document.getElementById('login-button').addEventListener("click", async function(e){
       e.preventDefault();
       const form = new FormData(document.getElementById('login-form'));
-      await fetch('php/user_login.php', {
+      await fetch(BASE_URL + 'php/user_login.php', {
          method : 'post',
          body : form
       })
