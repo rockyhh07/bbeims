@@ -11,7 +11,10 @@ CREATE TABLE IF NOT EXISTS `users` (
     `contact` VARCHAR(15),
     `category` VARCHAR(1),
     `active` INT(1) DEFAULT 1,
-    `deletedflag` INT(1) DEFAULT 0
+    `deletedflag` INT(1) DEFAULT 0,
+    `updated_by` INT(6) DEFAULT NULL,
+    `updated_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`updated_by`) REFERENCES `users`(`id`)
 );
 
 INSERT INTO `users`
@@ -28,7 +31,10 @@ CREATE TABLE IF NOT EXISTS `evac_center` (
     `name` VARCHAR(50),
     `address` VARCHAR(255),
     `contact` VARCHAR(15),
-    `deletedflag` INT(1) DEFAULT 0
+    `deletedflag` INT(1) DEFAULT 0,
+    `updated_by` INT(6) DEFAULT NULL,
+    `updated_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`updated_by`) REFERENCES `users`(`id`)
 );
 
 INSERT INTO `evac_center`
@@ -41,7 +47,10 @@ VALUES
 CREATE TABLE IF NOT EXISTS `calamity` (
     `id` INT(6) PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(50),
-    `deletedflag` INT(1) DEFAULT 0
+    `deletedflag` INT(1) DEFAULT 0,
+    `updated_by` INT(6) DEFAULT NULL,
+    `updated_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`updated_by`) REFERENCES `users`(`id`)
 );
 
 INSERT INTO `calamity`
@@ -64,6 +73,9 @@ CREATE TABLE IF NOT EXISTS `evacuee` (
     `head_of_the_family` VARCHAR(50),
     `evac_id` INT(6),
     `deletedflag` INT(1) DEFAULT 0,
+    `updated_by` INT(6) DEFAULT NULL,
+    `updated_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`updated_by`) REFERENCES `users`(`id`),
     FOREIGN KEY (`evac_id`) REFERENCES `evac_center`(`id`)
 );
 

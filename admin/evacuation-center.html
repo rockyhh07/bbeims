@@ -344,11 +344,10 @@
 
 <script>
    async function load_all_evac_center() {
-      await fetch('../php/evac_center_get_all.php')
+      await fetch(BASE_URL + 'php/evac_center_get_all.php')
       .then(response => response.json())
       .then(response => {
          let result = response.result;
-         console.log(result);
 
          if ($.fn.DataTable.isDataTable('#evac_center')) {
             $('#evac_center').DataTable().destroy();
@@ -374,7 +373,7 @@
          $("#evac_center").DataTable();
       })
       .catch(err => {
-         console.log("ERROR: " + err);
+         console.error("ERROR: " + err);
       });
 
    }
@@ -382,7 +381,7 @@
    document.getElementById("evac-center-add-btn").addEventListener("click", async function (e) {
       e.preventDefault();
       const form = new FormData(document.getElementById("evac-center-add-form"));
-      await fetch('../php/evac_center_new.php', {
+      await fetch(BASE_URL + 'php/evac_center_new.php', {
          method: 'post',
          body: form
       })
@@ -395,7 +394,7 @@
          load_all_evac_center();
       })
       .catch(err => {
-         console.log("ERROR: " + err);
+         console.error("ERROR: " + err);
       });
    });
 

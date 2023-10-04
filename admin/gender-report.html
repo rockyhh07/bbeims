@@ -232,8 +232,8 @@
                               </thead>
                               <tbody>
                                  <tr>
-                                    <td>45</td>
-                                    <td>55</td>
+                                    <td id="male">45</td>
+                                    <td id="female">55</td>
                                  </tr>
                               </tbody>
                            </table>
@@ -266,14 +266,14 @@
    <script src="../asset/js/adminlte.js"></script>
    <script src="../asset/js/chart.js"></script>
    <script>
-      document.addEventListener("DOMContentLoaded", function () {
+      function load_chart(gender_data = undefined) {
          // Pie chart
          new Chart(document.getElementById("chartjs-pie"), {
             type: "pie",
             data: {
                labels: ["Male", "Female"],
                datasets: [{
-                  data: [45, 55],
+                  data: (gender_data !== undefined) ? gender_data : [45, 55],
                   backgroundColor: [
                      window.theme.primary,
                      window.theme.danger,
@@ -289,10 +289,31 @@
             }
          });
 
-      });
+      };
    </script>
 </body>
 
 </html>
 
 <script src="../asset/js/logout.js"></script>
+
+<script>
+   async function load_report_by_gender(){
+      await fetch(BASE_URL + 'php/report_by_gender.php')
+      .then(response => response.json())
+      .then(response => {
+         let result = response.result[0];
+         $("#male").text(result.male);
+         $("#female").text(result.female);
+         load_chart([
+            result.male,
+            result.female
+         ]);
+      })
+      .catch(err=>{
+         console.error("ERROR: " + err);
+      });
+   }
+
+   load_report_by_gender();
+</script>

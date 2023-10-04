@@ -277,7 +277,7 @@
 <script>
    const form = new FormData();
    form.append('username', USER_DATA.username);
-   fetch('../php/user_get_all.php',{
+   fetch(BASE_URL + 'php/user_get_all.php',{
       method : 'post',
       body : form
    })

@@ -305,7 +305,7 @@
 
 <script>
    async function load_all_evacuess(){
-      await fetch('../php/evacuee_get_all.php')
+      await fetch(BASE_URL + 'php/evacuee_get_all.php')
       .then(response => response.json())
       .then(response => {
          let result = response.result;

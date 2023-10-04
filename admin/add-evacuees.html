@@ -334,7 +334,7 @@
 
 <script>
    async function load_evac_center_list() {
-      await fetch('../php/evac_center_get_all.php')
+      await fetch(BASE_URL + 'php/evac_center_get_all.php')
       .then(response => response.json())
       .then(response => {
          result = response.result;
@@ -346,14 +346,14 @@
          $("#evac-center-list").html(evac_options);
       })
       .catch(err => {
-         console.log("ERROR: " + err);
+         console.error("ERROR: " + err);
       });
    }
 
    $("#evacuee-add-btn").on("click", async function(e) {
       e.preventDefault();
       const form = new FormData(document.getElementById("evacuee-add-form"));
-      await fetch('../php/evacuee_new.php', {
+      await fetch(BASE_URL + 'php/evacuee_new.php', {
          method : 'post',
          body : form
       })
@@ -367,10 +367,9 @@
          }
       })
       .catch(err => {
-         console.log("ERROR: " + err);
+         console.error("ERROR: " + err);
       });
    });
-
 
    load_evac_center_list();   
 </script>

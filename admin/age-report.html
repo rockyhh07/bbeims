@@ -294,7 +294,7 @@
    <script src="../asset/js/chart.js"></script>
    <script>
 
-      function load_chart(ageData = undefined) {
+      function load_chart(age_data = undefined) {
 
          // Bar Chart
 
@@ -305,7 +305,7 @@
                backgroundColor: 'rgb(79,129,189)',
                borderColor: 'rgba(0, 158, 251, 1)',
                borderWidth: 1,
-               data: (ageData !== undefined) ? ageData : [0, 0, 0, 0, 0, 0, 0, 0]
+               data: (age_data !== undefined) ? age_data : [0, 0, 0, 0, 0, 0, 0, 0]
             }]
          };
 
@@ -328,14 +328,14 @@
 </html>
 
 <script>
-   async function load_all_evacuess(){
-      await fetch('../php/evacuee_get_all.php')
+   async function load_report_by_age(){
+      await fetch(BASE_URL + 'php/report_by_age.php')
       .then(response => response.json())
       .then(response => {
          let result = response.result;
          if (!response) { console.error("Result not defined"); return; };
 
-         let ageData = {
+         let age_data = {
             "00-05" : 0,
             "06-10" : 0,
             "11-20" : 0,
@@ -348,34 +348,34 @@
 
          for(let row in result){
             let age = parseInt(result[row].age);
-            if(age >= 0 && age <= 5) ageData["00-05"] ++;
-            if(age >= 6 && age <= 10) ageData["06-10"] ++;
-            if(age >= 11 && age <= 20) ageData["11-20"] ++;
-            if(age >= 21 && age <= 30) ageData["21-30"] ++;
-            if(age >= 31 && age <= 40) ageData["31-40"] ++;
-            if(age >= 41 && age <= 50) ageData["41-50"] ++;
-            if(age >= 51 && age <= 60) ageData["51-60"] ++;
-            if(age >= 60) ageData["60 up"] ++;
+            if(age >= 0 && age <= 5) age_data["00-05"] ++;
+            if(age >= 6 && age <= 10) age_data["06-10"] ++;
+            if(age >= 11 && age <= 20) age_data["11-20"] ++;
+            if(age >= 21 && age <= 30) age_data["21-30"] ++;
+            if(age >= 31 && age <= 40) age_data["31-40"] ++;
+            if(age >= 41 && age <= 50) age_data["41-50"] ++;
+            if(age >= 51 && age <= 60) age_data["51-60"] ++;
+            if(age >= 60) age_data["60 up"] ++;
          }
          
          load_chart([
-            ageData["00-05"],
-            ageData["06-10"],
-            ageData["11-20"],
-            ageData["21-30"],
-            ageData["31-40"],
-            ageData["41-50"],
-            ageData["51-60"],
-            ageData["60 up"]
+            age_data["00-05"],
+            age_data["06-10"],
+            age_data["11-20"],
+            age_data["21-30"],
+            age_data["31-40"],
+            age_data["41-50"],
+            age_data["51-60"],
+            age_data["60 up"]
          ]);
 
-         let keys = Object.keys(ageData);
+         let keys = Object.keys(age_data);
          for(let id in keys){
-            document.getElementById(keys[id]).innerText = ageData[keys[id]];
+            document.getElementById(keys[id]).innerText = age_data[keys[id]];
          }
 
       });
    }
 
-   load_all_evacuess();
+   load_report_by_age();
 </script>

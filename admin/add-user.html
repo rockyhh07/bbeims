@@ -309,7 +309,7 @@
       e.preventDefault();
       const data = document.getElementById("new-user-form");
       const form = new FormData(data);
-      fetch('../php/user_new.php',{
+      fetch(BASE_URL + 'php/user_new.php',{
          method : 'post',
          body : form
       })

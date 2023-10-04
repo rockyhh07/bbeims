@@ -1,7 +1,7 @@
 function logout() {
     const form = new FormData();
     form.append('user', JSON.stringify(USER_DATA));
-    fetch('../php/user_logout.php', {
+    fetch(BASE_URL + 'php/user_logout.php', {
        method: 'post',
        body: form
     })

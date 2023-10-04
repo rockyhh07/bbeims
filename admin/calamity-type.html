@@ -300,11 +300,10 @@
 
    async function load_all_calamity() {
       let tbody = `<tbody>`;
-      await fetch('../php/calamity_get_all.php')
+      await fetch(BASE_URL + 'php/calamity_get_all.php')
       .then(response => response.json())
       .then(response => {
          let result = response.result;
-         console.log(result);
 
          if ($.fn.DataTable.isDataTable('#calamity')) {
             $('#calamity').DataTable().destroy();
@@ -323,7 +322,7 @@
          
       })
       .catch(err => {
-         console.log("ERROR: " + err);
+         console.error("ERROR: " + err);
       });
 
       tbody += `</tbody>`;
@@ -334,7 +333,7 @@
    document.getElementById("calamity-add-btn").addEventListener("click", async function(e) {
       e.preventDefault();
       const form = new FormData(document.getElementById("calamity-add-form"));
-      await fetch('../php/calamity_new.php', {
+      await fetch(BASE_URL + 'php/calamity_new.php', {
          method : 'post',
          body : form
       })
@@ -347,7 +346,7 @@
          load_all_calamity();
       })
       .catch(err =>{
-         console.log("ERROR: " + err);
+         console.error("ERROR: " + err);
       });
    });
 

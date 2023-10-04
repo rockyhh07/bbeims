@@ -188,6 +188,8 @@ class BBEIMS {
                             END
                             )
                     FROM `evacuee` e
+                    WHERE
+                        e.`deletedflag` = 0
                     ) `male`,
                     (SELECT 
                         count(
@@ -196,19 +198,64 @@ class BBEIMS {
                             END
                             )
                     FROM `evacuee` e
+                    WHERE
+                        e.`deletedflag` = 0
                     ) `female`,
                     (SELECT 
                         count(`id`)
-                    FROM `evacuee`
+                    FROM `evacuee` e
+                    WHERE
+                        e.`deletedflag` = 0
                     ) `evacuees`,
                     (SELECT 
                         count(`id`)
-                    FROM `evac_center`
+                    FROM `evac_center` e
+                    WHERE
+                        e.`deletedflag` = 0
                     ) `evac_center`,
                     0 `family`,
                     0 `brgy`
         ";
 
+        return QUERY::run($query);
+    }
+
+
+    public static function report_by_age($post_result) {
+        QUERY::escape_str_all($post_result);
+        $query = "SELECT
+                    e.`age`
+                FROM `evacuee` e
+                WHERE
+                    e.`deletedflag` = 0
+        ";
+        return QUERY::run($query);
+    }
+    
+    public static function report_by_gender($post_result) {
+        QUERY::escape_str_all($post_result);
+        $query = "SELECT
+                    (SELECT 
+                        count(
+                            CASE 
+                            WHEN e.`gender` = 'M' THEN 1
+                            END
+                            )
+                    FROM `evacuee` e
+                    WHERE
+                        e.`deletedflag` = 0
+                    ) `male`,
+                    (SELECT 
+                        count(
+                            CASE 
+                            WHEN e.`gender` = 'F' THEN 1
+                            END
+                            )
+                    FROM `evacuee` e
+                    WHERE
+                        e.`deletedflag` = 0
+                    ) `female`
+        ";
         return QUERY::run($query);
     }
 }
