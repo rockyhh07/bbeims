@@ -99,7 +99,7 @@ class QueryBuilder {
         return [["result" => false, "error" => $this->errors]];
     }
 
-    public function __construct(__QUERY_BUILDER__ $type, String $table, Array $post_result, Array $required = [], Array $conditions = [], $specials = []) {
+    public function __construct(__QUERY_BUILDER__ $type, String $table, Array $post_result, ?Array $required = [], ?Array $conditions = [], ?Array $specials = []) {
         QUERY::escape_str_all($post_result);
         QUERY::escape_str_all($required);
         QUERY::escape_str_all($conditions);
@@ -132,6 +132,8 @@ class QueryBuilder {
     }
 
     private function delete(String $table, $conditions = []) {
+        trigger_error("Method: <b>". __METHOD__ ."</b> is deprecated");
+
         $this->update($table, ["deletedflag"=>"1"], ["deletedflag"], $conditions);
     }
 
