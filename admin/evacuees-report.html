@@ -222,7 +222,7 @@
                <div class="card card-info">
 
                   <div class="col-md-12">
-                     <table id="example1" class="table table-bordered table-hover">
+                     <table id="evacuee" class="table table-bordered table-hover">
                         <thead>
                            <tr>
                               <th>#</th>
@@ -295,15 +295,42 @@
    <!-- DataTables  & Plugins -->
    <script src="../asset/tables/datatables/jquery.dataTables.min.js"></script>
    <script src="../asset/tables/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-   <script src="../asset/tables/datatables-responsive/js/responsive.bootstrap4.min.js"></script>s
+   <script src="../asset/tables/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
    <script src="../asset/tables/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-   <script>
-      $(function () {
-         $("#example1").DataTable();
-      });
-   </script>
 </body>
 
 </html>
 
 <script src="../asset/js/logout.js"></script>
+
+<script>
+   async function load_all_evacuess(){
+      await fetch('../php/evacuee_get_all.php')
+      .then(response => response.json())
+      .then(response => {
+         let result = response.result;
+         if (!response) { console.error("Result not defined"); return; };
+
+         if ($.fn.DataTable.isDataTable('#evacuee')) {
+            $('#evacuee').DataTable().destroy();
+            $('#evacuee > tbdoy').html("");
+         }
+         
+         let tbody = `<tbody>`;
+         for(let row in result){
+            tbody += `<tr>`;
+            tbody += `<td>${result[row].id}</td>`;
+            tbody += `<td>${result[row].lname}, ${result[row].fname} ${result[row].mname} </td>`;
+            tbody += `<td>${result[row].address}</td>`;
+            tbody += `<td>${result[row].age}</td>`;
+            tbody += `</tr>`;
+         }
+
+         tbody += `</tbody>`;
+         document.querySelector('table#evacuee > tbody').innerHTML = tbody;
+         $("#evacuee").DataTable();
+      });
+   }
+
+   load_all_evacuess();
+</script>

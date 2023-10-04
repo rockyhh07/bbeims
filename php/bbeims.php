@@ -138,15 +138,33 @@ class BBEIMS {
     }
     
     public static function evacuee_get_all(Array $post_result) {
-        $query = new QueryBuilder(
-            QUERY_SELECT,
-            'evacuee',
-            $post_result,
-            ["id", "lname", "fname", "mname", "contact", "age", "gender", "civil_status", "address", "head_of_the_family"],
-            ["deletedflag" => 0],
-            ["ORDER BY `id`", "DESC"]
-        );
-        return QUERY::run($query->sql);
+        QUERY::escape_str_all($post_result);
+        $query = "SELECT 
+                    e.`id`, 
+                    e.`lname`, 
+                    e.`fname`, 
+                    e.`mname`, 
+                    e.`contact`, 
+                    e.`age`, 
+                    CASE
+                        WHEN e.`gender` = 'M' THEN 'Male' ELSE 
+                        CASE
+                            WHEN e.`gender` = 'F' THEN 'Female'
+                            ELSE '...'
+                        END
+                    END `gender`, 
+                    e.`civil_status`, 
+                    e.`address`, 
+                    e.`head_of_the_family`,
+                    ec.`name`
+                FROM `evacuee` e
+                INNER JOIN `evac_center` ec
+                    ON ec.`id` = e.`evac_id`
+                WHERE
+                    e.`deletedflag` = 0 AND
+                    ec.`deletedflag` = 0
+        ";
+        return QUERY::run($query);
     }
 
     public static function evacuee_update(Array $post_result){
@@ -158,5 +176,39 @@ class BBEIMS {
             ["id" => $post_result["id"], "deletedflag" => 0]
         );
         return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
+    }
+
+    public static function dashboard_get(Array $post_result){
+        QUERY::escape_str_all($post_result);
+        $query = "SELECT 
+                    (SELECT 
+                        count(
+                            CASE 
+                            WHEN e.`gender` = 'M' THEN 1
+                            END
+                            )
+                    FROM `evacuee` e
+                    ) `male`,
+                    (SELECT 
+                        count(
+                            CASE 
+                            WHEN e.`gender` = 'F' THEN 1
+                            END
+                            )
+                    FROM `evacuee` e
+                    ) `female`,
+                    (SELECT 
+                        count(`id`)
+                    FROM `evacuee`
+                    ) `evacuees`,
+                    (SELECT 
+                        count(`id`)
+                    FROM `evac_center`
+                    ) `evac_center`,
+                    0 `family`,
+                    0 `brgy`
+        ";
+
+        return QUERY::run($query);
     }
 }

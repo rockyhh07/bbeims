@@ -227,9 +227,7 @@
 
                         <div class="info-box-content">
                            <span class="info-box-text">Number of Family</span>
-                           <span class="info-box-number">
-                              758
-                           </span>
+                           <span class="info-box-number" id="number-of-family">0</span>
                         </div>
                         <!-- /.info-box-content -->
                      </div>
@@ -241,9 +239,7 @@
 
                         <div class="info-box-content">
                            <span class="info-box-text">Number of Evacuees</span>
-                           <span class="info-box-number">
-                              100
-                           </span>
+                           <span class="info-box-number" id="number-of-evacuee">0</span>
                         </div>
                         <!-- /.info-box-content -->
                      </div>
@@ -256,7 +252,7 @@
 
                         <div class="info-box-content">
                            <span class="info-box-text">Number of Female</span>
-                           <span class="info-box-number">2,795</span>
+                           <span class="info-box-number" id="number-of-female">0</span>
                         </div>
                         <!-- /.info-box-content -->
                      </div>
@@ -273,7 +269,7 @@
 
                         <div class="info-box-content">
                            <span class="info-box-text">Number of Male</span>
-                           <span class="info-box-number">2,795</span>
+                           <span class="info-box-number" id="number-of-male">0</span>
                         </div>
                         <!-- /.info-box-content -->
                      </div>
@@ -288,7 +284,7 @@
 
                         <div class="info-box-content">
                            <span class="info-box-text">Overall Barangay Population</span>
-                           <span class="info-box-number">5,590</span>
+                           <span class="info-box-number" id="number-of-brgy-population">0</span>
                         </div>
                         <!-- /.info-box-content -->
                      </div>
@@ -303,7 +299,7 @@
 
                         <div class="info-box-content">
                            <span class="info-box-text">Number of Evacuation Center</span>
-                           <span class="info-box-number">20</span>
+                           <span class="info-box-number" id="number-of-evac_center">0</span>
                         </div>
                         <!-- /.info-box-content -->
                      </div>
@@ -329,3 +325,34 @@
 </html>
 
 <script src="../asset/js/logout.js"></script>
+
+<script>
+   const NUMBER_FAMILY = document.getElementById("number-of-family");
+   const NUMBER_EVACUEE = document.getElementById("number-of-evacuee");
+   const NUMBER_FEMALE = document.getElementById("number-of-female");
+   const NUMBER_MALE = document.getElementById("number-of-male");
+   const NUMBER_BRGY_POPU = document.getElementById("number-of-brgy-population");
+   const NUMBER_EVAC_CENTER = document.getElementById("number-of-evac_center");
+
+   async function load_dashboard(){
+      await fetch(BASE_URL + 'php/dashboard_get.php')
+      .then(response => response.json())
+      .then(response => {
+         let result = response.result[0];
+         if(!result){ alert("Failed to load dashboard. Try again later"); return; }
+
+         NUMBER_FAMILY.innerHTML = result.family;
+         NUMBER_EVACUEE.innerHTML = result.evacuees;
+         NUMBER_FEMALE.innerHTML = result.female;
+         NUMBER_MALE.innerHTML = result.male;
+         NUMBER_BRGY_POPU.innerHTML = result.brgy;
+         NUMBER_EVAC_CENTER.innerHTML = result.evac_center;
+      })
+      .catch(err=>{
+         console.log("ERROR: " + err);
+      });
+   }
+
+   load_dashboard();
+
+</script>

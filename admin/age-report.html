@@ -234,35 +234,35 @@
                               <tbody>
                                  <tr>
                                     <td>0 to 5</td>
-                                    <td>22</td>
+                                    <td id="00-05">0</td>
                                  </tr>
                                  <tr>
                                     <td>6 to 10</td>
-                                    <td>5</td>
+                                    <td id="06-10">0</td>
                                  </tr>
                                  <tr>
                                     <td>11 to 20</td>
-                                    <td>10</td>
+                                    <td id="11-20">0</td>
                                  </tr>
                                  <tr>
                                     <td>21 to 30</td>
-                                    <td>15</td>
+                                    <td id="21-30">0</td>
                                  </tr>
                                  <tr>
                                     <td>31 to 40</td>
-                                    <td>10</td>
+                                    <td id="31-40">0</td>
                                  </tr>
                                  <tr>
                                     <td>41 to 50</td>
-                                    <td>8</td>
+                                    <td id="41-50">0</td>
                                  </tr>
                                  <tr>
                                     <td>51 to 60</td>
-                                    <td>9</td>
+                                    <td id="51-60">0</td>
                                  </tr>
                                  <tr>
                                     <td>60 up</td>
-                                    <td>5</td>
+                                    <td id="60 up">0</td>
                                  </tr>
                               </tbody>
                            </table>
@@ -293,7 +293,8 @@
    <script src="../asset/js/adminlte.js"></script>
    <script src="../asset/js/chart.js"></script>
    <script>
-      document.addEventListener("DOMContentLoaded", function () {
+
+      function load_chart(ageData = undefined) {
 
          // Bar Chart
 
@@ -304,7 +305,7 @@
                backgroundColor: 'rgb(79,129,189)',
                borderColor: 'rgba(0, 158, 251, 1)',
                borderWidth: 1,
-               data: [22, 5, 10, 15, 10, 8, 9, 5]
+               data: (ageData !== undefined) ? ageData : [0, 0, 0, 0, 0, 0, 0, 0]
             }]
          };
 
@@ -320,8 +321,61 @@
             }
          });
 
-      });
+      }
    </script>
 </body>
 
 </html>
+
+<script>
+   async function load_all_evacuess(){
+      await fetch('../php/evacuee_get_all.php')
+      .then(response => response.json())
+      .then(response => {
+         let result = response.result;
+         if (!response) { console.error("Result not defined"); return; };
+
+         let ageData = {
+            "00-05" : 0,
+            "06-10" : 0,
+            "11-20" : 0,
+            "21-30" : 0,
+            "31-40" : 0,
+            "41-50" : 0,
+            "51-60" : 0,
+            "60 up" : 0,
+         };
+
+         for(let row in result){
+            let age = parseInt(result[row].age);
+            if(age >= 0 && age <= 5) ageData["00-05"] ++;
+            if(age >= 6 && age <= 10) ageData["06-10"] ++;
+            if(age >= 11 && age <= 20) ageData["11-20"] ++;
+            if(age >= 21 && age <= 30) ageData["21-30"] ++;
+            if(age >= 31 && age <= 40) ageData["31-40"] ++;
+            if(age >= 41 && age <= 50) ageData["41-50"] ++;
+            if(age >= 51 && age <= 60) ageData["51-60"] ++;
+            if(age >= 60) ageData["60 up"] ++;
+         }
+         
+         load_chart([
+            ageData["00-05"],
+            ageData["06-10"],
+            ageData["11-20"],
+            ageData["21-30"],
+            ageData["31-40"],
+            ageData["41-50"],
+            ageData["51-60"],
+            ageData["60 up"]
+         ]);
+
+         let keys = Object.keys(ageData);
+         for(let id in keys){
+            document.getElementById(keys[id]).innerText = ageData[keys[id]];
+         }
+
+      });
+   }
+
+   load_all_evacuess();
+</script>

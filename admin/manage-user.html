@@ -285,6 +285,11 @@
    .then(response => {
       if (!response.result) {console.error("Result not defined"); return; };
       let result = response.result;
+
+      if ($.fn.DataTable.isDataTable('#users')) {
+         $('#users').DataTable().destroy();
+         $('#users > tbdoy').html("");
+      }
       
       let tbody = `<tbody>`;
       for(let row in result){
@@ -315,7 +320,8 @@
       }
       tbody += `</tbody>`;
       
-      document.querySelector('table#users > tbody').innerHTML += tbody;
+      document.querySelector('table#users > tbody').innerHTML = tbody;
+      $("#users").DataTable();
    });
 
 

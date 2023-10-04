@@ -222,7 +222,7 @@
                <div class="card card-info">
 
                   <div class="col-md-12">
-                     <table id="example1" class="table table-bordered table-striped">
+                     <table id="evacuee" class="table table-bordered table-striped">
                         <thead>
                            <tr>
                               <th>#</th>
@@ -314,6 +314,43 @@
 
 <script>
    async function load_all_evacuess(){
+      await fetch('../php/evacuee_get_all.php')
+      .then(response => response.json())
+      .then(response => {
+         let result = response.result;
+         if (!response) { console.error("Result not defined"); return; };
 
+         if ($.fn.DataTable.isDataTable('#evacuee')) {
+            $('#evacuee').DataTable().destroy();
+            $('#evacuee > tbdoy').html("");
+         }
+         
+         let tbody = `<tbody>`;
+         for(let row in result){
+            tbody += `<tr>`;
+            tbody += `<td>${result[row].id}</td>`;
+            tbody += `<td>
+                  <p class="info">Name: <b>${result[row].lname}, ${result[row].fname} ${result[row].mname}</b></p>
+                  <p class="info">Age: <b>${result[row].age}</b></p>
+                  <p class="info">Gender: <b>${result[row].gender}</b></p>
+                  <p class="info">Contact: <b>${result[row].contact}</b></p>
+               </td>`;
+            tbody += `<td>${result[row].civil_status}</td>`;
+            tbody += `<td>${result[row].address}</td>`;
+            tbody += `<td>${result[row].head_of_the_family}</td>`;
+            tbody += `<td>${result[row].name}</td>`;
+            tbody += `<td class="text-right">
+                  <a class="btn btn-sm btn-success"><i class="fa fa-edit"></i> edit</a>
+                  <a class="btn btn-sm btn-danger" data-toggle="modal" data-target="#delete"><i class="fa fa-trash-alt"></i> delete</a>
+               </td>`;
+            tbody += `</tr>`;
+         }
+
+         tbody += `</tbody>`;
+         document.querySelector('table#evacuee > tbody').innerHTML = tbody;
+         $("#evacuee").DataTable();
+      });
    }
+
+   load_all_evacuess();
 </script>
