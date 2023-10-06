@@ -132,7 +132,7 @@ class BBEIMS {
             QUERY_INSERT,
             'evacuee',
             $post_result,
-            ["lname", "address"]
+            ["fname", "lname", "mname", "address", "contact", "age", "gender", "civil_status", "head_of_the_family", "evac_id", "calam_id"]
         );
         return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
     }
@@ -267,6 +267,22 @@ class BBEIMS {
                         e.`deletedflag` = 0
                     ) `female`
         ";
+        return QUERY::run($query);
+    }
+
+    public static function report_by_calamity(Array $post_result) {
+        QUERY::escape_str_all($post_result);
+        $allCalamity = QUERY::run("SELECT `id`, `name` FROM calamity");
+
+        $query = "SELECT";
+
+        foreach($allCalamity as $val) {
+            $query .= " count(CASE WHEN `calam_id` = {$val['id']} THEN 1 END) `{$val['name']}`,";
+        }
+        $query = rtrim($query, ','); ;
+        
+        $query .= " FROM `evacuee` WHERE `deletedflag` = 0";
+        
         return QUERY::run($query);
     }
 }

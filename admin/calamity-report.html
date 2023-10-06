@@ -274,14 +274,14 @@
    <script src="../asset/js/adminlte.js"></script>
    <script src="../asset/js/chart.js"></script>
    <script>
-      document.addEventListener("DOMContentLoaded", function () {
+      function load_chart(keys = null, values = null) {
          // Pie chart
          new Chart(document.getElementById("chartjs-pie"), {
             type: "pie",
             data: {
-               labels: ["Flood", "Typhoon", "Earthquake"],
+               labels: keys ? keys : ["Flood", "Typhoon", "Earthquake"],
                datasets: [{
-                  data: [25, 50, 25],
+                  data: values ? values : [25, 50, 25],
                   backgroundColor: [
                      window.theme.primary,
                      window.theme.danger,
@@ -297,11 +297,27 @@
                }
             }
          });
-
-      });
+      };
    </script>
 </body>
 
 </html>
 
 <script src="../asset/js/logout.js"></script>
+
+
+<script>
+   fetch(BASE_URL + 'php/report_by_calamity.php')
+   .then(response => response.json())
+   .then(response => {
+      let result = response.result[0];
+      let keys = Object.keys(result);
+      let values = Object.values(result);
+
+      console.log({keys, values});
+      load_chart(keys, values);
+   })
+   .catch(err => {
+      console.error("ERROR: " + err);
+   });
+</script>

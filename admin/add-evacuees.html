@@ -264,7 +264,7 @@
                                     <div class="form-group">
                                        <label>Gender</label>
                                        <select  name="gender"class="form-control">
-                                          <option value="N">...</option>
+                                          <option value="">--Select Gender--</option>
                                           <option value="M">Male</option>
                                           <option value="F">Female</option>
                                        </select>
@@ -274,7 +274,7 @@
                                     <div class="form-group">
                                        <label>Civil Status</label>
                                        <select  name="civil_status"class="form-control">
-                                          <option value="N">...</option>
+                                          <option value="">--Select Civil Status--</option>
                                           <option value="Single">Single</option>
                                           <option value="Married">Married</option>
                                           <option value="Separated">Separated</option>
@@ -289,16 +289,22 @@
                                     </div>
                                  </div>
 
-                                 <div class="col-md-6">
+                                 <div class="col-md-4">
                                     <div class="form-group">
                                        <label>Head of Family</label>
                                        <input name="head_of_the_family" type="text" class="form-control" placeholder="Head of Family">
                                     </div>
                                  </div>
-                                 <div class="col-md-6">
+                                 <div class="col-md-4">
                                     <div class="form-group">
                                        <label>Evacuation Center</label>
                                        <select  name="evac_id"class="form-control" id="evac-center-list"></select>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-4">
+                                    <div class="form-group">
+                                       <label>Type of Calamity</label>
+                                       <select  name="calam_id"class="form-control" id="calamity-list"></select>
                                     </div>
                                  </div>
                               </div>
@@ -333,12 +339,12 @@
 
 
 <script>
-   async function load_evac_center_list() {
+   async function load_all_list() {
       await fetch(BASE_URL + 'php/evac_center_get_all.php')
       .then(response => response.json())
       .then(response => {
          result = response.result;
-         let evac_options = '';
+         let evac_options = '<option value="" selected disabled>--Select Ecavuation Center--</option>';
          if(result.lenght === 0) alert("No Evacuation Center found.");
          else for(let evac in result)
             evac_options += `<option value="${result[evac].id}">${result[evac].name}</option>`;
@@ -348,7 +354,24 @@
       .catch(err => {
          console.error("ERROR: " + err);
       });
+
+      await fetch(BASE_URL + 'php/calamity_get_all.php')
+      .then(response => response.json())
+      .then(response => {
+         let result = response.result;
+         let calamity_options = '<option value="" selected disabled>--Select Calamity--</option>';
+         if(result.lenght === 0) alert("No Calamity foun.");
+         else for(let cal in result){
+            calamity_options += `<option value="${result[cal].id}">${result[cal].name}</options>`;
+         }
+
+         $("#calamity-list").html(calamity_options);
+      })
+      .catch(err => {
+         console.error("ERROR: " + err);
+      });
    }
+
 
    $("#evacuee-add-btn").on("click", async function(e) {
       e.preventDefault();
@@ -359,8 +382,12 @@
       })
       .then(response => response.json())
       .then(response => {
-         let result = response.result;
-         if (!result) alert("Something went wrong. Please try again later.");
+         let result = response.result[0];
+         if (!result.result) {
+            let errMsg = '';
+            for(let err in result.error) errMsg += `${result.error[err]}\n`;
+            alert(`Errors: \n${errMsg}`);
+         }
          else {
             alert("Successsfully added new evacuee!");
             document.getElementById("evacuee-add-form").reset();
@@ -371,5 +398,5 @@
       });
    });
 
-   load_evac_center_list();   
+   load_all_list();   
 </script>

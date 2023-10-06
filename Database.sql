@@ -72,19 +72,16 @@ CREATE TABLE IF NOT EXISTS `evacuee` (
     `address` VARCHAR(255),
     `head_of_the_family` VARCHAR(50),
     `evac_id` INT(6),
+    `calam_id` INT(6),
     `deletedflag` INT(1) DEFAULT 0,
     `updated_by` INT(6) DEFAULT NULL,
     `updated_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`updated_by`) REFERENCES `users`(`id`),
-    FOREIGN KEY (`evac_id`) REFERENCES `evac_center`(`id`)
+    FOREIGN KEY (`evac_id`) REFERENCES `evac_center`(`id`),
+    FOREIGN KEY (`calam_id`) REFERENCES `calamity`(`id`)
 );
 
 INSERT INTO `evacuee` 
-(`lname`,`fname`,`mname`,`contact`,`age`,`gender`,`civil_status`,`address`,`head_of_the_family`,`evac_id`)
+(`lname`,`fname`,`mname`,`contact`,`age`,`gender`,`civil_status`,`address`,`head_of_the_family`,`evac_id`, `calam_id`)
 VALUES
-('ADMIN LASTNAME','ADMIN FIRSTNAME','ADMIN MIDDLENAME','09765468621','20','M','SINGLE','Mandaluyong','Ikaw','1');
-
-
-
-
-
+('ADMIN LASTNAME','ADMIN FIRSTNAME','ADMIN MIDDLENAME','09765468621','20','M','SINGLE','Mandaluyong','Ikaw','1', '1');
