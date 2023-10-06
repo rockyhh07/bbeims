@@ -1,7 +1,7 @@
 <?php
 
 function base_url(){
-    return "http://172.0.3.71/ojt/bbeims";
+    return "http://localhost/bbeims/";
 }
 
 function validate_POST(Array $post_result){
@@ -75,20 +75,12 @@ class QUERY {
         }
         return $ret;
     }
-}
+};
 
-
-enum __QUERY_BUILDER__ {
-    case QUERY_SELECT;
-    case QUERY_INSERT;
-    case QUERY_UPDATE;
-    case QUERY_DELETE;
-}
-
-define("QUERY_SELECT", __QUERY_BUILDER__::QUERY_SELECT);
-define("QUERY_INSERT", __QUERY_BUILDER__::QUERY_INSERT);
-define("QUERY_UPDATE", __QUERY_BUILDER__::QUERY_UPDATE);
-define("QUERY_DELETE", __QUERY_BUILDER__::QUERY_DELETE);
+define("QUERY_SELECT", "SELECT");
+define("QUERY_INSERT", "INSERT");
+define("QUERY_UPDATE", "UPDATE");
+define("QUERY_DELETE", "DELETE");
 
 class QueryBuilder {
 
@@ -99,16 +91,16 @@ class QueryBuilder {
         return [["result" => false, "error" => $this->errors]];
     }
 
-    public function __construct(__QUERY_BUILDER__ $type, String $table, Array $post_result, ?Array $required = [], ?Array $conditions = [], ?Array $specials = []) {
+    public function __construct(String $type, String $table, Array $post_result, ?Array $required = [], ?Array $conditions = [], ?Array $specials = []) {
         QUERY::escape_str_all($post_result);
         QUERY::escape_str_all($required);
         QUERY::escape_str_all($conditions);
         QUERY::escape_str_all($specials);
         switch ($type) {
-            case __QUERY_BUILDER__::QUERY_SELECT : QueryBuilder::select($table, $required, $conditions, $specials); break;
-            case __QUERY_BUILDER__::QUERY_INSERT : QueryBuilder::insert($table, $post_result, $required); break;
-            case __QUERY_BUILDER__::QUERY_UPDATE : QueryBuilder::update($table, $post_result, $required, $conditions); break;
-            case __QUERY_BUILDER__::QUERY_DELETE : QueryBuilder::delete($table, $post_result, $conditions); break;
+            case "SELECT" : QueryBuilder::select($table, $required, $conditions, $specials); break;
+            case "INSERT" : QueryBuilder::insert($table, $post_result, $required); break;
+            case "UPDATE" : QueryBuilder::update($table, $post_result, $required, $conditions); break;
+            case "DELETE" : QueryBuilder::delete($table, $post_result, $conditions); break;
             default : break;
         }
     }
