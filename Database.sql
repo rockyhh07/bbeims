@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS `bbeims_db`;
+
 CREATE DATABASE IF NOT EXISTS `bbeims_db`;
 
 USE `bbeims_db`;

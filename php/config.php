@@ -91,7 +91,7 @@ class QueryBuilder {
         return [["result" => false, "error" => $this->errors]];
     }
 
-    public function __construct(String $type, String $table, Array $post_result, ?Array $required = [], ?Array $conditions = [], ?Array $specials = []) {
+    public function __construct(String $type, String $table, Array $post_result, Array $required = [], Array $conditions = [], Array $specials = []) {
         QUERY::escape_str_all($post_result);
         QUERY::escape_str_all($required);
         QUERY::escape_str_all($conditions);

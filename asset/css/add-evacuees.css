@@ -1,0 +1,38 @@
+.hidden {
+    display:  none !important;
+}
+
+
+
+
+#modal-holder {
+    position: fixed;
+    z-index: 1051;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center ;
+}
+
+#modal-body {
+    border-top: 1px solid rgba(0, 0, 0, 0.6);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+}
+
+#modal-body > form {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    padding: 1rem;
+}
+
+#modal-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    gap: 1rem;
+}
