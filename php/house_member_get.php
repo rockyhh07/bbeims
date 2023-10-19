@@ -15,8 +15,8 @@ require_once "bbeims.php";
             "contact" : "09123456789",
             "civil_status" : "Married",
             "representative" : "Azarraga, Gemma Delgado",
-            "address" : "949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City",
-        }
+            "address" : "949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City"
+        },
         {
             "id" : "M-0002",
             "lname" : "Azarraga",
@@ -27,8 +27,8 @@ require_once "bbeims.php";
             "contact" : "09123456789",
             "civil_status" : "Widowed",
             "representative" : "Azarraga, Gemma Delgado",
-            "address" : "949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City",
-        }
+            "address" : "949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City"
+        },
         {
             "id" : "M-0003",
             "lname" : "Azarraga",
@@ -39,8 +39,8 @@ require_once "bbeims.php";
             "contact" : "09123456789",
             "civil_status" : "Single",
             "representative" : "Azarraga, Gemma Delgado",
-            "address" : "949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City",
-        }
+            "address" : "949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City"
+        },
         {
             "id" : "M-0004",
             "lname" : "Azarraga",
@@ -51,7 +51,7 @@ require_once "bbeims.php";
             "contact" : "N/A",
             "civil_status" : "Widowed",
             "representative" : "Azarraga, Gemma Delgado",
-            "address" : "949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City",
+            "address" : "949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City"
         }
     ]
 }

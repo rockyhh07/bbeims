@@ -222,8 +222,8 @@
          <section class="content">
             <div class="container-fluid card p-3">
                <div class="d-flex align-items-center justify-content-between">
-                  <h4>Overall Population</h4>
-                  <button class="btn btn-primary" onclick="openModal('add-house')">Add House</button>
+                  <h4 id="table-title">Overall Population</h4>
+                  <button id="btn-add-house" class="btn btn-primary" onclick="openModal('add-house')">Add House</button>
                </div>
                <hr>
                <table id="dataTable"  class="table table-bordered table-striped">
@@ -261,6 +261,10 @@
                      </tr>
                   </tbody>
                </table>
+               <div class="d-flex justify-content-end" style="gap: 1rem;">
+                  <button id="btn-add-evacuee" class="btn btn-success hidden">Add Evacuee</button>
+                  <button id="btn-cancel-view" class="btn btn-primary hidden" onclick="loadAllRepresentative()">Cancel</button>
+               </div>
             </div>
             <!-- /.container-fluid -->
          </section>
