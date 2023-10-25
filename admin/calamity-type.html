@@ -29,6 +29,7 @@
    </style>
    <script src="../asset/js/constants.js"></script>
    <script src="../asset/js/redirect_to_login.js"></script>
+   <script src="../asset/js/alert.js"></script>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -298,6 +299,18 @@
 
 <script>
 
+   function delete_data(e) {
+      const name = String($(e).data("name"));
+      const id = String($(e).data("id"));
+      show_alert({
+         title : `<img src="${BASE_URL}asset/img/sent.png" > Delete record`,
+         body : `Are you sure you want to delete <b>${name}</b>?`,
+         buttons : ["Yes", "No"]
+      }, function(ans) {
+         console.log(ans)
+      });
+   }
+
    async function load_all_calamity() {
       let tbody = `<tbody>`;
       await fetch(BASE_URL + 'php/calamity_get_all.php')
@@ -315,7 +328,7 @@
             tbody += `<td>${result[row].name}</td>`;
             tbody += `<td class="text-right">
                   <a class="btn btn-sm btn-success" href="#"><i class="fa fa-edit"></i> edit</a>
-                  <a class="btn btn-sm btn-danger" href="#" data-toggle="modal" data-target="#delete"><i class="fa fa-trash-alt"></i> delete</a>
+                  <a class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${result[row].id}" data-name="${result[row].name}"><i class="fa fa-trash-alt"></i> delete</a>
                </td>`;
             tbody += `</tr>`;
          }

@@ -1,5 +1,8 @@
 $(".modal-close-btn").on("click", function(e){
     $("#modal-holder").addClass("hidden");
+
+    SELECTED_REP_ID = undefined;
+    SELECTED_REP_NAME = undefined;
 });
 
 function openModal(id, body = []) {
@@ -16,32 +19,63 @@ function openModal(id, body = []) {
 
     switch(id) {
         case "add-evacuee" : {
-            break;
-        }
+            
+        } break;
         case "add-house" : {
             
-            break;
-        }
+        } break;
         case "edit-house" : {
-            $(`#input-${id}-id`).val(body[0]);
-            $(`#input-${id}-address`).val(body[1]);
-            $(`#input-${id}-name`).val(body[2]);
-            $(`#input-${id}-contact`).val(body[3]);
-            break;
-        }
+            $(`#modal-body-${id} input[name='id']`).val(body[0]);
+            $(`#modal-body-${id} input[name='address']`).val(body[1]);
+            $(`#modal-body-${id} input[name='lname']`).val(body[2][0]);
+            $(`#modal-body-${id} input[name='fname']`).val(body[2][1]);
+            $(`#modal-body-${id} input[name='mname']`).val(body[2][2]);
+            $(`#modal-body-${id} input[name='contact']`).val(body[3]);
+        } break;
         case "edit-house-member" : {
-
-            break;
-        }
+            $(`#modal-body-${id} input[name='id']`).val(body[0]);
+            $(`#modal-body-${id} input[name='representative']`).val(body[1]);
+            $(`#modal-body-${id} input[name='lname']`).val(body[2][0]);
+            $(`#modal-body-${id} input[name='fname']`).val(body[2][1]);
+            $(`#modal-body-${id} input[name='mname']`).val(body[2][2]);
+            $(`#modal-body-${id} input[name='age']`).val(body[3]);
+            $(`#modal-body-${id} input[name='contact']`).val(body[4]);
+            $(`#modal-body-${id} input[name='gender']`).val(body[5]);
+            $(`#modal-body-${id} input[name='civil_status']`).val(body[6]);
+        } break;
         default : break;
     }
 
     $("#modal-holder").removeClass("hidden")
 }
 
+
+
+function viewHouseMeber(e) {
+    $("#btn-add-evacuee").addClass("hidden")
+    $("#btn-add-house").addClass("hidden");
+    $("#btn-cancel-view").removeClass("hidden");
+    $("#table-title").text("Update House Information...");
+
+    const id = $(e).data("rep_id");
+    loadAllHouseMember(id);
+
+}
+
+function updateHoseMember(e) {
+    $("#btn-add-evacuee").removeClass("hidden")
+    $("#btn-add-house").addClass("hidden");
+    $("#btn-cancel-view").removeClass("hidden");
+    $("#table-title").text("Update House Information...");
+
+    const id = $(e).data("rep_id");
+    loadAllHouseMember(id);
+
+}
+
 async function loadAllHouseMember(id){
     const form = new FormData();
-    form.append("house_id", id);
+    form.append("rep_id", id);
     await fetch(BASE_URL + "php/house_member_get.php", {
         method : 'post',
         body : form
@@ -67,19 +101,29 @@ async function loadAllHouseMember(id){
         
         let tbody = '';
         for(let row of result) {
+            let name = `${row.lname}, ${row.fname} ${row.mname}`;
+
             tbody += `<tr>`;
-            tbody += `<td>${row.id}</td>`;
+            tbody += `<td style="white-space: nowrap;">${"M-"+row.id.padStart(6, "0")}</td>`;
             tbody += `<td>
-                <div><b>Name</b> ${row.name}</div>
-                <div><b>Age</b> ${row.age}</div>
-                <div><b>Gnder</b> ${row.gender}</div>
-                <div><b>Contact</b> ${row.contact}</div>
+                <div><b>Name:</b> ${name}</div>
+                <div><b>Age:</b> ${row.age}</div>
+                <div><b>Gnder:</b> ${row.gender}</div>
+                <div><b>Contact:</b> ${row.contact}</div>
             </td>`;
             tbody += `<td>${row.civil_status}</td>`;
-            tbody += `<td>${row.representative  }</td>`;
+            tbody += `<td>${row.representative}</td>`;
             tbody += `<td>${row.address}</td>`;
             tbody += `<td class="d-flex justify-content-center" style="gap: .5rem;">
-                <button class="btn btn-success" onclick="openModal('edit-house-member', ['${row.id}', '${row.address}', '${row.name}', '${row.contact}'])">Edit</button>
+                <button class="btn btn-success" onclick="openModal('edit-house-member', [
+                    '${"M-"+row.id.padStart(6, "0")}',
+                    '${row.representative}',
+                    ['${row.lname}','${row.fname}','${row.mname}'],
+                    '${row.age}',
+                    '${row.contact}',
+                    '${row.gender}',
+                    '${row.civil_status}'
+                ])">Edit</button>
                 <button data-member_id="${row.id}" class="btn btn-danger" onclick="deleteMember(this)">Delete</button>
             </td>`;
             tbody += `</tr>`;
@@ -89,28 +133,6 @@ async function loadAllHouseMember(id){
         $('#dataTable > tbody').html(tbody);
         $('#dataTable').DataTable();    
     });
-}
-
-function viewHouseMeber(e) {
-    $("#btn-add-evacuee").addClass("hidden")
-    $("#btn-add-house").addClass("hidden");
-    $("#btn-cancel-view").removeClass("hidden");
-    $("#table-title").text("Update House Information...");
-
-    const id = $(e).data("house_id");
-    loadAllHouseMember(id);
-
-}
-
-function updateHoseMember(e) {
-    $("#btn-add-evacuee").removeClass("hidden")
-    $("#btn-add-house").addClass("hidden");
-    $("#btn-cancel-view").removeClass("hidden");
-    $("#table-title").text("Update House Information...");
-
-    const id = $(e).data("house_id");
-    loadAllHouseMember(id);
-
 }
 
 async function loadAllRepresentative() {
@@ -125,46 +147,47 @@ async function loadAllRepresentative() {
 
         if ($.fn.DataTable.isDataTable('#dataTable')) {
             $('#dataTable').DataTable().destroy();
-            $('#dataTable > tbody').html("");
-            $('#dataTable > thead').html("");
+            $('#dataTable').html("");
         }
 
         const result = response.result;
 
-        let thead = `<tr>
+        let thead = `<thead><tr>
             <th>ID</th>
             <th>ADDRESS</th>
             <th>REPRESENTATIVE</th>
             <th>CONTACT</th>
             <th class="text-center">ACTION</th>
-        </tr>`;
+        </tr></thead>`;
         
-        let tbody = '';
+        let tbody = '<tbody>';
         for(let row of result) {
+            let name = `${row.lname}, ${row.fname} ${row.mname}`;
+
             tbody += '<tr>';
-            tbody += `<td><a onclick="viewHouseMeber(this)" href="#" class="link-underline-opacity-0">${row.id}</a></td>`;
+            tbody += `<td><a onclick="viewHouseMeber(this)" data-rep_id="${row.id}" href="#" class="link-underline-opacity-0" style="white-space: nowrap;">${"H-"+row.id.padStart(6, "0")}</a></td>`;
             tbody += `<td>${row.address}</td>`;
-            tbody += `<td>${row.name}</td>`;
+            tbody += `<td>${name}</td>`;
             tbody += `<td>${row.contact}</td>`;
             tbody += `<td class="d-flex justify-content-center" style="gap: .5rem;">
-                <button class="btn btn-success" onclick="openModal('edit-house', ['${row.id}', '${row.address}', '${row.name}', '${row.contact}'])">Edit</button>
-                <button onclick="updateHoseMember(this)" class="btn btn-warning">Update</button>
-                <button data-house_id="${row.id}" class="btn btn-danger" onclick="deleteHouse(this)">Delete</button>
+            <button class="btn btn-success" onclick="openModal('edit-house', ['${"H-"+row.id.padStart(6, "0")}', '${row.address}', ['${row.lname}', '${row.fname}', '${row.mname}'], '${row.contact}'])">Edit</button>
+            <button data-rep_id="${row.id}" onclick="updateHoseMember(this)" class="btn btn-warning">Update</button>
+            <button data-rep_id="${row.id}" class="btn btn-danger" onclick="deleteHouse(this)">Delete</button>
             </td>`;
             tbody += '</tr>';
         }
+        tbody += '</tbody>';
 
-        $('#dataTable > thead').html(thead);
-        $('#dataTable > tbody').html(tbody);
+        $('#dataTable').append(thead, tbody);
         $('#dataTable').DataTable();
     });
 }
 
 function deleteHouse(e) {
-    const house_id = $(e).data("house_id");
+    const rep_id = String($(e).data("rep_id"));
     show_alert({
         title : `<img src="${BASE_URL}asset/img/sent.png" > Delete record`,
-        body : `Are you sure you want to delete <b>${house_id}</b> data?`,
+        body : `Are you sure you want to delete <b>${"H-"+rep_id.padStart(6, "0")}</b> data?`,
         buttons : ["Yes", "No"]
     }, function(ans) {
         console.log(ans)
@@ -172,12 +195,15 @@ function deleteHouse(e) {
 }
 
 function deleteMember(e) {
-    const house_id = $(e).data("member_id");
+    const rep_id = String($(e).data("member_id"));
     show_alert({
         title : `<img src="${BASE_URL}asset/img/sent.png" > Delete record`,
-        body : `Are you sure you want to delete <b>${house_id}</b> data?`,
+        body : `Are you sure you want to delete <b>${"M-"+rep_id.padStart(6, "0")}</b> data?`,
         buttons : ["Yes", "No"]
     }, function(ans) {
         console.log(ans)
     });
 }
+
+
+loadAllRepresentative();

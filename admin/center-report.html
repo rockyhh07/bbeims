@@ -29,6 +29,7 @@
    </style>
    <script src="../asset/js/constants.js"></script>
    <script src="../asset/js/redirect_to_login.js"></script>
+   <script src="../asset/js/alert.js"></script>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -223,7 +224,7 @@
                   <div class="col-12 col-md-4 col-lg-4 col-xl-4">
                      <div class="card">
                         <div class="card-body">
-                           <table class="table table-bordered mytable">
+                           <table id="dataTable" class="table table-bordered mytable">
                               <thead>
                                  <tr>
                                     <th>Center</th>
@@ -280,18 +281,18 @@
    <script src="../asset/js/adminlte.js"></script>
    <script src="../asset/js/chart.js"></script>
    <script>
-      document.addEventListener("DOMContentLoaded", function () {
+      function load_chart(keys = null, values = null) {
 
          // Bar Chart
 
          var barChartData = {
-            labels: ["Center 1", "Center 2", "Center 3", "Center 4", "Center 5"],
+            labels: keys === null ? ["Center 1", "Center 2", "Center 3", "Center 4", "Center 5"] : keys,
             datasets: [{
                label: 'Evacuees',
                backgroundColor: 'rgb(79,129,189)',
                borderColor: 'rgba(0, 158, 251, 1)',
                borderWidth: 1,
-               data: [25, 15, 25, 30, 13]
+               data: values === null ? [25, 15, 25, 30, 13] : values
             }]
          };
 
@@ -307,10 +308,36 @@
             }
          });
 
-      });
+      }
    </script>
 </body>
 
 </html>
 
 <script src="../asset/js/logout.js"></script>
+
+<script>
+   fetch(BASE_URL + 'php/report_by_center.php')
+   .then(response => response.json())
+   .then(response => {
+      let result = response.result[0];
+
+      let keys = Object.keys(result);
+      let values = Object.values(result);
+
+      let tbody = '';
+      for(let i = 0; i < keys.length; i++) {
+         tbody += '<tr>';
+         tbody += `<td>${keys[i]}</td>`;
+         tbody += `<td>${values[i]}</td>`;
+         tbody += '</tr>';
+      }
+
+      $("#dataTable").find("tbody").html(tbody);
+
+      load_chart(keys, values);
+   })
+   .catch(err => {
+      console.error("ERROR: " + err);
+   });
+</script>

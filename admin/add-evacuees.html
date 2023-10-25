@@ -31,6 +31,10 @@
    <script src="../asset/js/constants.js"></script>
    <script src="../asset/js/redirect_to_login.js"></script>
    <script src="../asset/js/alert.js"></script>
+   <script>
+      let SELECTED_REP_ID = undefined;
+      let SELECTED_REP_NAME = undefined;
+   </script>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -226,44 +230,12 @@
                   <button id="btn-add-house" class="btn btn-primary" onclick="openModal('add-house')">Add House</button>
                </div>
                <hr>
-               <table id="dataTable"  class="table table-bordered table-striped">
-                  <thead>
-                     <tr>
-                        <th>ID</th>
-                        <th>ADDRESS</th>
-                        <th>REPRESENTATIVE</th>
-                        <th>CONTACT</th>
-                        <th class="text-center">ACTION</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     <tr>
-                        <td><a href="#" class="link-underline-opacity-0">H-0001</a></td>
-                        <td>949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City</td>
-                        <td>Gemma D. Azarraga</td>
-                        <td>09123456789</td>
-                        <td class="d-flex justify-content-center" style="gap: .5rem;">
-                           <button class="btn btn-success" onclick="openModal('edit-house')" >Edit</button>
-                           <button class="btn btn-warning">Update</button>
-                           <button class="btn btn-danger">Delete</button>
-                        </td>
-                     </tr>
-                     <tr>
-                        <td><a href="#" class="link-underline-opacity-0">H-0002</a></td>
-                        <td>949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City</td>
-                        <td>Bebot S. Magalino</td>
-                        <td>09123456789</td>
-                        <td class="d-flex justify-content-center" style="gap: .5rem;">
-                           <button class="btn btn-success" onclick="openModal('add-evacuee')" >Edit</button>
-                           <button class="btn btn-warning">Update</button>
-                           <button class="btn btn-danger">Delete</button>
-                        </td>
-                     </tr>
-                  </tbody>
+               <table id="dataTable" class="table table-bordered table-striped">
                </table>
                <div class="d-flex justify-content-end" style="gap: 1rem;">
-                  <button id="btn-add-evacuee" class="btn btn-success hidden">Add Evacuee</button>
-                  <button id="btn-cancel-view" class="btn btn-primary hidden" onclick="loadAllRepresentative()">Cancel</button>
+                  <button id="btn-add-evacuee" class="btn btn-success hidden" onclick="openModal('add-evacuee')">Add Evacuee</button>
+                  <button id="btn-cancel-view" class="btn btn-primary hidden"
+                     onclick="loadAllRepresentative()">Cancel</button>
                </div>
             </div>
             <!-- /.container-fluid -->
@@ -290,111 +262,120 @@
             <h4 id="modal-header-add-house" class="hidden">Add House</h4>
             <h4 id="modal-header-edit-house" class="hidden">Edit house information</h4>
             <h4 id="modal-header-edit-house-member" class="hidden">Edit house member information</h4>
-            <a href="#" class="modal-close-btn d-flex justify-content-center" style="width: 25px; height: 25px; border-radius: 100px;">x</a>
+            <a href="#" class="modal-close-btn d-flex justify-content-center"
+               style="width: 25px; height: 25px; border-radius: 100px;">x</a>
          </div>
          <div id="modal-body" class="mb-2">
             <form method="post" id="modal-body-add-evacuee" class="hidden" style="gap: 1rem;">
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Representative</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <input name="representative" class="card p-2" style="margin: 0;" type="text">
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Name</label>
                   <section class="d-flex justify-content-end" style="flex-wrap: wrap; gap: .5rem;">
-                     <input class="card p-2" style="margin: 0;" type="text" placeholder="Last Name">
-                     <input class="card p-2" style="margin: 0;" type="text" placeholder="First Name">
-                     <input class="card p-2" style="margin: 0;" type="text" placeholder="Middle Name">
+                     <input name="lname" class="card p-2" style="margin: 0;" type="text" placeholder="Last Name">
+                     <input name="fname" class="card p-2" style="margin: 0;" type="text" placeholder="First Name">
+                     <input name="mname" class="card p-2" style="margin: 0;" type="text" placeholder="Middle Name">
                   </section>
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Birthday</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <input name="bday" class="card p-2" style="margin: 0;" type="text">
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Gender</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <input name="gender" class="card p-2" style="margin: 0;" type="text">
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Civils Status</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <input name="civil_status" class="card p-2" style="margin: 0;" type="text">
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Contact</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <input name="contact" class="card p-2" style="margin: 0;" type="text">
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Address</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <input name="address" class="card p-2" style="margin: 0;" type="text">
                </span>
             </form>
             <form method="post" id="modal-body-add-house" class="hidden" style="gap: 1rem;">
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">ID #</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <input name="id" class="card p-2" style="margin: 0;" type="text">
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Address</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <input name="address" class="card p-2" style="margin: 0;" type="text">
                </span>
-               <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
+               <span class="d-flex justify-content-between" style="gap: 1rem;">
                   <label for="">Representative</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <span class="d-flex flex-column" style="gap: 1rem;">
+                     <input name="lname" class="card p-2" style="margin: 0;" type="text" placeholder="Last name">
+                     <input name="fname" class="card p-2" style="margin: 0;" type="text" placeholder="First name">
+                     <input name="mname" class="card p-2" style="margin: 0;" type="text" placeholder="Middle name">
+                  </span>
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Contact</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <input name="contact" class="card p-2" style="margin: 0;" type="text">
                </span>
             </form>
             <form method="post" id="modal-body-edit-house" class="hidden" style="gap: 1rem;">
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">ID #</label>
-                  <input name="" id="input-edit-house-id" class="card p-2" style="margin: 0;" type="text" disabled>
+                  <input name="id" class="card p-2" style="margin: 0;" type="text" disabled>
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Address</label>
-                  <input name="" id="input-edit-house-address" class="card p-2" style="margin: 0;" type="text">
+                  <input name="address" class="card p-2" style="margin: 0;" type="text">
                </span>
-               <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
+               <span class="d-flex justify-content-between" style="gap: 1rem;">
                   <label for="">Representative</label>
-                  <input name="" id="input-edit-house-name" class="card p-2" style="margin: 0;" type="text">
+                  <span class="d-flex flex-column" style="gap: 1rem;">
+                     <input name="lname" class="card p-2" style="margin: 0;" type="text" placeholder="Last name">
+                     <input name="fname" class="card p-2" style="margin: 0;" type="text" placeholder="First name">
+                     <input name="mname" class="card p-2" style="margin: 0;" type="text" placeholder="Middle name">
+                  </span>
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Contact</label>
-                  <input name="" id="input-edit-house-contact" class="card p-2" style="margin: 0;" type="text">
+                  <input name="contact" class="card p-2" style="margin: 0;" type="text">
                </span>
             </form>
             <form method="post" id="modal-body-edit-house-member" class="hidden" style="gap: 1rem;">
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">ID #</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <input name="id" class="card p-2" style="margin: 0;" type="text" disabled>
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Representative</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <input name="representative" class="card p-2" style="margin: 0;" type="text" disabled>
                </span>
-               <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
+               <span class="d-flex justify-content-between" style="gap: 1rem;">
                   <label for="">Name</label>
                   <section class="d-flex justify-content-end" style="flex-wrap: wrap; gap: .5rem;">
-                     <input class="card p-2" style="margin: 0;" type="text" placeholder="Last Name">
-                     <input class="card p-2" style="margin: 0;" type="text" placeholder="First Name">
-                     <input class="card p-2" style="margin: 0;" type="text" placeholder="Middle Name">
+                     <input name="lname" class="card p-2" style="margin: 0;" type="text" placeholder="Last Name">
+                     <input name="fname" class="card p-2" style="margin: 0;" type="text" placeholder="First Name">
+                     <input name="mname" class="card p-2" style="margin: 0;" type="text" placeholder="Middle Name">
                   </section>
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Age</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <input name="age" class="card p-2" style="margin: 0;" type="text">
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Contact</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <input name="contact" class="card p-2" style="margin: 0;" type="text">
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Gender</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <input name="gender" class="card p-2" style="margin: 0;" type="text">
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="">Civil Status</label>
-                  <input class="card p-2" style="margin: 0;" type="text">
+                  <input name="civil_status" class="card p-2" style="margin: 0;" type="text">
                </span>
             </form>
          </div>
@@ -410,78 +391,7 @@
 
 </body>
 
-</html>  
+</html>
 
 <script src="../asset/js/logout.js"></script>
 <script src="../asset/js/add-evacuees.js"></script>
-
-
-<script>
-   $("#dataTable").DataTable();
-
-   loadAllRepresentative();
-
-
-   /*
-   async function load_all_list() {
-      await fetch(BASE_URL + 'php/evac_center_get_all.php')
-      .then(response => response.json())
-      .then(response => {
-         result = response.result;
-         let evac_options = '<option value="" selected disabled>--Select Ecavuation Center--</option>';
-         if(result.lenght === 0) alert("No Evacuation Center found.");
-         else for(let evac in result)
-            evac_options += `<option value="${result[evac].id}">${result[evac].name}</option>`;
-               
-         $("#evac-center-list").html(evac_options);
-      })
-      .catch(err => {
-         console.error("ERROR: " + err);
-      });
-
-      await fetch(BASE_URL + 'php/calamity_get_all.php')
-      .then(response => response.json())
-      .then(response => {
-         let result = response.result;
-         let calamity_options = '<option value="" selected disabled>--Select Calamity--</option>';
-         if(result.lenght === 0) alert("No Calamity foun.");
-         else for(let cal in result){
-            calamity_options += `<option value="${result[cal].id}">${result[cal].name}</options>`;
-         }
-
-         $("#calamity-list").html(calamity_options);
-      })
-      .catch(err => {
-         console.error("ERROR: " + err);
-      });
-   }
-
-
-   $("#evacuee-add-btn").on("click", async function(e) {
-      e.preventDefault();
-      const form = new FormData(document.getElementById("evacuee-add-form"));
-      await fetch(BASE_URL + 'php/evacuee_new.php', {
-         method : 'post',
-         body : form
-      })
-      .then(response => response.json())
-      .then(response => {
-         let result = response.result[0];
-         if (!result.result) {
-            let errMsg = '';
-            for(let err in result.error) errMsg += `${result.error[err]}\n`;
-            alert(`Errors: \n${errMsg}`);
-         }
-         else {
-            alert("Successsfully added new evacuee!");
-            document.getElementById("evacuee-add-form").reset();
-         }
-      })
-      .catch(err => {
-         console.error("ERROR: " + err);
-      });
-   });
-
-   load_all_list();   
-   */
-</script>

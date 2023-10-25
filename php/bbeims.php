@@ -28,6 +28,8 @@ class BBEIMS {
     }
 
     public static function user_new(Array $post_result) {
+        $post_result['fullname'] = strtoupper($post_result['fullname']);
+
         $query = new QueryBuilder (
             QUERY_INSERT, 
             "users", 
@@ -61,6 +63,8 @@ class BBEIMS {
     }
 
     public static function calamity_new(Array $post_result) {
+        $post_result['name'] = strtoupper($post_result['name']);
+
         $query = new QueryBuilder(
             QUERY_INSERT,
             "calamity",
@@ -94,6 +98,8 @@ class BBEIMS {
     }
 
     public static function evac_center_new(Array $post_result) {
+        $post_result['name'] = strtoupper($post_result['name']);
+
         $query = new QueryBuilder(
             QUERY_INSERT,
             'evac_center',
@@ -128,6 +134,10 @@ class BBEIMS {
     }
     
     public static function evacuee_new(Array $post_result) {
+        $post_result['fname'] = strtoupper($post_result['fname']);
+        $post_result['lname'] = strtoupper($post_result['lname']);
+        $post_result['mname'] = strtoupper($post_result['mname']);
+
         $query = new QueryBuilder(
             QUERY_INSERT,
             'evacuee',
@@ -285,4 +295,66 @@ class BBEIMS {
         
         return QUERY::run($query);
     }
+
+    public static function report_by_center(Array $post_result) {
+        QUERY::escape_str_all($post_result);
+        $allCenter = QUERY::run("SELECT `id`, `name` FROM `evac_center`");
+
+        $query = "SELECT";
+
+        foreach($allCenter as $val) {
+            $query .= " count(CASE WHEN `evac_id` = {$val['id']} THEN 1 END) `{$val['name']}`,";
+        }
+        $query = rtrim($query, ','); ;
+        
+        $query .= " FROM `evacuee` WHERE `deletedflag` = 0";
+        
+        return QUERY::run($query);
+    }
+
+    public static function representative_get_all(Array $post_result) {
+        QUERY::escape_str_all($post_result);
+        $query = "SELECT
+                    -- CONCAT('H-', LPAD(`id`, 6, '0')) `id`,
+                    `id`,
+                    `address`,
+                    `lname`,
+                    `fname`,
+                    `mname`,
+                    `contact`
+                FROM `evacuee` e
+                WHERE 
+                    e.`id` = e.`head_of_the_family` AND
+                    e.`deletedflag` = 0
+        ";
+        return QUERY::run($query);
+    }
+
+    public static function house_member_get(Array $post_result) {
+        QUERY::escape_str_all($post_result);
+        extract($post_result);
+
+        $rep = QUERY::run("SELECT `fname`, `lname`, `mname` FROM `evacuee` WHERE `id` = '{$rep_id}' LIMIT 1")[0];
+        $rep = "{$rep['lname']}, {$rep['fname']} {$rep['mname']}";
+
+        $query = "SELECT
+                    `id`,
+                    `address`,
+                    `lname`,
+                    `fname`,
+                    `mname`,
+                    `contact`,
+                    `age`,
+                    `gender`,
+                    `civil_status`,
+                    '{$rep}' `representative`
+                FROM `evacuee` e
+                WHERE 
+                    e.`head_of_the_family` = '{$rep_id}' AND
+                    e.`deletedflag` = 0
+        ";
+
+        return QUERY::run($query);
+    }
+
 }

@@ -29,6 +29,7 @@
    </style>
    <script src="../asset/js/constants.js"></script>
    <script src="../asset/js/redirect_to_login.js"></script>
+   <script src="../asset/js/alert.js"></script>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -313,6 +314,18 @@
 <script src="../asset/js/logout.js"></script>
 
 <script>
+   function delete_data(e) {
+      const name = String($(e).data("name"));
+      const id = String($(e).data("id"));
+      show_alert({
+         title : `<img src="${BASE_URL}asset/img/sent.png" > Delete record`,
+         body : `Are you sure you want to delete <b>${name}</b>?`,
+         buttons : ["Yes", "No"]
+      }, function(ans) {
+         console.log(ans)
+      });
+   }
+
    async function load_all_evacuess(){
       await fetch(BASE_URL + 'php/evacuee_get_all.php')
       .then(response => response.json())
@@ -327,6 +340,14 @@
          
          let tbody = `<tbody>`;
          for(let row in result){
+            let fname = result[row].fname;
+            let lname = result[row].lname;   
+            let mname = result[row].mname;
+
+            let name =  (fname && lname) ? `${lname}, ${fname} ${mname}` :
+                        (fname) ? `${fname}` : 
+                        (lname) ? `${lname}` : mname;
+ 
             tbody += `<tr>`;
             tbody += `<td>${result[row].id}</td>`;
             tbody += `<td>
@@ -339,9 +360,9 @@
             tbody += `<td>${result[row].address}</td>`;
             tbody += `<td>${result[row].head_of_the_family}</td>`;
             tbody += `<td>${result[row].name}</td>`;
-            tbody += `<td class="text-right">
+            tbody += `<td class="text-right d-flex" style="gap: .5rem;">
                   <a class="btn btn-sm btn-success"><i class="fa fa-edit"></i> edit</a>
-                  <a class="btn btn-sm btn-danger" data-toggle="modal" data-target="#delete"><i class="fa fa-trash-alt"></i> delete</a>
+                  <a class="btn btn-sm btn-danger" onclick="delete_data(this)" data-id="${result[row].id}" data-name="${name}"><i class="fa fa-trash-alt"></i> delete</a>
                </td>`;
             tbody += `</tr>`;
          }
