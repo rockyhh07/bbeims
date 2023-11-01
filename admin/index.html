@@ -5,8 +5,6 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <title>Barangka Ibaba Evacuation Center Management System</title>
-   <!-- Font Awesome -->
-   <link rel="stylesheet" href="../asset/fontawesome/css/all.min.css">
    <link rel="stylesheet" href="../asset/css/adminlte.min.css">
    <link rel="stylesheet" href="../asset/css/dashboard.css">
    <style type="text/css">
@@ -27,6 +25,9 @@
          font-size: 13px;
       }
    </style>
+   <link rel="stylesheet" href="../asset/css/font.css">
+   <!-- Font Awesome -->
+   <link rel="stylesheet" href="../asset/fontawesome/css/all.min.css">
    <script src="../asset/js/constants.js"></script>
    <script src="../asset/js/redirect_to_login.js"></script>
    <script src="../asset/js/alert.js"></script>
@@ -79,6 +80,7 @@
                         </p>
                      </a>
                   </li>
+
                   <li class="nav-item">
                      <a href="calamity-type.html" class="nav-link">
                         <i class="nav-icon fa fa-globe-asia"></i>
@@ -97,6 +99,7 @@
                         </p>
                      </a>
                   </li>
+
                   <li class="nav-item">
                      <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-address-card"></i>
@@ -109,18 +112,17 @@
                         <li class="nav-item">
                            <a href="add-evacuees.html" class="nav-link">
                               <i class="nav-icon fa fa-plus"></i>
-                              <p>New</p>
+                              <p>Manage</p>
                            </a>
                         </li>
                         <li class="nav-item">
                            <a href="manage-evacuees.html" class="nav-link">
-                              <i class="nav-icon fa fa-address-book"></i>
-                              <p>Manage</p>
+                              <i class="nav-icon fas fa-list-ol"></i>
+                              <p>List</p>
                            </a>
                         </li>
                      </ul>
                   </li>
-
 
                   <li class="nav-item">
                      <a href="#" class="nav-link">
@@ -145,6 +147,7 @@
                         </li>
                      </ul>
                   </li>
+
                   <li class="nav-item">
                      <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-chart-bar"></i>
@@ -220,6 +223,27 @@
          <!-- Main content -->
          <section class="content">
             <div class="container-fluid">
+
+               <div class="row">
+                  <!-- fix for small devices only -->
+                  <div class="clearfix hidden-md-up"></div>
+
+                  <div class="col-12 col-sm-6 col-md-6">
+                     <div class="info-box mb-3">
+                        <span class="info-box-icon bg-info elevation-1"><i class="fas fa-university"></i></span>
+
+                        <div class="info-box-content">
+                           <span class="info-box-text">Overall Barangay Population</span>
+                           <span class="info-box-number" id="number-of-brgy-population">0</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                     </div>
+                     <!-- /.info-box -->
+                  </div>
+               </div>
+
+               <hr>
+
                <!-- Small boxes (Stat box) -->
                <div class="row">
                   <div class="col-12 col-sm-6 col-md-6">
@@ -276,21 +300,7 @@
                      </div>
                      <!-- /.info-box -->
                   </div>
-                  <!-- fix for small devices only -->
-                  <div class="clearfix hidden-md-up"></div>
-
-                  <div class="col-12 col-sm-6 col-md-6">
-                     <div class="info-box mb-3">
-                        <span class="info-box-icon bg-info elevation-1"><i class="fas fa-university"></i></span>
-
-                        <div class="info-box-content">
-                           <span class="info-box-text">Overall Barangay Population</span>
-                           <span class="info-box-number" id="number-of-brgy-population">0</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                     </div>
-                     <!-- /.info-box -->
-                  </div>
+                  
                   <!-- fix for small devices only -->
                   <div class="clearfix hidden-md-up"></div>
 
@@ -306,6 +316,7 @@
                      </div>
                      <!-- /.info-box -->
                   </div>
+
                </div>
             </div>
             <!-- /.row -->
@@ -335,23 +346,23 @@
    const NUMBER_BRGY_POPU = document.getElementById("number-of-brgy-population");
    const NUMBER_EVAC_CENTER = document.getElementById("number-of-evac_center");
 
-   async function load_dashboard(){
+   async function load_dashboard() {
       await fetch(BASE_URL + 'php/dashboard_get.php')
-      .then(response => response.json())
-      .then(response => {
-         let result = response.result[0];
-         if(!result){ alert("Failed to load dashboard. Try again later"); return; }
+         .then(response => response.json())
+         .then(response => {
+            let result = response.result[0];
+            if (!result) { alert("Failed to load dashboard. Try again later"); return; }
 
-         NUMBER_FAMILY.innerHTML = result.family;
-         NUMBER_EVACUEE.innerHTML = result.evacuees;
-         NUMBER_FEMALE.innerHTML = result.female;
-         NUMBER_MALE.innerHTML = result.male;
-         NUMBER_BRGY_POPU.innerHTML = result.brgy;
-         NUMBER_EVAC_CENTER.innerHTML = result.evac_center;
-      })
-      .catch(err=>{
-         console.error("ERROR: " + err);
-      });
+            NUMBER_FAMILY.innerHTML = result.family;
+            NUMBER_EVACUEE.innerHTML = result.evacuees;
+            NUMBER_FEMALE.innerHTML = result.female;
+            NUMBER_MALE.innerHTML = result.male;
+            NUMBER_BRGY_POPU.innerHTML = result.brgy;
+            NUMBER_EVAC_CENTER.innerHTML = result.evac_center;
+         })
+         .catch(err => {
+            console.error("ERROR: " + err);
+         });
    }
 
    load_dashboard();

@@ -5,8 +5,6 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <title>Barangka Ibaba Evacuation Center Management System</title>
-   <!-- Font Awesome -->
-   <link rel="stylesheet" href="../asset/fontawesome/css/all.min.css">
    <link rel="stylesheet" href="../asset/css/adminlte.min.css">
    <link rel="stylesheet" href="../asset/css/dashboard.css">
    <style type="text/css">
@@ -27,6 +25,9 @@
          font-size: 13px;
       }
    </style>
+   <link rel="stylesheet" href="../asset/css/font.css">
+   <!-- Font Awesome -->
+   <link rel="stylesheet" href="../asset/fontawesome/css/all.min.css">
    <script src="../asset/js/constants.js"></script>
    <script src="../asset/js/redirect_to_login.js"></script>
    <script src="../asset/js/alert.js"></script>
@@ -109,13 +110,13 @@
                         <li class="nav-item">
                            <a href="add-evacuees.html" class="nav-link">
                               <i class="nav-icon fa fa-plus"></i>
-                              <p>New</p>
+                              <p>Manage</p>
                            </a>
                         </li>
                         <li class="nav-item">
                            <a href="manage-evacuees.html" class="nav-link">
-                              <i class="nav-icon fa fa-address-book"></i>
-                              <p>Manage</p>
+                              <i class="nav-icon fas fa-list-ol"></i>
+                              <p>List</p>
                            </a>
                         </li>
                      </ul>
@@ -220,7 +221,7 @@
          <!-- Main content -->
          <section class="content">
             <div class="container-fluid">
-               <div class="card card-info">
+               <div class="card card-info p-3">
 
                   <div class="col-md-12">
                      <table id="evacuee" class="table table-bordered table-striped">

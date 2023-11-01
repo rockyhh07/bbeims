@@ -5,8 +5,6 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <title>Barangka Ibaba Evacuation Center Management System</title>
-   <!-- Font Awesome -->
-   <link rel="stylesheet" href="../asset/fontawesome/css/all.min.css">
    <link rel="stylesheet" href="../asset/css/adminlte.min.css">
    <link rel="stylesheet" href="../asset/css/dashboard.css">
    <style type="text/css">
@@ -27,6 +25,9 @@
          font-size: 13px;
       }
    </style>
+   <link rel="stylesheet" href="../asset/css/font.css">
+   <!-- Font Awesome -->
+   <link rel="stylesheet" href="../asset/fontawesome/css/all.min.css">
    <script src="../asset/js/constants.js"></script>
    <script src="../asset/js/redirect_to_login.js"></script>
    <script src="../asset/js/alert.js"></script>
@@ -109,13 +110,13 @@
                         <li class="nav-item">
                            <a href="add-evacuees.html" class="nav-link">
                               <i class="nav-icon fa fa-plus"></i>
-                              <p>New</p>
+                              <p>Manage</p>
                            </a>
                         </li>
                         <li class="nav-item">
                            <a href="manage-evacuees.html" class="nav-link">
-                              <i class="nav-icon fa fa-address-book"></i>
-                              <p>Manage</p>
+                              <i class="nav-icon fas fa-list-ol"></i>
+                              <p>List</p>
                            </a>
                         </li>
                      </ul>
@@ -306,26 +307,26 @@
 
 
 <script>
-   function add_user(e){
+   function add_user(e) {
       e.preventDefault();
       const data = document.getElementById("new-user-form");
       const form = new FormData(data);
-      fetch(BASE_URL + 'php/user_new.php',{
-         method : 'post',
-         body : form
+      fetch(BASE_URL + 'php/user_new.php', {
+         method: 'post',
+         body: form
       })
-      .then(response => response.json())
-      .then(response => {
-         result = response.result;
-         if(result[0].result){
-            alert('User successfully added!');
-            data.reset();
-         }else{
-            let msg = 'ERROR: \n';
-            for(let err in result[0].error) msg += result[0].error[err] + '\n';
-            alert(msg);
-         }
-      });
+         .then(response => response.json())
+         .then(response => {
+            result = response.result;
+            if (result[0].result) {
+               alert('User successfully added!');
+               data.reset();
+            } else {
+               let msg = 'ERROR: \n';
+               for (let err in result[0].error) msg += result[0].error[err] + '\n';
+               alert(msg);
+            }
+         });
    }
    document.getElementById("new-user-save").addEventListener("click", add_user);
 </script>

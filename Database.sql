@@ -85,6 +85,7 @@ CREATE TABLE IF NOT EXISTS `evacuee` (
     `head_of_the_family` INT(6) DEFAULT NULL,
     `evac_id` INT(6) DEFAULT NULL,
     `calam_id` INT(6) DEFAULT NULL,
+    `calam_date` DATETIME DEFAULT NULL,
     `deletedflag` INT(1) DEFAULT 0,
     `updated_by` INT(6) DEFAULT NULL,
     `updated_date` DATETIME NULL,

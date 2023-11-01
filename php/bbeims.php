@@ -1,68 +1,76 @@
 <?php
 require_once "config.php";
 
-class BBEIMS {
+class BBEIMS
+{
 
-    public static function session_status(Array $post_result) {
+    public static function session_status(array $post_result)
+    {
         QUERY::escape_str_all($post_result);
         return [[
-            "result"=> isset($_SESSION['user']) && !empty($_SESSION['user']) ? true : false, 
+            "result" => isset($_SESSION['user']) && !empty($_SESSION['user']) ? true : false,
             "data" => isset($_SESSION['user']) ? $_SESSION['user'] : null
         ]];
     }
 
-    public static function user_get_all(Array $post_result) {
+    public static function user_get_all(array $post_result)
+    {
         $query = new QueryBuilder(
-            QUERY_SELECT, 
-            "users", 
-            $post_result, 
-            ["id", "username", "fullname", "designation", "contact", "category", "active"], 
+            QUERY_SELECT,
+            "users",
+            $post_result,
+            ["id", "username", "fullname", "designation", "contact", "category", "active"],
             ["deletedflag" => "0"]
         );
         return QUERY::run($query->sql);
     }
 
-    public static function user_logout(Array $post_result) {
+    public static function user_logout(array $post_result)
+    {
         QUERY::escape_str_all($post_result);
-        return [["result"=> (session_status() !== PHP_SESSION_NONE) ? session_destroy() : false ]];
+        return [["result" => (session_status() !== PHP_SESSION_NONE) ? session_destroy() : false]];
     }
 
-    public static function user_new(Array $post_result) {
+    public static function user_new(array $post_result)
+    {
         $post_result['fullname'] = strtoupper($post_result['fullname']);
 
-        $query = new QueryBuilder (
-            QUERY_INSERT, 
-            "users", 
-            $post_result, 
-            ["username","fullname", "password"]
+        $query = new QueryBuilder(
+            QUERY_INSERT,
+            "users",
+            $post_result,
+            ["username", "fullname", "password"]
         );
         return count($query->errors) > 0 ? [["result" => false, "error" => $query->errors]] : QUERY::run($query->sql);
     }
 
-    public static function user_login(Array $post_result) {
+    public static function user_login(array $post_result)
+    {
         $query = new QueryBuilder(
             QUERY_SELECT,
             "users",
             $post_result,
-            ["username", "fullname", "designation", "contact", "category", "active"],
+            ["id", "username", "fullname", "designation", "contact", "category", "active"],
             ["username" => $post_result["username"], "password" => $post_result['password'], "deletedflag" => "0"]
         );
         $result = QUERY::run($query->sql);
         return $_SESSION["user"] = count($result) > 0 ? $result : null;
     }
 
-    public static function user_update(Array $post_result) {
-        $query = new QueryBuilder (
-            QUERY_UPDATE, 
-            "users", 
-            $post_result, 
+    public static function user_update(array $post_result)
+    {
+        $query = new QueryBuilder(
+            QUERY_UPDATE,
+            "users",
+            $post_result,
             ["id", "username", "fullname", "password"],
             ["id" => $post_result["id"], "deletedflag" => 0]
         );
         return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
     }
 
-    public static function calamity_new(Array $post_result) {
+    public static function calamity_new(array $post_result)
+    {
         $post_result['name'] = strtoupper($post_result['name']);
 
         $query = new QueryBuilder(
@@ -74,19 +82,21 @@ class BBEIMS {
         return (count($query->errors) > 0) ? $query->get_error_result() : QUERY::run($query->sql);
     }
 
-    public static function calamity_get_all(Array $post_result) {
+    public static function calamity_get_all(array $post_result)
+    {
         $query = new QueryBuilder(
             QUERY_SELECT,
             "calamity",
             $post_result,
             ["id", "name"],
-            ["deletedflag"=>"0"],
+            ["deletedflag" => "0"],
             ["ORDER BY `id`", "DESC"]
         );
         return QUERY::run($query->sql);
     }
 
-    public static function calamity_update(Array $post_result){
+    public static function calamity_update(array $post_result)
+    {
         $query = new QueryBuilder(
             QUERY_UPDATE,
             'calamity',
@@ -97,7 +107,8 @@ class BBEIMS {
         return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
     }
 
-    public static function evac_center_new(Array $post_result) {
+    public static function evac_center_new(array $post_result)
+    {
         $post_result['name'] = strtoupper($post_result['name']);
 
         $query = new QueryBuilder(
@@ -110,7 +121,8 @@ class BBEIMS {
         return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
     }
 
-    public static function evac_center_get_all(Array $post_result) {
+    public static function evac_center_get_all(array $post_result)
+    {
         $query = new QueryBuilder(
             QUERY_SELECT,
             'evac_center',
@@ -122,7 +134,8 @@ class BBEIMS {
         return QUERY::run($query->sql);
     }
 
-    public static function evac_center_update(Array $post_result){
+    public static function evac_center_update(array $post_result)
+    {
         $query = new QueryBuilder(
             QUERY_UPDATE,
             'evac_center',
@@ -132,8 +145,9 @@ class BBEIMS {
         );
         return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
     }
-    
-    public static function evacuee_new(Array $post_result) {
+
+    public static function evacuee_new(array $post_result)
+    {
         $post_result['fname'] = strtoupper($post_result['fname']);
         $post_result['lname'] = strtoupper($post_result['lname']);
         $post_result['mname'] = strtoupper($post_result['mname']);
@@ -146,8 +160,9 @@ class BBEIMS {
         );
         return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
     }
-    
-    public static function evacuee_get_all(Array $post_result) {
+
+    public static function evacuee_get_all(array $post_result)
+    {
         QUERY::escape_str_all($post_result);
         $query = "SELECT 
                     e.`id`, 
@@ -177,18 +192,57 @@ class BBEIMS {
         return QUERY::run($query);
     }
 
-    public static function evacuee_update(Array $post_result){
-        $query = new QueryBuilder(
-            QUERY_UPDATE,
-            'evacuee',
-            $post_result,
-            ["id", "lname", "address"],
-            ["id" => $post_result["id"], "deletedflag" => 0]
-        );
-        return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
+    public static function evacuee_update(array $post_result)
+    {
+        QUERY::escape_str_all($post_result);
+
+        $uid = $post_result['uid'];
+
+        $ids = (!empty($post_result['ids'])) ? json_decode($post_result['ids']) : [];
+
+        if (count($ids) > 0) {
+            $calam_date = $post_result['calam_date'];
+            $calam_id = $post_result['calamity'];
+            $evac_id = $post_result['evac_center'];
+            foreach ($ids as $mem_id) {
+                $query = "UPDATE 
+                            `evacuee` 
+                        SET 
+                            `evac_id` =  '{$evac_id}',
+                            `calam_id` =  '{$calam_id}',
+                            `calam_date` =  '{$calam_date}',
+                            `updated_by` = '{$uid}',
+                            `updated_date` = CURRENT_TIMESTAMP
+                        WHERE 
+                            `id` = '{$mem_id}'
+                ";
+                QUERY::run($query);
+            }
+
+            return [[true]];
+        }
+
+        $id = $post_result['id'];
+        $data = '';
+        foreach ($post_result as $key => $val) {
+            if ($key === 'id') continue;
+            if ($key === 'uid') continue;
+
+            $data .= " `{$key}`='{$val}',";
+        }
+        rtrim($data, ",");
+
+        $query = "UPDATE `evacuee` SET {$data} 
+            `updated_by` = '{$uid}',
+            `updated_date` = CURRENT_TIMESTAMP
+        WHERE `id` = '{$id}'";
+        echo $query;
+
+        return QUERY::run($query);
     }
 
-    public static function dashboard_get(Array $post_result){
+    public static function dashboard_get(array $post_result)
+    {
         QUERY::escape_str_all($post_result);
         $query = "SELECT 
                     (SELECT 
@@ -223,14 +277,34 @@ class BBEIMS {
                     WHERE
                         e.`deletedflag` = 0
                     ) `evac_center`,
-                    0 `family`,
-                    0 `brgy`
+                    (SELECT 
+                        count(`id`)
+                    FROM `evacuee` e
+                    WHERE
+                        e.`deletedflag` = 0
+                    ) `evacuees`,
+                    (SELECT 
+                        COUNT(`rep_tbl`.`rep`)
+                    FROM (
+                        SELECT
+                            `head_of_the_family` `rep`
+                        FROM `evacuee`
+                        GROUP BY `head_of_the_family`
+                        ) `rep_tbl`
+                    ) `family`,
+                    (SELECT 
+                        count(`id`)
+                    FROM `evacuee` e
+                    WHERE
+                        e.`deletedflag` = 0
+                    ) `brgy`
         ";
 
         return QUERY::run($query);
     }
 
-    public static function report_by_evacuee(Array $post_result){
+    public static function report_by_evacuee(array $post_result)
+    {
         $query = new QueryBuilder(
             QUERY_SELECT,
             'evacuee',
@@ -242,7 +316,8 @@ class BBEIMS {
         return QUERY::run($query->sql);
     }
 
-    public static function report_by_age(Array $post_result) {
+    public static function report_by_age(array $post_result)
+    {
         $query = new QueryBuilder(
             QUERY_SELECT,
             'evacuee',
@@ -252,8 +327,9 @@ class BBEIMS {
         );
         return QUERY::run($query->sql);
     }
-    
-    public static function report_by_gender(Array $post_result) {
+
+    public static function report_by_gender(array $post_result)
+    {
         QUERY::escape_str_all($post_result);
         $query = "SELECT
                     (SELECT 
@@ -280,39 +356,42 @@ class BBEIMS {
         return QUERY::run($query);
     }
 
-    public static function report_by_calamity(Array $post_result) {
+    public static function report_by_calamity(array $post_result)
+    {
         QUERY::escape_str_all($post_result);
         $allCalamity = QUERY::run("SELECT `id`, `name` FROM calamity");
 
         $query = "SELECT";
 
-        foreach($allCalamity as $val) {
+        foreach ($allCalamity as $val) {
             $query .= " count(CASE WHEN `calam_id` = {$val['id']} THEN 1 END) `{$val['name']}`,";
         }
-        $query = rtrim($query, ','); ;
-        
+        $query = rtrim($query, ',');;
+
         $query .= " FROM `evacuee` WHERE `deletedflag` = 0";
-        
+
         return QUERY::run($query);
     }
 
-    public static function report_by_center(Array $post_result) {
+    public static function report_by_center(array $post_result)
+    {
         QUERY::escape_str_all($post_result);
         $allCenter = QUERY::run("SELECT `id`, `name` FROM `evac_center`");
 
         $query = "SELECT";
 
-        foreach($allCenter as $val) {
+        foreach ($allCenter as $val) {
             $query .= " count(CASE WHEN `evac_id` = {$val['id']} THEN 1 END) `{$val['name']}`,";
         }
-        $query = rtrim($query, ','); ;
-        
+        $query = rtrim($query, ',');;
+
         $query .= " FROM `evacuee` WHERE `deletedflag` = 0";
-        
+
         return QUERY::run($query);
     }
 
-    public static function representative_get_all(Array $post_result) {
+    public static function representative_get_all(array $post_result)
+    {
         QUERY::escape_str_all($post_result);
         $query = "SELECT
                     -- CONCAT('H-', LPAD(`id`, 6, '0')) `id`,
@@ -330,7 +409,8 @@ class BBEIMS {
         return QUERY::run($query);
     }
 
-    public static function house_member_get(Array $post_result) {
+    public static function house_member_get(array $post_result)
+    {
         QUERY::escape_str_all($post_result);
         extract($post_result);
 
@@ -356,5 +436,4 @@ class BBEIMS {
 
         return QUERY::run($query);
     }
-
 }

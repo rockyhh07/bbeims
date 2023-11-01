@@ -1,3 +1,81 @@
+$("#modal-footer-add-evacuee").on("click", async function(e){
+    const form = new FormData(document.getElementById("modal-body-add-evacuee"));
+    form.append("uid", USER_DATA.id);
+
+    await fetch(`${BASE_URL}php/.php`,{
+        method : 'post',
+        body : form
+    })
+    .then(response => response.json())
+    .then(response => {
+        const result = response.result;
+        console.log({result});
+
+    })
+    .catch(err => console.log("ERROR: " + err));
+
+    console.log("add evacluee", {form});
+});
+
+$("#modal-footer-add-house").on("click", async function(e){
+    const form = new FormData(document.getElementById("modal-body-add-house"));
+    form.append("uid", USER_DATA.id);
+
+    await fetch(`${BASE_URL}php/.php`,{
+        method : 'post',
+        body : form
+    })
+    .then(response => response.json())
+    .then(response => {
+        const result = response.result;
+        console.log({result});
+
+    })
+    .catch(err => console.log("ERROR: " + err));
+
+    console.log("add representative", {form});
+});
+
+$("#modal-footer-edit-house").on("click", async function(e){
+    const form = new FormData(document.getElementById("modal-body-edit-house"));
+    form.append("uid", USER_DATA.id);
+
+    await fetch(`${BASE_URL}php/evacuee_update.php`,{
+        method : 'post',
+        body : form
+    })
+    .then(response => response.json())
+    .then(response => {
+        const result = response.result;
+        console.log({result});
+
+    })
+    .catch(err => console.log("ERROR: " + err));
+
+    console.log("edit representative", {form});
+});
+
+$("#modal-footer-edit-house-member").on("click", async function(e){
+    const form = new FormData(document.getElementById("modal-body-edit-house-member"));
+    form.append("uid", USER_DATA.id);
+
+    await fetch(`${BASE_URL}php/evacuee_update.php`,{
+        method : 'post',
+        body : form
+    })
+    .then(response => response.json())
+    .then(response => {
+        const result = response.result;
+        console.log({result});
+
+    })
+    .catch(err => console.log("ERROR: " + err));
+
+    console.log("edit house member", {form});
+});
+
+
+
 $(".modal-close-btn").on("click", function(e){
     $("#modal-holder").addClass("hidden");
 
@@ -25,15 +103,16 @@ function openModal(id, body = []) {
             
         } break;
         case "edit-house" : {
-            $(`#modal-body-${id} input[name='id']`).val(body[0]);
+            $(`#modal-body-${id} input[name='vid']`).val(body[0]);
             $(`#modal-body-${id} input[name='address']`).val(body[1]);
             $(`#modal-body-${id} input[name='lname']`).val(body[2][0]);
             $(`#modal-body-${id} input[name='fname']`).val(body[2][1]);
             $(`#modal-body-${id} input[name='mname']`).val(body[2][2]);
             $(`#modal-body-${id} input[name='contact']`).val(body[3]);
+            $(`#modal-body-${id} input[name='id']`).val(body[body.length - 1]);
         } break;
         case "edit-house-member" : {
-            $(`#modal-body-${id} input[name='id']`).val(body[0]);
+            $(`#modal-body-${id} input[name='vid']`).val(body[0]);
             $(`#modal-body-${id} input[name='representative']`).val(body[1]);
             $(`#modal-body-${id} input[name='lname']`).val(body[2][0]);
             $(`#modal-body-${id} input[name='fname']`).val(body[2][1]);
@@ -42,6 +121,7 @@ function openModal(id, body = []) {
             $(`#modal-body-${id} input[name='contact']`).val(body[4]);
             $(`#modal-body-${id} input[name='gender']`).val(body[5]);
             $(`#modal-body-${id} input[name='civil_status']`).val(body[6]);
+            $(`#modal-body-${id} input[name='id']`).val(body[body.length - 1]);
         } break;
         default : break;
     }
@@ -50,15 +130,51 @@ function openModal(id, body = []) {
 }
 
 
+async function loadCalamities() {
+    const calamities = $("#select-calamity");
+    await fetch(BASE_URL + `php/calamity_get_all.php`)
+    .then(response => response.json())
+    .then(response => {
+        const result = response.result;
+        let options = ''
+        for(let obj of result){
+            options += `<option value="${obj.id}">${obj.name}</option>`
+        }
+        calamities.append(options);
+    })
+    .catch(err => console.error("ERROR: " + err));
+    
+}
 
-function viewHouseMeber(e) {
+async function loadEvacuationCenter() {
+    const evacCenter = $("#select-evac_center");
+    await fetch(BASE_URL + `php/evac_center_get_all.php`)
+    .then(response => response.json())
+    .then(response => {
+        const result = response.result;
+        let options = ''
+        for(let obj of result){
+            options += `<option value="${obj.id}">${obj.name}</option>`
+        }
+        evacCenter.append(options);
+    })
+    .catch(err => console.error("ERROR: " + err));
+
+}
+
+
+async function viewHouseMeber(e) {
+    await loadCalamities();
+    await loadEvacuationCenter();
+
     $("#btn-add-evacuee").addClass("hidden")
     $("#btn-add-house").addClass("hidden");
     $("#btn-cancel-view").removeClass("hidden");
-    $("#table-title").text("Update House Information...");
+    $("#add-calamity-form").removeClass("hidden");
+    $("#table-title").text("Calamity report");
 
     const id = $(e).data("rep_id");
-    loadAllHouseMember(id);
+    loadAllHouseMember(id, "calamaityReport");
 
 }
 
@@ -66,14 +182,15 @@ function updateHoseMember(e) {
     $("#btn-add-evacuee").removeClass("hidden")
     $("#btn-add-house").addClass("hidden");
     $("#btn-cancel-view").removeClass("hidden");
-    $("#table-title").text("Update House Information...");
+    $("#add-calamity-form").addClass("hidden");
+    $("#table-title").text("House Information");
 
     const id = $(e).data("rep_id");
-    loadAllHouseMember(id);
+    loadAllHouseMember(id, "houseInformation");
 
 }
 
-async function loadAllHouseMember(id){
+async function loadAllHouseMember(id, table){
     const form = new FormData();
     form.append("rep_id", id);
     await fetch(BASE_URL + "php/house_member_get.php", {
@@ -95,7 +212,8 @@ async function loadAllHouseMember(id){
             <th>EVACUEE'S INFORMATION</th>
             <th>CIVIL STATUS</th>
             <th>REPRESENTATIVE</th>
-            <th>ADDRESS</th>
+            <th>ADDRESS</th>`;
+        thead += (table === "calamaityReport") ? "" : `
             <th class="text-center">ACTION</th>
         </tr>`;
         
@@ -104,7 +222,7 @@ async function loadAllHouseMember(id){
             let name = `${row.lname}, ${row.fname} ${row.mname}`;
 
             tbody += `<tr>`;
-            tbody += `<td style="white-space: nowrap;">${"M-"+row.id.padStart(6, "0")}</td>`;
+            tbody += `<td style="white-space: nowrap;" class="member-list">${"M-"+row.id.padStart(6, "0")}</td>`;
             tbody += `<td>
                 <div><b>Name:</b> ${name}</div>
                 <div><b>Age:</b> ${row.age}</div>
@@ -114,16 +232,19 @@ async function loadAllHouseMember(id){
             tbody += `<td>${row.civil_status}</td>`;
             tbody += `<td>${row.representative}</td>`;
             tbody += `<td>${row.address}</td>`;
-            tbody += `<td class="d-flex justify-content-center" style="gap: .5rem;">
-                <button class="btn btn-success" onclick="openModal('edit-house-member', [
-                    '${"M-"+row.id.padStart(6, "0")}',
-                    '${row.representative}',
-                    ['${row.lname}','${row.fname}','${row.mname}'],
-                    '${row.age}',
-                    '${row.contact}',
-                    '${row.gender}',
-                    '${row.civil_status}'
-                ])">Edit</button>
+            tbody += (table === "calamaityReport") ? "" : `<td class="d-flex justify-content-center" style="gap: .5rem;">
+                <button class="btn btn-success" onclick="openModal('edit-house-member', 
+                    [
+                        '${"M-"+row.id.padStart(6, "0")}',
+                        '${row.representative}',
+                        ['${row.lname}','${row.fname}','${row.mname}'],
+                        '${row.age}',
+                        '${row.contact}',
+                        '${row.gender}',
+                        '${row.civil_status}', 
+                        '${row.id}'
+                    ])
+                ">Edit</button>
                 <button data-member_id="${row.id}" class="btn btn-danger" onclick="deleteMember(this)">Delete</button>
             </td>`;
             tbody += `</tr>`;
@@ -139,7 +260,8 @@ async function loadAllRepresentative() {
     $("#btn-add-evacuee").addClass("hidden")
     $("#btn-cancel-view").addClass("hidden");
     $("#btn-add-house").removeClass("hidden");
-    $("#table-title").text("Overall Population");
+    $("#add-calamity-form").addClass("hidden");
+    $("#table-title").text("Representatives");
 
     await fetch(BASE_URL + "php/representative_get_all.php")
     .then(response => response.json())
@@ -170,7 +292,15 @@ async function loadAllRepresentative() {
             tbody += `<td>${name}</td>`;
             tbody += `<td>${row.contact}</td>`;
             tbody += `<td class="d-flex justify-content-center" style="gap: .5rem;">
-            <button class="btn btn-success" onclick="openModal('edit-house', ['${"H-"+row.id.padStart(6, "0")}', '${row.address}', ['${row.lname}', '${row.fname}', '${row.mname}'], '${row.contact}'])">Edit</button>
+            <button class="btn btn-success" onclick="openModal('edit-house', 
+                [
+                    '${"H-"+row.id.padStart(6, "0")}', 
+                    '${row.address}', 
+                    ['${row.lname}', '${row.fname}', '${row.mname}'], 
+                    '${row.contact}', 
+                    '${row.id}'
+                ])
+            ">Edit</button>
             <button data-rep_id="${row.id}" onclick="updateHoseMember(this)" class="btn btn-warning">Update</button>
             <button data-rep_id="${row.id}" class="btn btn-danger" onclick="deleteHouse(this)">Delete</button>
             </td>`;
@@ -204,6 +334,42 @@ function deleteMember(e) {
         console.log(ans)
     });
 }
+
+$("#add-calamity-form").on("submit", async function(e){
+    e.preventDefault();
+    
+    show_alert({
+        title : "Report Calamity",
+        body : "Report Calamity record for this family?",
+        buttons : ["Yes", "No"]
+    }, async function(ans){
+        if(!ans) return;
+
+        const form = new FormData(document.getElementById("add-calamity-form"));
+        form.append("uid", USER_DATA.id);
+        let member_list = [];
+        $(".member-list").each(function(){ 
+            let mem_id = String($(this).html());
+            mem_id = mem_id.replace('M-', '');
+            mem_id = Number(mem_id);
+            member_list.push(mem_id);
+        });
+        form.append("ids", JSON.stringify(member_list));
+        
+        await fetch(BASE_URL + 'php/evacuee_update.php', {
+            method : 'post',
+            body : form
+        })
+        .then(response => response.json())
+        .then(response => {
+            const result = response.result;
+            console.log({result});
+        })
+        .catch(err => console.error(err));
+    
+    });
+
+});
 
 
 loadAllRepresentative();
