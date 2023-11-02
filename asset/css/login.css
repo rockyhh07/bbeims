@@ -1,6 +1,6 @@
 body {
 	/* background-image: url('http://localhost/bbeims/asset/img/1039995.jpg'); */
-	/* background-image: url('../img/1039995.jpg'); */
+	background-image: url('../img/bgimg.png');
 	background-position: center; /* Center the image */
 	background-repeat: no-repeat; /* Do not repeat the image */
 	background-size: cover; /* Resize the background image to cover the entire container */
