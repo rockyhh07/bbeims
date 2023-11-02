@@ -158,7 +158,7 @@ async function viewHouseMember(e) {
     $("#btn-add-house").addClass("hidden");
     $("#btn-cancel-view").removeClass("hidden");
     $("#add-incident-form").removeClass("hidden");
-    $("#table-title").text("Incident report");
+    $("#table-title").text("Overall Population");
 
     const id = $(e).data("rep_id");
     loadAllHouseMember(id, "calamaityReport");
