@@ -317,6 +317,9 @@
          form.append("uid", USER_DATA.id);
          form.append("id", body[0]);
          form.append("name", $("#update-incident-name").val());
+
+         if(!validForm(form)) return;
+
          fetch(`${BASE_URL}php/incident_update.php`, {
             method : 'post',
             body : form
@@ -392,6 +395,9 @@
       e.preventDefault();
       const form = new FormData(document.getElementById("incident-add-form"));
       form.append("uid", USER_DATA.id);
+
+      if(!validForm(form)) return;
+
       await fetch(BASE_URL + 'php/incident_new.php', {
          method : 'post',
          body : form

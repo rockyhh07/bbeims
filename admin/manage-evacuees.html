@@ -356,12 +356,14 @@
             let repName = (rep_fname && rep_lname) ? `${rep_lname}, ${rep_fname} ${rep_mname}` :
                         (rep_fname) ? `${rep_fname}` : 
                         (rep_lname) ? `${rep_lname}` : rep_mname;
+
+            let age = row.birthday ? getAge(row.birthday) : "0";
  
             tbody += `<tr>`;
             tbody += `<td>${row.id}</td>`;
             tbody += `<td>
                   <p class="info">Name: <b>${name}</b></p>
-                  <p class="info">Age: <b>${row.age}</b></p>
+                  <p class="info">Age: <b>${age}</b></p>
                   <p class="info">Gender: <b>${row.gender}</b></p>
                   <p class="info">Contact: <b>${row.contact}</b></p>
                </td>`;

@@ -1,44 +1,51 @@
+let representative_selected = null;
+
 $("#modal-footer-add-evacuee").on("click", async function(e){
     const form = new FormData(document.getElementById("modal-body-add-evacuee"));
     form.append("uid", USER_DATA.id);
+    form.append("rep", "mem");
+    form.append("representative", representative_selected);
 
-    await fetch(`${BASE_URL}php/.php`,{
+    if(!validForm(form)) return;
+
+    await fetch(`${BASE_URL}php/evacuee_new.php`,{
         method : 'post',
         body : form
     })
     .then(response => response.json())
     .then(response => {
-        const result = response.result;
-        console.log({result});
-
+        loadAllHouseMember(representative_selected, "");
+        document.getElementById("modal-body-add-evacuee").reset();
+        $(".modal-close-btn").trigger("click");
     })
     .catch(err => console.log("ERROR: " + err));
-
-    console.log("add evacluee", {form});
 });
 
 $("#modal-footer-add-house").on("click", async function(e){
     const form = new FormData(document.getElementById("modal-body-add-house"));
     form.append("uid", USER_DATA.id);
+    form.append("rep", "rep");
 
-    await fetch(`${BASE_URL}php/.php`,{
+    if(!validForm(form)) return;
+
+    await fetch(`${BASE_URL}php/evacuee_new.php`,{
         method : 'post',
         body : form
     })
     .then(response => response.json())
     .then(response => {
-        const result = response.result;
-        console.log({result});
-
+        loadAllRepresentative();
+        document.getElementById("modal-body-add-house").reset();
+        $(".modal-close-btn").trigger("click");
     })
     .catch(err => console.log("ERROR: " + err));
-
-    console.log("add representative", {form});
 });
 
 $("#modal-footer-edit-house").on("click", async function(e){
     const form = new FormData(document.getElementById("modal-body-edit-house"));
     form.append("uid", USER_DATA.id);
+
+    if(!validForm(form)) return;
 
     await fetch(`${BASE_URL}php/evacuee_update.php`,{
         method : 'post',
@@ -46,9 +53,9 @@ $("#modal-footer-edit-house").on("click", async function(e){
     })
     .then(response => response.json())
     .then(response => {
-        const result = response.result;
-        console.log({result});
-
+        loadAllRepresentative();
+        document.getElementById("modal-body-edit-house").reset();
+        $(".modal-close-btn").trigger("click");
     })
     .catch(err => console.log("ERROR: " + err));
 
@@ -59,15 +66,17 @@ $("#modal-footer-edit-house-member").on("click", async function(e){
     const form = new FormData(document.getElementById("modal-body-edit-house-member"));
     form.append("uid", USER_DATA.id);
 
+    if(!validForm(form)) return;
+
     await fetch(`${BASE_URL}php/evacuee_update.php`,{
         method : 'post',
         body : form
     })
     .then(response => response.json())
     .then(response => {
-        const result = response.result;
-        console.log({result});
-
+        loadAllHouseMember(representative_selected, "");
+        document.getElementById("modal-body-edit-house-member").reset();
+        $(".modal-close-btn").trigger("click");
     })
     .catch(err => console.log("ERROR: " + err));
 
@@ -83,7 +92,7 @@ $(".modal-close-btn").on("click", function(e){
     SELECTED_REP_NAME = undefined;
 });
 
-function openModal(id, body = []) {
+function openModal(id, body = {}) {
 
     $("#modal-header").children().addClass("hidden");
     $("#modal-body").children().addClass("hidden");
@@ -95,40 +104,19 @@ function openModal(id, body = []) {
     $(`#modal-body-${id}`).removeClass("hidden");
     $(`#modal-footer-${id}`).removeClass("hidden");
 
-    switch(id) {
-        case "add-evacuee" : {
-            
-        } break;
-        case "add-house" : {
-            
-        } break;
-        case "edit-house" : {
-            $(`#modal-body-${id} input[name='vid']`).val(body[0]);
-            $(`#modal-body-${id} input[name='address']`).val(body[1]);
-            $(`#modal-body-${id} input[name='lname']`).val(body[2][0]);
-            $(`#modal-body-${id} input[name='fname']`).val(body[2][1]);
-            $(`#modal-body-${id} input[name='mname']`).val(body[2][2]);
-            $(`#modal-body-${id} input[name='contact']`).val(body[3]);
-            $(`#modal-body-${id} input[name='id']`).val(body[body.length - 1]);
-        } break;
-        case "edit-house-member" : {
-            $(`#modal-body-${id} input[name='vid']`).val(body[0]);
-            $(`#modal-body-${id} input[name='representative']`).val(body[1]);
-            $(`#modal-body-${id} input[name='lname']`).val(body[2][0]);
-            $(`#modal-body-${id} input[name='fname']`).val(body[2][1]);
-            $(`#modal-body-${id} input[name='mname']`).val(body[2][2]);
-            $(`#modal-body-${id} input[name='age']`).val(body[3]);
-            $(`#modal-body-${id} input[name='contact']`).val(body[4]);
-            $(`#modal-body-${id} input[name='gender']`).val(body[5]);
-            $(`#modal-body-${id} input[name='civil_status']`).val(body[6]);
-            $(`#modal-body-${id} input[name='id']`).val(body[body.length - 1]);
-        } break;
-        default : break;
-    }
+
+    $(`#modal-body-${id} input[name='id']`).val(body.id);
+    $(`#modal-body-${id} input[name='fname']`).val(body.name.fname);
+    $(`#modal-body-${id} input[name='lname']`).val(body.name.lname);
+    $(`#modal-body-${id} input[name='mname']`).val(body.name.mname);
+    $(`#modal-body-${id} input[name='contact']`).val(body.contact);
+    $(`#modal-body-${id} input[name='address']`).val(body.address);
+    $(`#modal-body-${id} input[name='birthday']`).val(dateToInputDate(body.birthday));
+    $(`#modal-body-${id} select[name='gender']`).val(body.gender);
+    $(`#modal-body-${id} select[name='civil_status']`).val(body.cs[0]);
 
     $("#modal-holder").removeClass("hidden")
 }
-
 
 async function loadIncident() {
     const incident = $("#select-incident");
@@ -162,8 +150,7 @@ async function loadEvacuationCenter() {
 
 }
 
-
-async function viewHouseMeber(e) {
+async function viewHouseMember(e) {
     await loadIncident();
     await loadEvacuationCenter();
 
@@ -191,6 +178,8 @@ function updateHoseMember(e) {
 }
 
 async function loadAllHouseMember(id, table){
+    representative_selected = id;
+
     const form = new FormData();
     form.append("rep_id", id);
     await fetch(BASE_URL + "php/house_member_get.php", {
@@ -220,12 +209,13 @@ async function loadAllHouseMember(id, table){
         let tbody = '';
         for(let row of result) {
             let name = `${row.lname}, ${row.fname} ${row.mname}`;
+            let age = getAge(row.birthday)
 
             tbody += `<tr>`;
             tbody += `<td style="white-space: nowrap;" class="member-list">${"M-"+row.id.padStart(6, "0")}</td>`;
             tbody += `<td>
                 <div><b>Name:</b> ${name}</div>
-                <div><b>Age:</b> ${row.age}</div>
+                <div><b>Age:</b> ${age}</div>
                 <div><b>Gnder:</b> ${row.gender}</div>
                 <div><b>Contact:</b> ${row.contact}</div>
             </td>`;
@@ -234,16 +224,17 @@ async function loadAllHouseMember(id, table){
             tbody += `<td>${row.address}</td>`;
             tbody += (table === "calamaityReport") ? "" : `<td class="d-flex justify-content-center" style="gap: .5rem;">
                 <button class="btn btn-success" onclick="openModal('edit-house-member', 
-                    [
-                        '${"M-"+row.id.padStart(6, "0")}',
-                        '${row.representative}',
-                        ['${row.lname}','${row.fname}','${row.mname}'],
-                        '${row.age}',
-                        '${row.contact}',
-                        '${row.gender}',
-                        '${row.civil_status}', 
-                        '${row.id}'
-                    ])
+                    {
+                        vid:'${"M-"+row.id.padStart(6, "0")}',
+                        rep:'${row.representative}',
+                        name:{lname:'${row.lname}',fname:'${row.fname}',mname:'${row.mname}'},
+                        bday:'${row.birthday}',
+                        address:'${row.address}',
+                        contact:'${row.contact}',
+                        gender: '${row.gender}',
+                        cs:'${row.civil_status}', 
+                        id:'${row.id}'
+                    })
                 ">Edit</button>
                 <button data-member_id="${row.id}" class="btn btn-danger" onclick="deleteMember(this)">Delete</button>
             </td>`;
@@ -257,6 +248,8 @@ async function loadAllHouseMember(id, table){
 }
 
 async function loadAllRepresentative() {
+    representative_selected = null;
+
     $("#btn-add-evacuee").addClass("hidden")
     $("#btn-cancel-view").addClass("hidden");
     $("#btn-add-house").removeClass("hidden");
@@ -287,19 +280,23 @@ async function loadAllRepresentative() {
             let name = `${row.lname}, ${row.fname} ${row.mname}`;
 
             tbody += '<tr>';
-            tbody += `<td><a onclick="viewHouseMeber(this)" data-rep_id="${row.id}" href="#" class="link-underline-opacity-0" style="white-space: nowrap;">${"H-"+row.id.padStart(6, "0")}</a></td>`;
+            tbody += `<td><a onclick="viewHouseMember(this)" data-rep_id="${row.id}" href="#" class="link-underline-opacity-0" style="white-space: nowrap;">${"H-"+row.id.padStart(6, "0")}</a></td>`;
             tbody += `<td>${row.address}</td>`;
             tbody += `<td>${name}</td>`;
             tbody += `<td>${row.contact}</td>`;
             tbody += `<td class="d-flex justify-content-center" style="gap: .5rem;">
             <button class="btn btn-success" onclick="openModal('edit-house', 
-                [
-                    '${"H-"+row.id.padStart(6, "0")}', 
-                    '${row.address}', 
-                    ['${row.lname}', '${row.fname}', '${row.mname}'], 
-                    '${row.contact}', 
-                    '${row.id}'
-                ])
+                {
+                    vid:'${"H-"+row.id.padStart(6, "0")}',
+                    rep:'${row.representative}',
+                    name:{lname:'${row.lname}',fname:'${row.fname}',mname:'${row.mname}'},
+                    bday:'${row.birthday}',
+                    address:'${row.address}',
+                    contact:'${row.contact}',
+                    gender: '${row.gender}',
+                    cs:'${row.civil_status}', 
+                    id:'${row.id}'
+                })
             ">Edit</button>
             <button data-rep_id="${row.id}" onclick="updateHoseMember(this)" class="btn btn-warning">Update</button>
             <button data-rep_id="${row.id}" class="btn btn-danger" onclick="deleteHouse(this)">Delete</button>
@@ -320,18 +317,44 @@ function deleteHouse(e) {
         body : `Are you sure you want to delete <b>${"H-"+rep_id.padStart(6, "0")}</b> data?`,
         buttons : ["Yes", "No"]
     }, function(ans) {
-        console.log(ans)
+        if(!ans) return;
+
+        const form = new FormData();
+        form.append("uid", USER_DATA.id);
+        form.append("id", rep_id);
+        fetch(`${BASE_URL}php/evacuee_delete.php`,{
+            method : 'post',
+            body : form
+        })
+        .then(response => response.json())
+        .then(response => {
+            loadAllRepresentative();
+        })
+        .catch(err => console.error("ERROR" + err));
     });
 }
 
 function deleteMember(e) {
-    const rep_id = String($(e).data("member_id"));
+    const mem_id = String($(e).data("member_id"));
     show_alert({
         title : `<img src="${BASE_URL}asset/img/sent.png" > Delete record`,
-        body : `Are you sure you want to delete <b>${"M-"+rep_id.padStart(6, "0")}</b> data?`,
+        body : `Are you sure you want to delete <b>${"M-"+mem_id.padStart(6, "0")}</b> data?`,
         buttons : ["Yes", "No"]
     }, function(ans) {
-        console.log(ans)
+        if(!ans) return;
+
+        const form = new FormData();
+        form.append("uid", USER_DATA.id);
+        form.append("id", mem_id);
+        fetch(`${BASE_URL}php/evacuee_delete.php`,{
+            method : 'post',
+            body : form
+        })
+        .then(response => response.json())
+        .then(response => {
+            loadAllHouseMember(representative_selected, "");
+        })
+        .catch(err => console.error("ERROR" + err));
     });
 }
 
@@ -356,7 +379,7 @@ $("#add-incident-form").on("submit", async function(e){
         });
         form.append("ids", JSON.stringify(member_list));
         
-        await fetch(BASE_URL + 'php/evacuee_update.php', {
+        await fetch(BASE_URL + 'php/evacuee_new_incident.php', {
             method : 'post',
             body : form
         })
@@ -374,3 +397,16 @@ $("#add-incident-form").on("submit", async function(e){
 
 
 loadAllRepresentative();
+
+
+const body = {
+    vid:'${"M-"+row.id.padStart(6, "0")}',
+    rep:'${row.representative}',
+    name:{lname:'${row.lname}',fname:'${row.fname}',mname:'${row.mname}'},
+    bday:'${row.birthday}',
+    address:'${row.address}',
+    contact:'${row.contact}',
+    gender: '${row.gender}',
+    cs:'${row.civil_status}', 
+    id:'${row.id}'
+}

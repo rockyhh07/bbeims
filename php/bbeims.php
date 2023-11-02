@@ -216,20 +216,6 @@ class BBEIMS
         BBEIMS::delete_data($post_result, 'evac_center');
     }
 
-    public static function evacuee_new(array $post_result) {
-        $post_result['fname'] = strtoupper($post_result['fname']);
-        $post_result['lname'] = strtoupper($post_result['lname']);
-        $post_result['mname'] = strtoupper($post_result['mname']);
-
-        $query = new QueryBuilder(
-            QUERY_INSERT,
-            'evacuee',
-            $post_result,
-            ["fname", "lname", "mname", "address", "contact", "age", "gender", "civil_status", "representative", "evac_id", "incident_id"]
-        );
-        return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
-    }
-
     public static function evacuee_get_all(array $post_result) {
         QUERY::escape_str_all($post_result);
         $query = "SELECT 
@@ -238,7 +224,7 @@ class BBEIMS
                     e.`fname`, 
                     e.`mname`, 
                     e.`contact`, 
-                    e.`age`, 
+                    e.`birthday`, 
                     CASE
                         WHEN e.`gender` = 'M' THEN 'Male' ELSE 
                         CASE
@@ -266,7 +252,68 @@ class BBEIMS
         return QUERY::run($query);
     }
 
+    public static function evacuee_new(array $post_result) {
+        QUERY::escape_str_all($post_result);
+        
+        $uid = $post_result['uid'];
+
+        $data = "";
+        foreach($post_result as $key=>$val){
+            if($key == "uid") continue;
+            if($key == "id") continue;
+            if($key == "rep") continue;
+            if($key == "bday") {
+                $data .= " `age`='".BBEIMS::ageCalculator($val)."',";
+                continue;
+            }
+
+            $data .= " `{$key}`=".strtoupper("'$val',");
+        }
+        $data = rtrim($data, ",");
+
+        $query = "INSERT INTO `evacuee` SET 
+            {$data},
+            `created_by`='{$uid}',
+            `created_date`=CURRENT_TIMESTAMP
+        ";
+
+        if($post_result['rep'] === "rep") {
+            $id = QUERY::run($query)[0]["id"];
+
+            return QUERY::run("UPDATE `evacuee` SET `representative`='{$id}' WHERE `id`='{$id}'");
+        }
+
+        return QUERY::run($query);
+    }
+
     public static function evacuee_update(array $post_result) {
+        QUERY::escape_str_all($post_result);
+
+        $uid = $post_result['uid'];
+        $id = $post_result['id'];
+
+        $data = "";
+        foreach($post_result as $key=>$val){
+            if($key == "uid") continue;
+            if($key == "id") continue;
+
+            $data .= " `{$key}`=".strtoupper("'$val',");
+        }
+        $data = rtrim($data, ",");
+
+        $query = "UPDATE 
+                `evacuee` 
+                SET {$data},
+                    `updated_by` = '{$uid}',
+                    `updated_date` = CURRENT_TIMESTAMP
+                WHERE
+                    `id` = '{$id}'
+        ";
+        
+        return QUERY::run($query);
+    }
+
+    public static function evacuee_new_incident(array $post_result) {
         QUERY::escape_str_all($post_result);
 
         $uid = $post_result['uid'];
@@ -312,6 +359,10 @@ class BBEIMS
         echo $query;
 
         return QUERY::run($query);
+    }
+
+    public static function evacuee_delete(array $post_result) {
+        BBEIMS::delete_data($post_result, 'evacuee');
     }
 
     public static function dashboard_get(array $post_result) {
@@ -383,7 +434,7 @@ class BBEIMS
                     e.`mname`,
                     e.`lname`,
                     e.`address`,
-                    e.`age`
+                    e.`birthday`
                 FROM `evacuee` e
                 WHERE
                     e.`deletedflag` = 0 AND
@@ -472,14 +523,19 @@ class BBEIMS
 
     public static function representative_get_all(array $post_result) {
         QUERY::escape_str_all($post_result);
+        extract($post_result);
         $query = "SELECT
-                    -- CONCAT('H-', LPAD(`id`, 6, '0')) `id`,
                     `id`,
                     `address`,
                     `lname`,
                     `fname`,
                     `mname`,
-                    `contact`
+                    `contact`,
+                    `birthday`,
+                    `gender`,
+                    `civil_status`,
+                    
+                    `representative`
                 FROM `evacuee` e
                 WHERE 
                     e.`id` = e.`representative` AND
@@ -502,7 +558,7 @@ class BBEIMS
                     `fname`,
                     `mname`,
                     `contact`,
-                    `age`,
+                    `birthday`,
                     `gender`,
                     `civil_status`,
                     '{$rep}' `representative`
@@ -513,6 +569,21 @@ class BBEIMS
         ";
 
         return QUERY::run($query);
+    }
+
+
+    private static function ageCalculator($date) {
+        // birthdate
+        $bdate = new DateTime($date);
+
+        //date today
+        $now = new DateTime();
+        
+        //get difference
+        $age = $now->diff($bdate);
+
+        //return the difference in year
+        return $age->y;
     }
 
     private static function delete_data(array $post_result, string $table) {

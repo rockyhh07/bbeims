@@ -373,6 +373,9 @@
          form.append("name", $("#update-evac-name").val());
          form.append("address", $("#update-evac-address").val());
          form.append("contact", $("#update-evac-contact").val());
+
+         if(!validForm(form)) return;
+
          fetch(`${BASE_URL}php/evac_center_update.php`,{
             method : 'post',
             body : form
@@ -393,6 +396,7 @@
          body : `Are you sure you want to delete <b>${name}</b>?`,
          buttons : ["Yes", "No"]
       }, function(ans) {
+         if(!ans) return;
          
          const form = new FormData();
          form.append("id", id);
@@ -450,6 +454,9 @@
       e.preventDefault();
       const form = new FormData(document.getElementById("evac-center-add-form"));
       form.append("uid", USER_DATA.id);
+
+      if(!validForm(form)) return;
+
       await fetch(BASE_URL + 'php/evac_center_new.php', {
          method: 'post',
          body: form

@@ -319,12 +319,14 @@
          }
          
          let tbody = `<tbody>`;
-         for(let row in result){
+         for(let row of result){
+            let age = row.birthday ? getAge(row.birthday) : "0";
+
             tbody += `<tr>`;
-            tbody += `<td>${result[row].id}</td>`;
-            tbody += `<td>${result[row].lname}, ${result[row].fname} ${result[row].mname} </td>`;
-            tbody += `<td>${result[row].address}</td>`;
-            tbody += `<td>${result[row].age}</td>`;
+            tbody += `<td>${row.id}</td>`;
+            tbody += `<td>${row.lname}, ${row.fname} ${row.mname} </td>`;
+            tbody += `<td>${row.address}</td>`;
+            tbody += `<td>${age}</td>`;
             tbody += `</tr>`;
          }
 
