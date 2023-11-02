@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `evacuee` (
     `gender` VARCHAR(1) DEFAULT 'N',
     `civil_status` VARCHAR(20) DEFAULT 'SINGLE',
     `address` VARCHAR(255),
-    `head_of_the_family` INT(6) DEFAULT NULL,
+    `representative` INT(6) DEFAULT NULL,
     `evac_id` INT(6) DEFAULT NULL,
     `incident_id` INT(6) DEFAULT NULL,
     `incident_date` DATETIME DEFAULT NULL,
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `evacuee` (
     `updated_date` DATETIME NULL,
     `created_by` INT(6) DEFAULT NULL,
     `created_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (`head_of_the_family`) REFERENCES `evacuee`(`id`),
+    FOREIGN KEY (`representative`) REFERENCES `evacuee`(`id`),
     FOREIGN KEY (`updated_by`) REFERENCES `users`(`id`),
     FOREIGN KEY (`created_by`) REFERENCES `users`(`id`),
     FOREIGN KEY (`evac_id`) REFERENCES `evac_center`(`id`),
@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `evacuee` (
 );
 
 INSERT INTO `evacuee` 
-(`lname`,`fname`,`mname`,`contact`,`age`,`gender`,`civil_status`,`address`,`head_of_the_family`, `created_by`)
+(`lname`,`fname`,`mname`,`contact`,`age`,`gender`,`civil_status`,`address`,`representative`, `created_by`)
 VALUES
 ('ADMIN','','','09765468621','20','M','SINGLE','Mandaluyong','1', '1'),
 ('AZARRAGA','GEMMA','DELGADO','09123456789','47','F','MARRIED','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','2','1'),

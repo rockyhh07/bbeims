@@ -63,18 +63,6 @@ class BBEIMS
         return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
     }
 
-    public static function incident_new(array $post_result) {
-        $post_result['name'] = strtoupper($post_result['name']);
-
-        $query = new QueryBuilder(
-            QUERY_INSERT,
-            "incident",
-            $post_result,
-            ["name"]
-        );
-        return (count($query->errors) > 0) ? $query->get_error_result() : QUERY::run($query->sql);
-    }
-
     public static function incident_get_all(array $post_result) {
         $query = new QueryBuilder(
             QUERY_SELECT,
@@ -87,28 +75,65 @@ class BBEIMS
         return QUERY::run($query->sql);
     }
 
-    public static function incident_update(array $post_result) {
-        $query = new QueryBuilder(
-            QUERY_UPDATE,
-            'incident',
-            $post_result,
-            [],
-            []
-        );
-        return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
+    public static function incident_new(array $post_result) {
+        QUERY::escape_str_all($post_result);
+
+        $uid = $post_result['uid'];
+        $name = strtoupper($post_result['name']);
+        
+        $currentIncidents = QUERY::run("SELECT `name` FROM `incident`");
+        
+        $alreadyExist = false;
+        foreach($currentIncidents as $obj) 
+            if($obj['name'] == $name) { $alreadyExist = true; break; }
+
+        if($alreadyExist) {
+            $query = "UPDATE `incident` SET 
+                    `deletedflag` = 0,
+                    `updated_by` = '{$uid}',
+                    `updated_date` = CURRENT_TIMESTAMP
+                WHERE 
+                    `name` = '{$name}'
+            ";
+        }else {
+            $query = "INSERT INTO `incident` SET 
+                `name` = '{$name}',
+                `created_by` = '{$uid}',
+                `created_date` = CURRENT_TIMESTAMP
+            ";
+        }
+
+        return QUERY::run($query);
     }
 
-    public static function evac_center_new(array $post_result) {
-        $post_result['name'] = strtoupper($post_result['name']);
+    public static function incident_update(array $post_result) {
+        QUERY::escape_str_all($post_result);
 
-        $query = new QueryBuilder(
-            QUERY_INSERT,
-            'evac_center',
-            $post_result,
-            ["name", "address"]
-        );
+        $id = $post_result['id'];
+        $uid = $post_result['uid'];
 
-        return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
+        $data = "";
+        foreach($post_result as $key => $val) {
+            if($key === "uid") continue;
+            if($key === "id") continue;
+
+            $data .= " `{$key}`=".strtoupper("'$val',");
+        }
+        $data = rtrim($data, ",");
+
+        $query = "UPDATE `incident`
+            SET {$data},
+                `updated_by`='{$uid}',
+                `updated_date`=CURRENT_TIMESTAMP
+            WHERE
+                `id`='{$id}'
+        ";
+
+        return QUERY::run($query);
+    }
+
+    public static function  incident_delete(array $post_result) {
+        return BBEIMS::delete_data($post_result, 'incident');
     }
 
     public static function evac_center_get_all(array $post_result) {
@@ -123,15 +148,72 @@ class BBEIMS
         return QUERY::run($query->sql);
     }
 
+    public static function evac_center_new(array $post_result) {
+        QUERY::escape_str_all($post_result);
+        
+        $uid = $post_result['uid'];
+        $name = strtoupper($post_result['name']);
+        $address = strtoupper($post_result['address']);
+        $contact = strtoupper($post_result['contact']);
+        
+        $currentEvacCenter = QUERY::run("SELECT `name` FROM `evac_center`");
+        
+        $alreadyExist = false;
+        foreach($currentEvacCenter as $obj) 
+            if(
+                $obj['name'] == $name
+                ) { $alreadyExist = true; break; }
+
+        if($alreadyExist) {
+            $query = "UPDATE `evac_center` SET 
+                    `address` = '{$address}',
+                    `contact` = '{$contact}',
+                    `deletedflag` = 0,
+                    `updated_by` = '{$uid}',
+                    `updated_date` = CURRENT_TIMESTAMP
+                WHERE 
+                    `name` = '{$name}'
+            ";
+        }else {
+            $query = "INSERT INTO `evac_center` SET 
+                `name` = '{$name}',
+                `address` = '{$address}',
+                `contact` = '{$contact}',
+                `created_by` = '{$uid}',
+                `created_date` = CURRENT_TIMESTAMP
+            ";
+        }
+        return QUERY::run($query);
+    }
+
     public static function evac_center_update(array $post_result) {
-        $query = new QueryBuilder(
-            QUERY_UPDATE,
-            'evac_center',
-            $post_result,
-            ["id", "name", "address"],
-            ["id" => $post_result["id"], "deletedflag" => 0]
-        );
-        return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
+        QUERY::escape_str_all($post_result);
+
+        $id = $post_result['id'];
+        $uid = $post_result['uid'];
+
+        $data = "";
+        foreach($post_result as $key => $val) {
+            if($key === "uid") continue;
+            if($key === "id") continue;
+
+            $data .= " `{$key}`=".strtoupper("'$val',");
+        }
+        $data = rtrim($data, ",");
+
+        $query = "UPDATE `evac_center`
+            SET {$data},
+                `updated_by`='{$uid}',
+                `updated_date`=CURRENT_TIMESTAMP
+            WHERE
+                `id`='{$id}'
+        ";
+
+        return QUERY::run($query);
+    }
+
+    public static function evac_center_delete(array $post_result) {
+        BBEIMS::delete_data($post_result, 'evac_center');
     }
 
     public static function evacuee_new(array $post_result) {
@@ -143,7 +225,7 @@ class BBEIMS
             QUERY_INSERT,
             'evacuee',
             $post_result,
-            ["fname", "lname", "mname", "address", "contact", "age", "gender", "civil_status", "head_of_the_family", "evac_id", "incident_id"]
+            ["fname", "lname", "mname", "address", "contact", "age", "gender", "civil_status", "representative", "evac_id", "incident_id"]
         );
         return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
     }
@@ -175,7 +257,7 @@ class BBEIMS
                 INNER JOIN `evac_center` ec
                     ON ec.`id` = e.`evac_id`
                 INNER JOIN `evacuee` e2
-                    ON e2.`id` = e.`head_of_the_family`
+                    ON e2.`id` = e.`representative`
                 WHERE
                     e.`deletedflag` = 0 AND
                     e.`incident_date` IS NOT NULL AND
@@ -221,7 +303,7 @@ class BBEIMS
 
             $data .= " `{$key}`='{$val}',";
         }
-        rtrim($data, ",");
+        $data = rtrim($data, ",");
 
         $query = "UPDATE `evacuee` SET {$data} 
             `updated_by` = '{$uid}',
@@ -277,9 +359,9 @@ class BBEIMS
                         COUNT(`rep_tbl`.`rep`)
                     FROM (
                         SELECT
-                            `head_of_the_family` `rep`
+                            `representative` `rep`
                         FROM `evacuee`
-                        GROUP BY `head_of_the_family`
+                        GROUP BY `representative`
                         ) `rep_tbl`
                     ) `family`,
                     (SELECT 
@@ -311,14 +393,14 @@ class BBEIMS
     }
 
     public static function report_by_age(array $post_result) {
-        $query = new QueryBuilder(
-            QUERY_SELECT,
-            'evacuee',
-            $post_result,
-            ["age"],
-            ["deletedflag" => 0]
-        );
-        return QUERY::run($query->sql);
+        $query = "SELECT 
+                    e.`age`
+                FROM `evacuee` e
+                WHERE
+                    e.`deletedflag` = 0 AND
+                    e.`incident_date` IS NOT NULL 
+        ";
+        return QUERY::run($query);
     }
 
     public static function report_by_gender(array $post_result) {
@@ -332,7 +414,8 @@ class BBEIMS
                             )
                     FROM `evacuee` e
                     WHERE
-                        e.`deletedflag` = 0
+                        e.`deletedflag` = 0 AND
+                        e.`incident_date` IS NOT NULL 
                     ) `male`,
                     (SELECT 
                         count(
@@ -342,7 +425,8 @@ class BBEIMS
                             )
                     FROM `evacuee` e
                     WHERE
-                        e.`deletedflag` = 0
+                        e.`deletedflag` = 0 AND
+                        e.`incident_date` IS NOT NULL 
                     ) `female`
         ";
         return QUERY::run($query);
@@ -350,7 +434,7 @@ class BBEIMS
 
     public static function report_by_incident(array $post_result) {
         QUERY::escape_str_all($post_result);
-        $allIncident = QUERY::run("SELECT `id`, `name` FROM incident");
+        $allIncident = QUERY::run("SELECT `id`, `name` FROM incident WHERE `deletedflag` = 0");
 
         $query = "SELECT";
 
@@ -359,14 +443,17 @@ class BBEIMS
         }
         $query = rtrim($query, ',');;
 
-        $query .= " FROM `evacuee` WHERE `deletedflag` = 0";
+        $query .= " FROM `evacuee` WHERE
+            `deletedflag` = 0 AND
+            `incident_date` IS NOT NULL 
+        ";
 
         return QUERY::run($query);
     }
 
     public static function report_by_center(array $post_result) {
         QUERY::escape_str_all($post_result);
-        $allCenter = QUERY::run("SELECT `id`, `name` FROM `evac_center`");
+        $allCenter = QUERY::run("SELECT `id`, `name` FROM `evac_center` WHERE `deletedflag` = 0");
 
         $query = "SELECT";
 
@@ -375,7 +462,10 @@ class BBEIMS
         }
         $query = rtrim($query, ',');;
 
-        $query .= " FROM `evacuee` WHERE `deletedflag` = 0";
+        $query .= " FROM `evacuee` WHERE 
+            `deletedflag` = 0 AND 
+            `incident_date` IS NOT NULL 
+        ";
 
         return QUERY::run($query);
     }
@@ -392,7 +482,7 @@ class BBEIMS
                     `contact`
                 FROM `evacuee` e
                 WHERE 
-                    e.`id` = e.`head_of_the_family` AND
+                    e.`id` = e.`representative` AND
                     e.`deletedflag` = 0
         ";
         return QUERY::run($query);
@@ -418,10 +508,27 @@ class BBEIMS
                     '{$rep}' `representative`
                 FROM `evacuee` e
                 WHERE 
-                    e.`head_of_the_family` = '{$rep_id}' AND
+                    e.`representative` = '{$rep_id}' AND
                     e.`deletedflag` = 0
         ";
 
+        return QUERY::run($query);
+    }
+
+    private static function delete_data(array $post_result, string $table) {
+        QUERY::escape_str_all($post_result);
+
+        $id = $post_result['id'];
+        $uid = $post_result['uid'];
+
+        $query = "UPDATE `{$table}`
+            SET
+                `updated_by`='{$uid}',
+                `updated_date`=CURRENT_TIMESTAMP,
+                `deletedflag`='1'
+            WHERE
+                `id`='{$id}'
+        ";
         return QUERY::run($query);
     }
 }

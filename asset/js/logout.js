@@ -18,8 +18,7 @@ function logout() {
    });
 }
 
-$(window).on("load", function(){
-   if(USER_DATA.category !== 'A'){
-      $("#user-management").remove();
-   }
-});
+if(USER_DATA.category !== 'A'){
+   $("#user-management").remove();
+   $(".report-generator").remove();
+}

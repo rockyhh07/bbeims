@@ -239,7 +239,7 @@
                            </div>
                            <div class="col-md-12">
                               <button type="submit" class="btn btn-primary" id="incident-add-btn">Save</button>
-                              <button type="submit" class="btn btn-danger">Cancel</button>
+                              <!-- <button type="submit" class="btn btn-danger">Cancel</button> -->
                            </div>
                         </form>
                         <div class="col-md-9" style="border-left: 1px solid #ddd;">
@@ -314,9 +314,18 @@
          if(!ans) return;
 
          const form = new FormData();
+         form.append("uid", USER_DATA.id);
          form.append("id", body[0]);
          form.append("name", $("#update-incident-name").val());
-
+         fetch(`${BASE_URL}php/incident_update.php`, {
+            method : 'post',
+            body : form
+         })
+         .then(response => response.json())
+         .then(response => {
+            load_all_incident();
+         })
+         .catch(err => console.error("ERROR: " + err));
       });
    }
 
@@ -328,7 +337,20 @@
          body : `Are you sure you want to delete <b>${name}</b>?`,
          buttons : ["Yes", "No"]
       }, function(ans) {
-         console.log(ans)
+         if(!ans) return;
+
+         const form = new FormData();
+         form.append("uid", USER_DATA.id);
+         form.append("id", id);
+         fetch(`${BASE_URL}php/incident_delete.php`, {
+            method : 'post',
+            body : form
+         })
+         .then(response => response.json())
+         .then(response => {
+            load_all_incident();
+         })
+         .catch(err => console.error("ERROR: " + err));
       });
    }
 
@@ -369,6 +391,7 @@
    document.getElementById("incident-add-btn").addEventListener("click", async function(e) {
       e.preventDefault();
       const form = new FormData(document.getElementById("incident-add-form"));
+      form.append("uid", USER_DATA.id);
       await fetch(BASE_URL + 'php/incident_new.php', {
          method : 'post',
          body : form

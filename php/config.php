@@ -173,7 +173,7 @@ class QueryBuilder {
             case 'mname' : $str = 'Middle Name'; break;
             case 'id' : $str = 'ID'; break;
             case 'civil_status' : $str = 'Civil Status'; break;
-            case 'head_of_the_family' : $str = 'Head of the Family'; break;
+            case 'representative' : $str = 'Representative'; break;
             case 'address' : $str = 'Address'; break;
             case 'age' : $str = 'Age'; break;
             case 'contact' : $str = 'Contact'; break;

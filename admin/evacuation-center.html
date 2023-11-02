@@ -252,7 +252,7 @@
                            </div>
                            <div class="col-md-12">
                               <button type="submit" class="btn btn-primary" id="evac-center-add-btn">Save</button>
-                              <button type="submit" class="btn btn-danger">Cancel</button>
+                              <!-- <button type="submit" class="btn btn-danger">Cancel</button> -->
                            </div>
                         </form>
                         <div class="col-md-9" style="border-left: 1px solid #ddd;">
@@ -368,13 +368,20 @@
          if(!ans) return;
 
          const form = new FormData();
+         form.append("uid", USER_DATA.id);
          form.append("id", body[0]);
          form.append("name", $("#update-evac-name").val());
          form.append("address", $("#update-evac-address").val());
          form.append("contact", $("#update-evac-contact").val());
-
-         form.forEach((val, key)=>{ console.log({key, val}) });
-
+         fetch(`${BASE_URL}php/evac_center_update.php`,{
+            method : 'post',
+            body : form
+         })
+         .then(response => response.json())
+         .then(response => {
+            load_all_evac_center();
+         })
+         .catch(err => console.error("ERROR: " + error));
       });
    }
 
@@ -386,7 +393,19 @@
          body : `Are you sure you want to delete <b>${name}</b>?`,
          buttons : ["Yes", "No"]
       }, function(ans) {
-         console.log(ans)
+         
+         const form = new FormData();
+         form.append("id", id);
+         form.append("uid", USER_DATA.id);
+         fetch(`${BASE_URL}php/evac_center_delete.php`,{
+            method : 'post',
+            body : form
+         })
+         .then(response => response.json())
+         .then(response => {
+            load_all_evac_center();
+         })
+         .catch(err => console.error("ERROR: " + error));
       });
    }
 
@@ -430,6 +449,7 @@
    document.getElementById("evac-center-add-btn").addEventListener("click", async function (e) {
       e.preventDefault();
       const form = new FormData(document.getElementById("evac-center-add-form"));
+      form.append("uid", USER_DATA.id);
       await fetch(BASE_URL + 'php/evac_center_new.php', {
          method: 'post',
          body: form
