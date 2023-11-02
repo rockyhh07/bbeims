@@ -227,7 +227,7 @@
                      <table id="users" class="table table-bordered table-hover">
                         <thead>
                            <tr>
-                              <th>#</th>
+                              <th>ID</th>
                               <th>Users info</th>
                               <th>Account Category</th>
                               <th>Account Status</th>
@@ -277,31 +277,41 @@
 
 
 <script>
-   function updateDate(body = ["-1", "", "", "", ""]) {
-      const category = body[2];
-      const active = Boolean(body[4]);
-
+   function updateDate(body = {}) {
       show_alert({
          title : "Update User",
          body : `<div class="d-flex flex-column" style="gap: .5rem;">
                <div class="input-group">
+                  <span class="input-group-text" id="user-username">Username</span>
+                  <input id="update-user-username" value="${body.username}" type="text" class="form-control" placeholder="Username" aria-describedby="user-username">
+               </div>
+               <div class="input-group">
                   <span class="input-group-text" id="user-fullname">Full name</span>
-                  <input id="update-user-fullname" value="${body[1]}" type="text" class="form-control" placeholder="Fullname" aria-describedby="user-fullname">
+                  <input id="update-user-fullname" value="${body.fullname}" type="text" class="form-control" placeholder="Fullname" aria-describedby="user-fullname">
                </div>
                <div class="input-group">
                   <span class="input-group-text" id="user-contact">Contact</span>
-                  <input id="update-user-contact" value="${body[3]}" type="text" class="form-control" placeholder="Contact" aria-describedby="user-contact">
+                  <input id="update-user-contact" value="${body.contact}" type="text" class="form-control" placeholder="Contact" aria-describedby="user-contact">
                </div>
                <div class="input-group">
                   <span class="input-group-text" id="user-category">Category</span>
                   <select id="update-user-category" class="form-control">
-                     <option value="A" ${category == "A" ? "selected" : ""}>Admin</option>   
-                     <option value="S" ${category == "S" ? "selected" : ""}>Staff</option>   
+                     <option value="A" ${body.category == "A" ? "selected" : ""}>Admin</option>   
+                     <option value="S" ${body.category == "S" ? "selected" : ""}>Staff</option>   
                   </select>
                </div>
                <div class="custom-control custom-switch">
-                  <input type="checkbox" class="custom-control-input" id="update-user-active" ${active ? "checked" : ""}>
+                  <input type="checkbox" class="custom-control-input" id="update-user-active" ${body.active ? "checked" : ""}>
                   <label class="custom-control-label" for="update-user-active">Active</label>
+               </div>
+
+               <div class="input-group">
+                  <span class="input-group-text" id="user-o_password">Old password</span>
+                  <input id="update-user-o_password" type="password" class="form-control" placeholder="Password" aria-describedby="user-o_password">
+               </div>
+               <div class="input-group">
+                  <span class="input-group-text" id="user-n_password">New password</span>
+                  <input id="update-user-n_password" type="password" class="form-control" placeholder="Password" aria-describedby="user-n_password">
                </div>
             </div>`,
          buttons : ["Save", "Cancel"]
@@ -347,7 +357,7 @@
 
             tbody += `<tr>`;
             {  
-               tbody += `<td>${row.id}</td>`;
+               tbody += `<td>${"BB-"+row.id.padStart(6, "0")}</td>`;
                tbody += `<td>
                      <p class="info">Name: <b>${row.fullname}</b></p>
                      <p class="info"><small>Contact: <b>${row.contact}</b></small></p>
@@ -355,9 +365,14 @@
                tbody += `<td>${categ}</td>`;
                tbody += `<td><span class="badge bg-${active?'success':'danger'}">${active?'Active':'Inactive'}</span></td>`;
                tbody += `<td class="text-right">
-                     <a class="btn btn-sm btn-success" href="#" onclick="updateDate([
-                        '${row.id}', '${row.fullname}', '${row.category}', '${row.contact}', '${row.active}'
-                     ])"><i class="fa fa-edit"></i> edit</a>
+                     <a class="btn btn-sm btn-success" href="#" onclick="updateDate({
+                        username : '${row.username}',
+                        id : '${row.id}', 
+                        fullname : '${row.fullname}', 
+                        category : '${row.category}', 
+                        contact : '${row.contact}', 
+                        active : '${row.active}'
+                     })"><i class="fa fa-edit"></i> edit</a>
                      <a class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${row.id}" data-name="${row.fullname}"><i class="fa fa-trash-alt"></i> delete</a>
                   </td>`;
             }
@@ -382,7 +397,6 @@
       }, function(ans) {
          if(!ans) return;
 
-
          const form = new FormData();
          form.append("id", id);
          form.append("uid", USER_DATA.id);
@@ -392,11 +406,9 @@
          })
          .then(response => response.json())
          .then(response => {
-            alert(`Successfully Deleted ${name}`);
+            loadUsers();
          })
          .catch(err => console.log("ERROR" + err));
-         
-
       });
    }
 </script>

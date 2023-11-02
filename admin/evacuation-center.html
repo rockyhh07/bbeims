@@ -434,9 +434,9 @@
             tbody += `<td class="text-right">
                <a class="btn btn-sm btn-success" href="#" onclick="updateDate([
                      '${row.id}', '${row.name}', '${row.address}', '${row.contact}'
-                  ])"><i class="fa fa-edit"></i> edit</a>
-               <a class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${row.id}" data-name="${row.name}"><i class="fa fa-trash-alt"></i> delete</a>
-            </td>`;
+                  ])"><i class="fa fa-edit"></i> edit</a>`;
+            tbody += (USER_DATA.category === "A") ? `<a class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${row.id}" data-name="${row.name}"><i class="fa fa-trash-alt"></i> delete</a>
+            </td>` : "";
             tbody += `</tr>`;
          }
          

@@ -104,18 +104,19 @@ function openModal(id, body = {}) {
     $(`#modal-body-${id}`).removeClass("hidden");
     $(`#modal-footer-${id}`).removeClass("hidden");
 
+    if(id != "add-evacuee" && id != "add-house") {
+        $(`#modal-body-${id} input[name='id']`).val(body.id);
+        $(`#modal-body-${id} input[name='fname']`).val(body.name.fname);
+        $(`#modal-body-${id} input[name='lname']`).val(body.name.lname);
+        $(`#modal-body-${id} input[name='mname']`).val(body.name.mname);
+        $(`#modal-body-${id} input[name='contact']`).val(body.contact);
+        $(`#modal-body-${id} input[name='address']`).val(body.address);
+        $(`#modal-body-${id} input[name='birthday']`).val(dateToInputDate(body.birthday));
+        $(`#modal-body-${id} select[name='gender']`).val(body.gender);
+        $(`#modal-body-${id} select[name='civil_status']`).val(body.cs[0]);
+    }
 
-    $(`#modal-body-${id} input[name='id']`).val(body.id);
-    $(`#modal-body-${id} input[name='fname']`).val(body.name.fname);
-    $(`#modal-body-${id} input[name='lname']`).val(body.name.lname);
-    $(`#modal-body-${id} input[name='mname']`).val(body.name.mname);
-    $(`#modal-body-${id} input[name='contact']`).val(body.contact);
-    $(`#modal-body-${id} input[name='address']`).val(body.address);
-    $(`#modal-body-${id} input[name='birthday']`).val(dateToInputDate(body.birthday));
-    $(`#modal-body-${id} select[name='gender']`).val(body.gender);
-    $(`#modal-body-${id} select[name='civil_status']`).val(body.cs[0]);
-
-    $("#modal-holder").removeClass("hidden")
+    $("#modal-holder").removeClass("hidden");
 }
 
 async function loadIncident() {
@@ -235,9 +236,10 @@ async function loadAllHouseMember(id, table){
                         cs:'${row.civil_status}', 
                         id:'${row.id}'
                     })
-                ">Edit</button>
+                ">Edit</button>`;
+            tbody += (USER_DATA.category === "A") ? `
                 <button data-member_id="${row.id}" class="btn btn-danger" onclick="deleteMember(this)">Delete</button>
-            </td>`;
+            </td>` : "";
             tbody += `</tr>`;
         }
 
@@ -285,7 +287,7 @@ async function loadAllRepresentative() {
             tbody += `<td>${name}</td>`;
             tbody += `<td>${row.contact}</td>`;
             tbody += `<td class="d-flex justify-content-center" style="gap: .5rem;">
-            <button class="btn btn-success" onclick="openModal('edit-house', 
+                <button class="btn btn-success" onclick="openModal('edit-house', 
                 {
                     vid:'${"H-"+row.id.padStart(6, "0")}',
                     rep:'${row.representative}',
@@ -297,10 +299,11 @@ async function loadAllRepresentative() {
                     cs:'${row.civil_status}', 
                     id:'${row.id}'
                 })
-            ">Edit</button>
-            <button data-rep_id="${row.id}" onclick="updateHoseMember(this)" class="btn btn-warning">Update</button>
-            <button data-rep_id="${row.id}" class="btn btn-danger" onclick="deleteHouse(this)">Delete</button>
-            </td>`;
+                ">Edit</button>
+                <button data-rep_id="${row.id}" onclick="updateHoseMember(this)" class="btn btn-warning">Update</button>`;
+            tbody += (USER_DATA.category === "A") ? ` 
+                <button data-rep_id="${row.id}" class="btn btn-danger" onclick="deleteHouse(this)">Delete</button>
+                </td>` : "";
             tbody += '</tr>';
         }
         tbody += '</tbody>';

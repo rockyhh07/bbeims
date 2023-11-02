@@ -29,15 +29,38 @@ class BBEIMS
     }
 
     public static function user_new(array $post_result) {
+        QUERY::escape_str_all($post_result);
+
+        $post_result['username'] = strtoupper($post_result['username']);
         $post_result['fullname'] = strtoupper($post_result['fullname']);
 
-        $query = new QueryBuilder(
-            QUERY_INSERT,
-            "users",
-            $post_result,
-            ["username", "fullname", "password"]
-        );
-        return count($query->errors) > 0 ? [["result" => false, "error" => $query->errors]] : QUERY::run($query->sql);
+        $uid = $post_result['uid'];
+        $username = $post_result['username'];
+
+        $currentUsers = QUERY::run("SELECT `username` FROM `users`");
+        
+        $alreadyExist = false;
+        foreach($currentUsers as $obj) 
+            if($obj['username'] == $username) { $alreadyExist = true; break; }
+
+        if($alreadyExist) {
+            return false;
+        }
+
+        $query = "INSERT INTO `users` SET";
+        foreach($post_result as $key=>$val) {
+            if($key === "uid") continue;
+            if($key === "password") {
+                $query .= " `{$key}`=PASSWORD('{$val}'),";
+                continue;
+            }
+            $query .= " `{$key}`='{$val}',";
+        }
+        $query .= "
+                `created_by`='{$uid}',
+                `created_date`=CURRENT_TIMESTAMP
+        ";
+        return QUERY::run($query);    
     }
 
     public static function user_login(array $post_result) {
@@ -61,6 +84,10 @@ class BBEIMS
             ["id" => $post_result["id"], "deletedflag" => 0]
         );
         return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
+    }
+
+    public static function user_delete($post_result) {
+        BBEIMS::delete_data($post_result, 'users');
     }
 
     public static function incident_get_all(array $post_result) {
@@ -234,12 +261,17 @@ class BBEIMS
                     END `gender`, 
                     e.`civil_status`, 
                     e.`address`, 
+                    e.`incident_date`,
+                    e.`representative`,
                     e2.`lname` `rep_lname`,
                     e2.`fname` `rep_fname`,
                     e2.`mname` `rep_mname`,
-                    ec.`name`,
-                    e.`incident_date`
+                    ec.`name` `evac_name`,
+                    ec.`id` `evac_id`,
+                    i.`name` `incident_name`
                 FROM `evacuee` e
+                INNER JOIN `incident` i
+                    ON i.`id` = e.`incident_id`
                 INNER JOIN `evac_center` ec
                     ON ec.`id` = e.`evac_id`
                 INNER JOIN `evacuee` e2
@@ -358,6 +390,29 @@ class BBEIMS
         WHERE `id` = '{$id}'";
         echo $query;
 
+        return QUERY::run($query);
+    }
+
+    public static function evacuee_update_incident(array $post_result) {
+        QUERY::escape_str_all($post_result);
+
+        $uid = $post_result['uid'];
+        $rep_id = $post_result['representative'];
+
+        $query = "UPDATE `evacuee` SET";
+
+        foreach($post_result as $key=>$val) {
+            if($key === "uid") continue;
+            if($key === "representative") continue;
+            $query .= " `{$key}`='{$val}',";
+        }
+
+        $query .= "
+                `updated_by`='{$uid}',
+                `updated_date`=CURRENT_TIMESTAMP
+            WHERE
+                `representative`='{$rep_id}'
+        ";
         return QUERY::run($query);
     }
 
@@ -571,6 +626,7 @@ class BBEIMS
         return QUERY::run($query);
     }
 
+    // PRIVATES //
 
     private static function ageCalculator($date) {
         // birthdate
