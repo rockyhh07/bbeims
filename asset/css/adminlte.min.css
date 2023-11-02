@@ -5802,7 +5802,7 @@
 {background-color:#208637;color:#fff}.card.bg-gradient-success .bootstrap-datetimepicker-widget table td.today::before,.card.bg-success .bootstrap-datetimepicker-widget table td.today::before
 {border-bottom-color:#fff}.card.bg-gradient-success .bootstrap-datetimepicker-widget table td.active,.card.bg-gradient-success .bootstrap-datetimepicker-widget table td.active:hover,.card.bg-success .bootstrap-datetimepicker-widget table td.active,.card.bg-success .bootstrap-datetimepicker-widget table td.active:hover
 {background-color:#34ce57;color:#fff}.card-info:not(.card-outline)>.card-header
-{background-color:#17a2b8}.card-info:not(.card-outline)>.card-header,.card-info:not(.card-outline)>.card-header a
+{background-color: #749857;}.card-info:not(.card-outline)>.card-header,.card-info:not(.card-outline)>.card-header a
 {color:#fff}.card-info:not(.card-outline)>.card-header a.active
 {color:#1f2d3d}.card-info.card-outline
 {border-top: 3px solid #749857;}.card-info.card-outline-tabs>.card-header a:hover
