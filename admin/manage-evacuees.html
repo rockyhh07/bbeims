@@ -81,10 +81,10 @@
                      </a>
                   </li>
                   <li class="nav-item">
-                     <a href="calamity-type.html" class="nav-link">
+                     <a href="incident-type.html" class="nav-link">
                         <i class="nav-icon fa fa-globe-asia"></i>
                         <p>
-                           Type of Calamity
+                           Type of Incident
                         </p>
                      </a>
                   </li>
@@ -109,7 +109,7 @@
                      <ul class="nav nav-treeview">
                         <li class="nav-item">
                            <a href="add-evacuees.html" class="nav-link">
-                              <i class="nav-icon fa fa-plus"></i>
+                              <i class="nav-icon fa fa-address-book"></i>
                               <p>Manage</p>
                            </a>
                         </li>
@@ -123,7 +123,7 @@
                   </li>
 
 
-                  <li class="nav-item">
+                  <li class="nav-item" id="user-management">
                      <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-user-lock"></i>
                         <p>
@@ -175,9 +175,9 @@
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="calamity-report.html" class="nav-link">
+                           <a href="incident-report.html" class="nav-link">
                               <i class="nav-icon fa fa-globe-asia"></i>
-                              <p>Evacuees by Calamity</p>
+                              <p>Evacuees by Incident</p>
                            </a>
                         </li>
                         <li class="nav-item">
@@ -233,7 +233,7 @@
                               <th>Address</th>
                               <th>Head of Family</th>
                               <th>Evacuation Center</th>
-                              <th class="text-right">Action</th>
+                              <th class="text-right">Incident Date</th>
                            </tr>
                         </thead>
                         <tbody>
@@ -340,31 +340,42 @@
          }
          
          let tbody = `<tbody>`;
-         for(let row in result){
-            let fname = result[row].fname;
-            let lname = result[row].lname;   
-            let mname = result[row].mname;
+         for(let row of result){
+            let fname = row.fname;
+            let lname = row.lname;   
+            let mname = row.mname;
 
             let name =  (fname && lname) ? `${lname}, ${fname} ${mname}` :
                         (fname) ? `${fname}` : 
                         (lname) ? `${lname}` : mname;
+            
+            let rep_fname = row.rep_fname;
+            let rep_lname = row.rep_lname;   
+            let rep_mname = row.rep_mname;
+
+            let repName = (rep_fname && rep_lname) ? `${rep_lname}, ${rep_fname} ${rep_mname}` :
+                        (rep_fname) ? `${rep_fname}` : 
+                        (rep_lname) ? `${rep_lname}` : rep_mname;
  
             tbody += `<tr>`;
-            tbody += `<td>${result[row].id}</td>`;
+            tbody += `<td>${row.id}</td>`;
             tbody += `<td>
-                  <p class="info">Name: <b>${result[row].lname}, ${result[row].fname} ${result[row].mname}</b></p>
-                  <p class="info">Age: <b>${result[row].age}</b></p>
-                  <p class="info">Gender: <b>${result[row].gender}</b></p>
-                  <p class="info">Contact: <b>${result[row].contact}</b></p>
+                  <p class="info">Name: <b>${name}</b></p>
+                  <p class="info">Age: <b>${row.age}</b></p>
+                  <p class="info">Gender: <b>${row.gender}</b></p>
+                  <p class="info">Contact: <b>${row.contact}</b></p>
                </td>`;
-            tbody += `<td>${result[row].civil_status}</td>`;
-            tbody += `<td>${result[row].address}</td>`;
-            tbody += `<td>${result[row].head_of_the_family}</td>`;
-            tbody += `<td>${result[row].name}</td>`;
-            tbody += `<td class="text-right d-flex" style="gap: .5rem;">
-                  <a class="btn btn-sm btn-success"><i class="fa fa-edit"></i> edit</a>
-                  <a class="btn btn-sm btn-danger" onclick="delete_data(this)" data-id="${result[row].id}" data-name="${name}"><i class="fa fa-trash-alt"></i> delete</a>
+            tbody += `<td>${row.civil_status}</td>`;
+            tbody += `<td>${row.address}</td>`;
+            tbody += `<td>
+               ${repName}
                </td>`;
+            tbody += `<td>${row.name}</td>`;
+            tbody += `<td>${row.incident_date}</td>`;
+            // tbody += `<td class="text-right d-flex" style="gap: .5rem;">
+            //       <a class="btn btn-sm btn-success"><i class="fa fa-edit"></i> edit</a>
+            //       <a class="btn btn-sm btn-danger" onclick="delete_data(this)" data-id="${row.id}" data-name="${name}"><i class="fa fa-trash-alt"></i> delete</a>
+            //    </td>`;
             tbody += `</tr>`;
          }
 

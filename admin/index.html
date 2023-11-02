@@ -8,21 +8,11 @@
    <link rel="stylesheet" href="../asset/css/adminlte.min.css">
    <link rel="stylesheet" href="../asset/css/dashboard.css">
    <style type="text/css">
-      td a.btn {
-         font-size: 0.7rem;
+      #table-report *{
+         font-size: medium;
       }
-
-      td p {
-         padding-left: 0.5rem !important;
-      }
-
-      th {
-         padding: 1rem !important;
-      }
-
-      table tr td {
-         padding: 0.3rem !important;
-         font-size: 13px;
+      .report-row {
+         height: 70px;
       }
    </style>
    <link rel="stylesheet" href="../asset/css/font.css">
@@ -82,10 +72,10 @@
                   </li>
 
                   <li class="nav-item">
-                     <a href="calamity-type.html" class="nav-link">
+                     <a href="incident-type.html" class="nav-link">
                         <i class="nav-icon fa fa-globe-asia"></i>
                         <p>
-                           Type of Calamity
+                           Type of Incident
                         </p>
                      </a>
                   </li>
@@ -111,7 +101,7 @@
                      <ul class="nav nav-treeview">
                         <li class="nav-item">
                            <a href="add-evacuees.html" class="nav-link">
-                              <i class="nav-icon fa fa-plus"></i>
+                              <i class="nav-icon fa fa-address-book"></i>
                               <p>Manage</p>
                            </a>
                         </li>
@@ -124,7 +114,7 @@
                      </ul>
                   </li>
 
-                  <li class="nav-item">
+                  <li class="nav-item" id="user-management">
                      <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-user-lock"></i>
                         <p>
@@ -177,9 +167,9 @@
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="calamity-report.html" class="nav-link">
+                           <a href="incident-report.html" class="nav-link">
                               <i class="nav-icon fa fa-globe-asia"></i>
-                              <p>Evacuees by Calamity</p>
+                              <p>Evacuees by Incident</p>
                            </a>
                         </li>
                         <li class="nav-item">
@@ -229,12 +219,36 @@
                   <div class="clearfix hidden-md-up"></div>
 
                   <div class="col-12 col-sm-6 col-md-6">
-                     <div class="info-box mb-3">
+                     <div class="info-box m-0">
                         <span class="info-box-icon bg-info elevation-1"><i class="fas fa-university"></i></span>
 
                         <div class="info-box-content">
                            <span class="info-box-text">Overall Barangay Population</span>
                            <span class="info-box-number" id="number-of-brgy-population">0</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                     </div>
+                     <!-- /.info-box -->
+                  </div>
+
+                  <!-- fix for small devices only -->
+                  <div class="clearfix hidden-md-up"></div>
+
+                  <div class="col-12 col-sm-6 col-md-6">
+                     <div class="info-box m-0">
+                        <span class="info-box-icon bg-info elevation-1">
+                           <i class="fas fa-chart-pie"></i>
+                        </span>
+
+                        <div class="info-box-content">
+                           <span class="info-box-text d-flex flex-column align-items-start">
+                              Analytics
+                              <button class="btn btn-primary" onclick="generateReport()">Generate Reports</button>
+                           </span>
+                           <!-- <span class="info-box-number" id="number-of-brgy-population">
+                              Analytics
+                              
+                           </span> -->
                         </div>
                         <!-- /.info-box-content -->
                      </div>
@@ -366,5 +380,84 @@
    }
 
    load_dashboard();
+
+
+   async function generateReport() {
+      show_alert({
+         title : "Generate Report",
+         body : `<table class="table table-hover" id="table-report">
+            <tbody>
+               <tr class="report-row">
+                  <td>
+                     <input type="radio" name="type" checked> Generate All
+                  </td>
+                  <td></td>
+               </tr>
+               <tr class="report-row">
+                  <td>
+                     <input type="radio" name="type"> Generate by Incident type
+                  </td>
+                  <td class="d-flex flex-column" style="gap: 1rem;">
+                     <select id="incident-type" name="incident-type" class="card p-2 flex-row">
+                        <option value="" selected disabled>-- Select --</option>
+                     </select>
+                  </td>
+               </tr>
+               <tr class="report-row">
+                  <td>
+                     <input type="radio" name="type"> Generate by Incident date
+                  </td>
+                  <td class="d-flex flex-column" style="gap: 1rem;">
+                     <select id="incident-date" name="incident-date" class="card p-2 flex-row">
+                        <option value="" selected disabled>-- Select --</option>
+                     </select>
+                  </td>
+               </tr>
+               <tr class="report-row">
+                  <td>
+                     <input type="radio" name="type"> Generate by Evacuation Center
+                  </td>
+                  <td class="d-flex flex-column" style="gap: 1rem;">
+                     <select id="evac-center" name="evac-center" class="card p-2 flex-row">
+                        <option value="" selected disabled>-- Select --</option>
+                     </select>
+                  </td>
+               </tr>
+            </tbody>
+            </table>`,
+         buttons : ["Generate", "Cancel"]
+      }, function(ans){
+         if(!ans) return;
+
+      });
+
+      $(".report-row").on("click", function(){
+         let radio = $(this).find("input[type='radio']").prop("checked", true);
+      })
+
+      // Load All Incident type here
+      await fetch(`${BASE_URL}php/evacuee_get_all.php`)
+      .then(response => response.json())
+      .then(response => {
+
+      })
+      .catch(err => console.error("ERROR: " + err));
+
+      // Load All Incident date here
+      await fetch(`${BASE_URL}php/evacuee_get_all.php`)
+      .then(response => response.json())
+      .then(response => {
+
+      })
+      .catch(err => console.error("ERROR: " + err));
+
+      // Load All Evacuation center here
+      await fetch(`${BASE_URL}php/evacuee_get_all.php`)
+      .then(response => response.json())
+      .then(response => {
+
+      })
+      .catch(err => console.error("ERROR: " + err));
+   }
 
 </script>

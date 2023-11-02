@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS `users` (
     `username` VARCHAR(50),
     `fullname` VARCHAR(50),
     `password` VARCHAR(255),
-    `designation` VARCHAR(50),
     `contact` VARCHAR(15),
     `category` VARCHAR(1),
     `active` INT(1) DEFAULT 1,
@@ -27,9 +26,26 @@ SET
 `username` = 'ADMIN',
 `fullname` = 'ADMIN',
 `password` = PASSWORD('123'),
-`designation` = 'Designation 1',
 `contact` = '09999999999',
 `category` = 'A',
+`created_by` = '1';
+
+INSERT INTO `users`
+SET
+`username` = 'angel',
+`fullname` = 'ANGEL AZARRAGA',
+`password` = PASSWORD('123'),
+`contact` = '09999999999',
+`category` = 'A',
+`created_by` = '1';
+
+INSERT INTO `users`
+SET
+`username` = 'staff',
+`fullname` = 'STAFF',
+`password` = PASSWORD('123'),
+`contact` = '09999999999',
+`category` = 'S',
 `created_by` = '1';
 
 CREATE TABLE IF NOT EXISTS `evac_center` (
@@ -53,7 +69,7 @@ VALUES
 ('EVACUATION CENTER 2','MAKATI','09767733621', '1'),
 ('EVACUATION CENTER 3','MANDALUYONG','09765461155', '1');
 
-CREATE TABLE IF NOT EXISTS `calamity` (
+CREATE TABLE IF NOT EXISTS `incident` (
     `id` INT(6) PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(50) DEFAULT NULL,
     `deletedflag` INT(1) DEFAULT 0,
@@ -65,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `calamity` (
     FOREIGN KEY (`created_by`) REFERENCES `users`(`id`)
 );
 
-INSERT INTO `calamity`
+INSERT INTO `incident`
 (`name`, `created_by`)
 VALUES
 ('EARTH QUAKE', '1'),
@@ -84,8 +100,8 @@ CREATE TABLE IF NOT EXISTS `evacuee` (
     `address` VARCHAR(255),
     `head_of_the_family` INT(6) DEFAULT NULL,
     `evac_id` INT(6) DEFAULT NULL,
-    `calam_id` INT(6) DEFAULT NULL,
-    `calam_date` DATETIME DEFAULT NULL,
+    `incident_id` INT(6) DEFAULT NULL,
+    `incident_date` DATETIME DEFAULT NULL,
     `deletedflag` INT(1) DEFAULT 0,
     `updated_by` INT(6) DEFAULT NULL,
     `updated_date` DATETIME NULL,
@@ -95,18 +111,18 @@ CREATE TABLE IF NOT EXISTS `evacuee` (
     FOREIGN KEY (`updated_by`) REFERENCES `users`(`id`),
     FOREIGN KEY (`created_by`) REFERENCES `users`(`id`),
     FOREIGN KEY (`evac_id`) REFERENCES `evac_center`(`id`),
-    FOREIGN KEY (`calam_id`) REFERENCES `calamity`(`id`)
+    FOREIGN KEY (`incident_id`) REFERENCES `incident`(`id`)
 );
 
 INSERT INTO `evacuee` 
-(`lname`,`fname`,`mname`,`contact`,`age`,`gender`,`civil_status`,`address`,`head_of_the_family`, `evac_id`, `calam_id`, `created_by`)
+(`lname`,`fname`,`mname`,`contact`,`age`,`gender`,`civil_status`,`address`,`head_of_the_family`, `created_by`)
 VALUES
-('ADMIN','','','09765468621','20','M','SINGLE','Mandaluyong','1', '1', '1', '1'),
-('AZARRAGA','GEMMA','DELGADO','09123456789','47','F','MARRIED','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','2', '2', '2', '1'),
-('MAGALINO','BEBOT','S.','09123456789','20','F','SINGLE','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','3', '3', '3', '1'),
-('MEKUTO','FUKIKO','','09123456789','20','F','SINGLE','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','4', '1', '1', '1'),
-('MALONE','HOE','','09123456789','20','F','SINGLE','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','5', '2', '2', '1'),
-('WANG','MALOU','','09123456789','20','F','SINGLE','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','6', '1', '1', '1'),
-('AZARRAGA','ANGEL','DELGADO','09123456789','22','F','WIDOWED','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','2', '2', '1', '1'),
-('AZARRAGA','ANDREA','DELGADO','09123456789','19','F','SINGLE','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','2', '2', '1', '1'),
-('AZARRAGA','LUCIA','DELGADO','09123456789','83','F','WIDOWED','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','2', '2', '1', '1');
+('ADMIN','','','09765468621','20','M','SINGLE','Mandaluyong','1', '1'),
+('AZARRAGA','GEMMA','DELGADO','09123456789','47','F','MARRIED','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','2','1'),
+('MAGALINO','BEBOT','S.','09123456789','20','F','SINGLE','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','3','1'),
+('MEKUTO','FUKIKO','','09123456789','20','F','SINGLE','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','4','1'),
+('MALONE','HOE','','09123456789','20','F','SINGLE','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','5','1'),
+('WANG','MALOU','','09123456789','20','F','SINGLE','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','6','1'),
+('AZARRAGA','ANGEL','DELGADO','09123456789','22','F','WIDOWED','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','2','1'),
+('AZARRAGA','ANDREA','DELGADO','09123456789','19','F','SINGLE','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','2','1'),
+('AZARRAGA','LUCIA','DELGADO','09123456789','83','F','WIDOWED','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','2','1');

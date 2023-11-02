@@ -86,10 +86,10 @@
                      </a>
                   </li>
                   <li class="nav-item">
-                     <a href="calamity-type.html" class="nav-link">
+                     <a href="incident-type.html" class="nav-link">
                         <i class="nav-icon fa fa-globe-asia"></i>
                         <p>
-                           Type of Calamity
+                           Type of Incident
                         </p>
                      </a>
                   </li>
@@ -114,7 +114,7 @@
                      <ul class="nav nav-treeview">
                         <li class="nav-item">
                            <a href="add-evacuees.html" class="nav-link">
-                              <i class="nav-icon fa fa-plus"></i>
+                              <i class="nav-icon fa fa-address-book"></i>
                               <p>Manage</p>
                            </a>
                         </li>
@@ -128,7 +128,7 @@
                   </li>
 
 
-                  <li class="nav-item">
+                  <li class="nav-item" id="user-management">
                      <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-user-lock"></i>
                         <p>
@@ -180,9 +180,9 @@
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="calamity-report.html" class="nav-link">
+                           <a href="incident-report.html" class="nav-link">
                               <i class="nav-icon fa fa-globe-asia"></i>
-                              <p>Evacuees by Calamity</p>
+                              <p>Evacuees by Incident</p>
                            </a>
                         </li>
                         <li class="nav-item">
@@ -237,20 +237,20 @@
                <div class="d-flex flex-row-reverse justify-content-between" style="gap: 1rem;">
                   <span class="d-flex align-items-end p-2" style="gap: 1rem; justify-self: flex-end;">
                      <button id="btn-add-evacuee" class="btn btn-success hidden" onclick="openModal('add-evacuee')">
-                        Add Evacuee
+                        Add Member
                      </button>
                      <button id="btn-cancel-view" class="btn btn-primary hidden" onclick="loadAllRepresentative()">
                         Cancel
                      </button>
                   </span>
-                  <form id="add-calamity-form" method="post" class="d-flex align-items-center p-2 hidden justify-content-between" style="gap: 1rem; flex-grow: 1;">
+                  <form id="add-incident-form" method="post" class="d-flex align-items-center p-2 hidden justify-content-between" style="gap: 1rem; flex-grow: 1;">
                      <div class="d-flex flex-column" style="gap: .5rem;">
                         <span class="m-0" style="font-weight: bold;" id="basic-addon1">Date</span>
-                        <input name="calam_date" type="datetime-local" class="form-control" required>
+                        <input name="incident_date" type="datetime-local" class="form-control" required>
                      </div>
                      <div class="d-flex flex-column" style="gap: .5rem;">
-                        <span class="m-0" style="font-weight: bold;" id="basic-addon1">Calamity</span>
-                        <select name="calamity" class="form-control" id="select-calamity" required>
+                        <span class="m-0" style="font-weight: bold;" id="basic-addon1">Incident</span>
+                        <select name="incident" class="form-control" id="select-incident" required>
                            <option value="" selected disabled>-- Select --</option>
                         </select>
                      </div>
