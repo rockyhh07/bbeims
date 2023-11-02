@@ -130,9 +130,9 @@ function openModal(id, body = []) {
 }
 
 
-async function loadCalamities() {
-    const calamities = $("#select-calamity");
-    await fetch(BASE_URL + `php/calamity_get_all.php`)
+async function loadIncident() {
+    const incident = $("#select-incident");
+    await fetch(BASE_URL + `php/incident_get_all.php`)
     .then(response => response.json())
     .then(response => {
         const result = response.result;
@@ -140,7 +140,7 @@ async function loadCalamities() {
         for(let obj of result){
             options += `<option value="${obj.id}">${obj.name}</option>`
         }
-        calamities.append(options);
+        incident.append(options);
     })
     .catch(err => console.error("ERROR: " + err));
     
@@ -164,14 +164,14 @@ async function loadEvacuationCenter() {
 
 
 async function viewHouseMeber(e) {
-    await loadCalamities();
+    await loadIncident();
     await loadEvacuationCenter();
 
     $("#btn-add-evacuee").addClass("hidden")
     $("#btn-add-house").addClass("hidden");
     $("#btn-cancel-view").removeClass("hidden");
-    $("#add-calamity-form").removeClass("hidden");
-    $("#table-title").text("Calamity report");
+    $("#add-incident-form").removeClass("hidden");
+    $("#table-title").text("incident report");
 
     const id = $(e).data("rep_id");
     loadAllHouseMember(id, "calamaityReport");
@@ -182,7 +182,7 @@ function updateHoseMember(e) {
     $("#btn-add-evacuee").removeClass("hidden")
     $("#btn-add-house").addClass("hidden");
     $("#btn-cancel-view").removeClass("hidden");
-    $("#add-calamity-form").addClass("hidden");
+    $("#add-incident-form").addClass("hidden");
     $("#table-title").text("House Information");
 
     const id = $(e).data("rep_id");
@@ -260,7 +260,7 @@ async function loadAllRepresentative() {
     $("#btn-add-evacuee").addClass("hidden")
     $("#btn-cancel-view").addClass("hidden");
     $("#btn-add-house").removeClass("hidden");
-    $("#add-calamity-form").addClass("hidden");
+    $("#add-incident-form").addClass("hidden");
     $("#table-title").text("Representatives");
 
     await fetch(BASE_URL + "php/representative_get_all.php")
@@ -335,17 +335,17 @@ function deleteMember(e) {
     });
 }
 
-$("#add-calamity-form").on("submit", async function(e){
+$("#add-incident-form").on("submit", async function(e){
     e.preventDefault();
     
     show_alert({
-        title : "Report Calamity",
-        body : "Report Calamity record for this family?",
+        title : "Report incident",
+        body : "Report incident record for this family?",
         buttons : ["Yes", "No"]
     }, async function(ans){
         if(!ans) return;
 
-        const form = new FormData(document.getElementById("add-calamity-form"));
+        const form = new FormData(document.getElementById("add-incident-form"));
         form.append("uid", USER_DATA.id);
         let member_list = [];
         $(".member-list").each(function(){ 
@@ -364,6 +364,7 @@ $("#add-calamity-form").on("submit", async function(e){
         .then(response => {
             const result = response.result;
             console.log({result});
+            window.location.href = `${BASE_URL}admin/manage-evacuees.html`;
         })
         .catch(err => console.error(err));
     

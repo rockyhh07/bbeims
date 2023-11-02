@@ -17,3 +17,9 @@ function logout() {
       else alert('Something went wrong!');
    });
 }
+
+$(window).on("load", function(){
+   if(USER_DATA.category !== 'A'){
+      $("#user-management").remove();
+   }
+});

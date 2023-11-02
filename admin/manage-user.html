@@ -81,10 +81,10 @@
                      </a>
                   </li>
                   <li class="nav-item">
-                     <a href="calamity-type.html" class="nav-link">
+                     <a href="incident-type.html" class="nav-link">
                         <i class="nav-icon fa fa-globe-asia"></i>
                         <p>
-                           Type of Calamity
+                           Type of Incident
                         </p>
                      </a>
                   </li>
@@ -109,7 +109,7 @@
                      <ul class="nav nav-treeview">
                         <li class="nav-item">
                            <a href="add-evacuees.html" class="nav-link">
-                              <i class="nav-icon fa fa-plus"></i>
+                              <i class="nav-icon fa fa-address-book"></i>
                               <p>Manage</p>
                            </a>
                         </li>
@@ -123,7 +123,7 @@
                   </li>
 
 
-                  <li class="nav-item">
+                  <li class="nav-item" id="user-management">
                      <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-user-lock"></i>
                         <p>
@@ -175,9 +175,9 @@
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="calamity-report.html" class="nav-link">
+                           <a href="incident-report.html" class="nav-link">
                               <i class="nav-icon fa fa-globe-asia"></i>
-                              <p>Evacuees by Calamity</p>
+                              <p>Evacuees by Incident</p>
                            </a>
                         </li>
                         <li class="nav-item">
@@ -221,7 +221,7 @@
          <!-- Main content -->
          <section class="content">
             <div class="container-fluid">
-               <div class="card card-info">
+               <div class="card card-info p-3">
 
                   <div class="col-md-12">
                      <table id="users" class="table table-bordered table-hover">
@@ -299,7 +299,7 @@
          let categ = undefined;
          switch (result[row].category){
             case 'A' : categ = 'Admin'; break;
-            case 'E' : categ = 'Encoder'; break;
+            case 'S' : categ = 'Staff'; break;
             default : categ = ''; break;
          }
 
@@ -308,7 +308,6 @@
             tbody += `<td>${result[row].id}</td>`;
             tbody += `<td>
                   <p class="info">Name: <b>${result[row].fullname}</b></p>
-                  <p class="info"><small>Designation: <b>${result[row].designation}</b></small></p>
                   <p class="info"><small>Contact: <b>${result[row].contact}</b></small></p>
                </td>`;
             tbody += `<td>${categ}</td>`;
@@ -335,15 +334,23 @@
          body : `Are you sure you want to delete <b>${name}</b>?`,
          buttons : ["Yes", "No"]
       }, function(ans) {
-         console.log(ans)
+         if(!ans) return;
+
+
+         const form = new FormData();
+         form.append("id", id);
+         form.append("uid", USER_DATA.id);
+         fetch(`${BASE_URL}php/user_delete.php`, {
+            method : 'post',
+            body : form
+         })
+         .then(response => response.json())
+         .then(response => {
+            alert(`Successfully Deleted ${name}`);
+         })
+         .catch(err => console.log("ERROR" + err));
+         
+
       });
-   }
-
-   function user_delete(uid){
-
-   }
-
-   function user_edit(uid){
-
    }
 </script>
