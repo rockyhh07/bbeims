@@ -207,7 +207,7 @@
                   <!-- /.col -->
                   <div class="col-sm-6">
                      <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href=".">Home</a></li>
                         <li class="breadcrumb-item active">Incident Type</li>
                      </ol>
                   </div>
@@ -300,6 +300,26 @@
 
 <script>
 
+   function updateDate(body = ["-1", ""]) {
+      show_alert({
+         title : "Update Incident",
+         body : `<div class="d-flex flex-column" style="gap: .5rem;">
+               <div class="input-group">
+                  <span class="input-group-text" id="incident-name">Name</span>
+                  <input id="update-incident-name" value="${body[1]}" type="text" class="form-control" placeholder="Incident name" aria-describedby="incident-name">
+               </div>
+            </div>`,
+         buttons : ["Save", "Cancel"]
+      }, function(ans){
+         if(!ans) return;
+
+         const form = new FormData();
+         form.append("id", body[0]);
+         form.append("name", $("#update-incident-name").val());
+
+      });
+   }
+
    function delete_data(e) {
       const name = String($(e).data("name"));
       const id = String($(e).data("id"));
@@ -324,12 +344,14 @@
             $('#incident > tbdoy').html("");
          }
          
-         for(let row in result){
+         for(let row of result){
             tbody += `<tr>`;
-            tbody += `<td>${result[row].name}</td>`;
+            tbody += `<td>${row.name}</td>`;
             tbody += `<td class="text-right">
-                  <a class="btn btn-sm btn-success" href="#"><i class="fa fa-edit"></i> edit</a>
-                  <a class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${result[row].id}" data-name="${result[row].name}"><i class="fa fa-trash-alt"></i> delete</a>
+                  <a class="btn btn-sm btn-success" href="#" onclick="updateDate([
+                     '${row.id}', '${row.name}'
+                  ])"><i class="fa fa-edit"></i> edit</a>
+                  <a class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${row.id}" data-name="${row.name}"><i class="fa fa-trash-alt"></i> delete</a>
                </td>`;
             tbody += `</tr>`;
          }

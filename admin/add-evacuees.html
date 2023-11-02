@@ -24,6 +24,12 @@
          padding: 0.3rem !important;
          font-size: 13px;
       }
+
+      /* #modal-holder select,
+      #modal-holder input[type="date"]
+      #modal-holder input[type="datetime-local"] {
+         width: 220px !important;
+      } */
    </style>
    <link rel="stylesheet" href="../asset/css/add-evacuees.css">
    <link rel="stylesheet" href="../asset/css/font.css">
@@ -214,7 +220,7 @@
                   <!-- /.col -->
                   <div class="col-sm-6">
                      <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href=".">Home</a></li>
                         <li class="breadcrumb-item active">Add Evacuees</li>
                      </ol>
                   </div>
@@ -295,10 +301,6 @@
          </div>
          <div id="modal-body" class="mb-2">
             <form method="post" id="modal-body-add-evacuee" class="hidden" style="gap: 1rem;">
-               <!-- <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
-                  <label for="" class="m-0">Representative</label>
-                  <input name="representative" class="card p-2" style="margin: 0;" type="text">
-               </span> -->
                <input type="hidden" id="add-evacuee-rep_id" name="rep_id" value="">
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="" class="m-0 align-self-start">Name</label>
@@ -322,7 +324,6 @@
                </span>
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="" class="m-0">Gender</label>
-                  <!-- <input name="gender" class="card p-2" style="margin: 0;" type="text"> -->
                   <select name="gender" class="card flex-row p-2 m-0">
                      <option value="" selected disabled>-- Select --</option>
                      <option value="M">Male</option>
@@ -340,10 +341,6 @@
                </span>
             </form>
             <form method="post" id="modal-body-add-house" class="hidden" style="gap: 1rem;">
-               <!-- <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
-                  <label for="" class="m-0">ID #</label>
-                  <input name="id" class="card p-2" style="margin: 0;" type="text">
-               </span> -->
                <span class="d-flex justify-content-between" style="gap: 1rem;">
                   <label for="" class="m-0">Representative</label>
                   <span class="d-flex flex-column" style="gap: 1rem;">
@@ -359,6 +356,14 @@
                <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
                   <label for="" class="m-0">Contact</label>
                   <input name="contact" class="card p-2" style="margin: 0;" type="text">
+               </span>
+               <span class="d-flex justify-content-between align-items-center" style="gap: 1rem;">
+                  <label for="" class="m-0">Gender</label>
+                  <select name="gender" class="card flex-row p-2 m-0">
+                     <option value="" selected disabled>-- Select --</option>
+                     <option value="M">Male</option>
+                     <option value="F">Female</option>
+                  </select>
                </span>
             </form>
             <form method="post" id="modal-body-edit-house" class="hidden" style="gap: 1rem;">

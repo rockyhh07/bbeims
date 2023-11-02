@@ -207,7 +207,7 @@
                   <!-- /.col -->
                   <div class="col-sm-6">
                      <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href=".">Home</a></li>
                         <li class="breadcrumb-item active">Users</li>
                      </ol>
                   </div>
@@ -277,55 +277,97 @@
 
 
 <script>
-   const form = new FormData();
-   form.append('username', USER_DATA.username);
-   fetch(BASE_URL + 'php/user_get_all.php',{
-      method : 'post',
-      body : form
-   })
-   .then(response => response.json())
-   .then(response => {
-      if (!response.result) {console.error("Result not defined"); return; };
-      let result = response.result;
+   function updateDate(body = ["-1", "", "", ""]) {
+      const category = body[2];
+      const active = Boolean(body[3]);
 
-      if ($.fn.DataTable.isDataTable('#users')) {
-         $('#users').DataTable().destroy();
-         $('#users > tbdoy').html("");
-      }
-      
-      let tbody = `<tbody>`;
-      for(let row in result){
-         let active = result[row].active;
-         let categ = undefined;
-         switch (result[row].category){
-            case 'A' : categ = 'Admin'; break;
-            case 'S' : categ = 'Staff'; break;
-            default : categ = ''; break;
+      show_alert({
+         title : "Update User",
+         body : `<div class="d-flex flex-column" style="gap: .5rem;">
+               <div class="input-group">
+                  <span class="input-group-text" id="user-fullname">Full name</span>
+                  <input readonly id="update-user-fullname" value="${body[1]}" type="text" class="form-control" placeholder="Fullname" aria-describedby="user-fullname">
+               </div>
+               <div class="input-group">
+                  <span class="input-group-text" id="user-category">Category</span>
+                  <select id="update-user-category" class="form-control">
+                     <option value="A" ${category == "A" ? "selected" : ""}>Admin</option>   
+                     <option value="S" ${category == "S" ? "selected" : ""}>Staff</option>   
+                  </select>
+               </div>
+               <div class="custom-control custom-switch">
+                  <input type="checkbox" class="custom-control-input" id="update-user-active" ${active ? "checked" : ""}>
+                  <label class="custom-control-label" for="update-user-active">Active</label>
+               </div>
+            </div>`,
+         buttons : ["Save", "Cancel"]
+      }, function(ans){
+         if(!ans) return;
+
+         const form = new FormData();
+         form.append("id", body[0]);
+         form.append("name", $("#update-user-fullname").val());
+         form.append("category", $("#update-user-category").val());
+         form.append("active", $("#update-user-active").prop("checked"));
+
+         form.forEach((val, key)=>{ console.log({key, val}) });
+      });
+   }
+
+   async function loadUsers() {
+      const form = new FormData();
+      form.append('username', USER_DATA.username);
+      fetch(BASE_URL + 'php/user_get_all.php',{
+         method : 'post',
+         body : form
+      })
+      .then(response => response.json())
+      .then(response => {
+         if (!response.result) {console.error("Result not defined"); return; };
+         let result = response.result;
+
+         if ($.fn.DataTable.isDataTable('#users')) {
+            $('#users').DataTable().destroy();
+            $('#users > tbdoy').html("");
          }
+         
+         let tbody = `<tbody>`;
+         for(let row of result){
+            let active = row.active;
+            let categ = undefined;
+            switch (row.category){
+               case 'A' : categ = 'Admin'; break;
+               case 'S' : categ = 'Staff'; break;
+               default : categ = ''; break;
+            }
 
-         tbody += `<tr>`;
-         {  
-            tbody += `<td>${result[row].id}</td>`;
-            tbody += `<td>
-                  <p class="info">Name: <b>${result[row].fullname}</b></p>
-                  <p class="info"><small>Contact: <b>${result[row].contact}</b></small></p>
-               </td>`;
-            tbody += `<td>${categ}</td>`;
-            tbody += `<td><span class="badge bg-${active?'success':'danger'}">${active?'Active':'Inactive'}</span></td>`;
-            tbody += `<td class="text-right">
-                  <a class="btn btn-sm btn-success"><i class="fa fa-edit"></i> edit</a>
-                  <a class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${result[row].id}" data-name="${result[row].fullname}"><i class="fa fa-trash-alt"></i> delete</a>
-               </td>`;
+            tbody += `<tr>`;
+            {  
+               tbody += `<td>${row.id}</td>`;
+               tbody += `<td>
+                     <p class="info">Name: <b>${row.fullname}</b></p>
+                     <p class="info"><small>Contact: <b>${row.contact}</b></small></p>
+                  </td>`;
+               tbody += `<td>${categ}</td>`;
+               tbody += `<td><span class="badge bg-${active?'success':'danger'}">${active?'Active':'Inactive'}</span></td>`;
+               tbody += `<td class="text-right">
+                     <a class="btn btn-sm btn-success" href="#" onclick="updateDate([
+                        '${row.id}', '${row.fullname}', '${row.category}', '${row.active}'
+                     ])"><i class="fa fa-edit"></i> edit</a>
+                     <a class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${row.id}" data-name="${row.fullname}"><i class="fa fa-trash-alt"></i> delete</a>
+                  </td>`;
+            }
+            tbody += `</tr>`;
          }
-         tbody += `</tr>`;
-      }
-      tbody += `</tbody>`;
-      
-      document.querySelector('table#users > tbody').innerHTML = tbody;
-      $("#users").DataTable();
-   });
+         tbody += `</tbody>`;
+         
+         document.querySelector('table#users > tbody').innerHTML = tbody;
+         $("#users").DataTable();
+      });
+   }
 
-
+   loadUsers();
+   
    function delete_data(e) {
       const name = String($(e).data("name"));
       const id = String($(e).data("id"));
