@@ -375,9 +375,10 @@
             tbody += `<td class="text-right">
                   <a class="btn btn-sm btn-success" href="#" onclick="updateDate([
                      '${row.id}', '${row.name}'
-                  ])"><i class="fa fa-edit"></i> edit</a>
+                  ])"><i class="fa fa-edit"></i> edit</a>`;
+            tbody += (USER_DATA.category === "A") ? `
                   <a class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${row.id}" data-name="${row.name}"><i class="fa fa-trash-alt"></i> delete</a>
-               </td>`;
+               </td>` : "";
             tbody += `</tr>`;
          }
          

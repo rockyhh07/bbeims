@@ -227,53 +227,16 @@
                      <table id="evacuee" class="table table-bordered table-striped">
                         <thead>
                            <tr>
-                              <th>#</th>
+                              <th>ID</th>
                               <th>Evacuees info</th>
-                              <th>Civil Status</th>
                               <th>Address</th>
                               <th>Representative</th>
                               <th>Evacuation Center</th>
-                              <th class="text-right">Incident Date</th>
+                              <th>Incident</th>
+                              <th>Action</th>
                            </tr>
                         </thead>
-                        <tbody>
-                           <tr>
-                              <td>1</td>
-                              <td>
-                                 <p class="info">Name: <b>John Doe</b></p>
-                                 <p class="info"><small>Age: <b>24</b></small></p>
-                                 <p class="info"><small>Gender: <b>Male</b></small></p>
-                                 <p class="info"><small>Contact: <b>09876543228</b></small></p>
-                              </td>
-                              <td>Manggahan</td>
-                              <td><b>Pasig, Manila</b></td>
-                              <td>Jane Doe</td>
-                              <td>Center 1</td>
-                              <td class="text-right">
-                                 <a class="btn btn-sm btn-success" href="#"><i class="fa fa-edit"></i> edit</a>
-                                 <a class="btn btn-sm btn-danger" href="#" data-toggle="modal" data-target="#delete"><i
-                                       class="fa fa-trash-alt"></i> delete</a>
-                              </td>
-                           </tr>
-                           <tr>
-                              <td>2</td>
-                              <td>
-                                 <p class="info">Name: <b>Juan Luna</b></p>
-                                 <p class="info"><small>Age: <b>25</b></small></p>
-                                 <p class="info"><small>Gender: <b>Male</b></small></p>
-                                 <p class="info"><small>Contact: <b>09876543228</b></small></p>
-                              </td>
-                              <td>Rosario</td>
-                              <td><b>Pasig, Manila</b></td>
-                              <td>Anne Smith</td>
-                              <td>Center 1</td>
-                              <td class="text-right">
-                                 <a class="btn btn-sm btn-success" href="#"><i class="fa fa-edit"></i> edit</a>
-                                 <a class="btn btn-sm btn-danger" href="#" data-toggle="modal" data-target="#delete"><i
-                                       class="fa fa-trash-alt"></i> delete</a>
-                              </td>
-                           </tr>
-                        </tbody>
+                        <tbody></tbody>
                      </table>
                   </div>
                </div>
@@ -358,22 +321,42 @@
                         (rep_lname) ? `${rep_lname}` : rep_mname;
 
             let age = row.birthday ? getAge(row.birthday) : "0";
+
+            let id = (row.id == row.representative) ? 
+                        "H-"+row.id.padStart(6, "0") : 
+                        "M-"+row.id.padStart(6, "0")
  
             tbody += `<tr>`;
-            tbody += `<td>${row.id}</td>`;
+            tbody += `<td style="white-space: nowrap;">${id}</td>`;
             tbody += `<td>
                   <p class="info">Name: <b>${name}</b></p>
                   <p class="info">Age: <b>${age}</b></p>
                   <p class="info">Gender: <b>${row.gender}</b></p>
                   <p class="info">Contact: <b>${row.contact}</b></p>
+                  <p class="info">Civil status: <b>${row.civil_status}</b></p>
                </td>`;
-            tbody += `<td>${row.civil_status}</td>`;
             tbody += `<td>${row.address}</td>`;
             tbody += `<td>
-               ${repName}
+                  ${repName}
                </td>`;
-            tbody += `<td>${row.name}</td>`;
-            tbody += `<td>${row.incident_date}</td>`;
+            tbody += `<td>${row.evac_name}</td>`;
+            tbody += `<td>
+                  <div>
+                     <b>Type: </b>${row.incident_name}
+                  </div>
+                  <div>
+                     <b>Date: </b>${row.incident_date}
+                  </div>
+               </td>`;
+            tbody += `<td class="text-right d-flex" style="gap: .5rem;">
+                  <a class="btn btn-sm btn-success" onclick="editData({
+                     rep_id : '${row.id}',
+                     incident_date : '${row.incident_date}',
+                     evac_id : '${row.evac_id}',
+                     incident_name : '${row.incident_name}',
+                     representative : '${repName}',
+                  })"><i class="fa fa-edit"></i> edit</a>
+                </td>`;
             // tbody += `<td class="text-right d-flex" style="gap: .5rem;">
             //       <a class="btn btn-sm btn-success"><i class="fa fa-edit"></i> edit</a>
             //       <a class="btn btn-sm btn-danger" onclick="delete_data(this)" data-id="${row.id}" data-name="${name}"><i class="fa fa-trash-alt"></i> delete</a>
@@ -385,6 +368,67 @@
          document.querySelector('table#evacuee > tbody').innerHTML = tbody;
          $("#evacuee").DataTable();
       });
+   }
+
+   async function editData(body = {}) {
+      show_alert({
+         title : "Edit Incident",
+         body : `<div class="d-flex flex-column" style="gap: .5rem;">
+               <div class="input-group">
+                  <span class="input-group-text" id="evac_name">Family of</span>
+                  <input class="form-control" value="${body.representative}" readonly>
+               </div>
+               <div class="input-group">
+                  <span class="input-group-text" id="evac_name">Incident</span>
+                  <input class="form-control" value="${body.incident_name}" readonly>
+               </div>
+               <div class="input-group">
+                  <span class="input-group-text" id="incident_date">Incident Date</span>
+                  <input id="update-incident_date" value="${body.incident_date}" type="datetime-local" class="form-control" aria-describedby="incident_date">
+               </div>
+               <div class="input-group">
+                  <span class="input-group-text" id="evac_id">Evacuation Center</span>
+                  <select class="form-control" id="update-evac_id" aria-describedby="evac_id">
+                  </select>
+               </div>
+               <div style="font-size: small;">
+                  <b>Note</b>: All members from the family of <b>${body.representative}</b> will be updated as well.
+               </div>
+            </div>`,
+         buttons : ["Save", "Cancel"]
+      }, async function(ans){
+         if(!ans) return;
+
+         const form = new FormData();
+         form.append("uid", USER_DATA.id);
+         form.append("representative", body.rep_id);
+         form.append("incident_date", $("#update-incident_date").val());
+         form.append("evac_id", $("#update-evac_id").val());
+
+         await fetch(`${BASE_URL}php/evacuee_update_incident.php`, {
+            method : 'post',
+            body : form
+         })
+         .then(response => response.json())
+         .then(response => {
+            load_all_evacuess();
+         })
+         .catch(err => console.error("ERROR: " + err));
+      });
+
+      await fetch(`${BASE_URL}php/evac_center_get_all.php`)
+      .then(response => response.json())
+      .then(response => {
+         const result = response.result;
+
+         let options = '';
+         for(row of result) {
+            options += `<option value="${row.id}">${row.name}</option>`;
+         }
+
+         $("#update-evac_id").html(options);
+         $("#update-evac_id").val(body.evac_id)
+      })
    }
 
    load_all_evacuess();

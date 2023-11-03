@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `fullname` VARCHAR(50),
     `password` VARCHAR(255),
     `contact` VARCHAR(15),
+    `birthday` DATE DEFAULT NULL,
     `category` VARCHAR(1),
     `active` INT(1) DEFAULT 1,
     `deletedflag` INT(1) DEFAULT 0,
@@ -85,7 +86,7 @@ SET
 
 INSERT INTO `users`
 SET
-`username` = 'angel',
+`username` = 'ANGEL',
 `fullname` = 'ANGEL AZARRAGA',
 `password` = PASSWORD('123'),
 `contact` = '09999999999',
@@ -94,7 +95,7 @@ SET
 
 INSERT INTO `users`
 SET
-`username` = 'staff',
+`username` = 'STAFF',
 `fullname` = 'STAFF',
 `password` = PASSWORD('123'),
 `contact` = '09999999999',
