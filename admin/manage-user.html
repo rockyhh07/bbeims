@@ -231,7 +231,7 @@
                               <th>Users info</th>
                               <th>Account Category</th>
                               <th>Account Status</th>
-                              <th class="text-right">Action</th>
+                              <th class="text-center">Action</th>
                            </tr>
                         </thead>
                         <tbody></tbody>
@@ -319,12 +319,59 @@
          if(!ans) return;
 
          const form = new FormData();
-         form.append("id", body[0]);
-         form.append("name", $("#update-user-fullname").val());
+         form.append("uid", USER_DATA.id);
+         form.append("id", body.id);
+         form.append("username", $("#update-user-username").val());
+         form.append("fullname", $("#update-user-fullname").val());
+         form.append("contact", $("#update-user-contact").val());
          form.append("category", $("#update-user-category").val());
          form.append("active", $("#update-user-active").prop("checked"));
+         form.append("o_pass", $("#update-user-o_password").val());
+         form.append("n_pass", $("#update-user-n_password").val());
 
-         form.forEach((val, key)=>{ console.log({key, val}) });
+         // if(!validForm(form)) return;
+
+         // form.forEach((val, key) => { console.log({key, val}); });
+
+         fetch(`${BASE_URL}php/user_update.php`,{
+            method : 'post',
+            body : form
+         })
+         .then(response => response.json())
+         .then(response => {
+            const res1 = response.result[0].result;
+            const res2 = response.result[1].result;
+            if(res2) {
+               show_alert({
+                  title : "Password updated!",
+                  body : "Successfully updated user password.",
+                  buttons : ["Okay"]
+               });
+            }
+            if(res1) {
+               show_alert({
+                  title : "Account updated!",
+                  body : "Successfully updated user information.",
+                  buttons : ["Okay"]
+               });
+            }  
+
+            if(!res1) {
+               show_alert({
+                  title : `<i class="fas fa-exclamation-triangle"></i> Error updating information`,
+                  body : "Error occured while updating user information.",
+                  buttons : ["Okay"]
+               });
+            }
+            if(!res2) {
+               show_alert({
+                  title : `<i class="fas fa-exclamation-triangle"></i> Error updating password`,
+                  body : "Password did not matched.",
+                  buttons : ["Okay"]
+               });
+            }  
+         })
+         .catch(err => console.error("ERROR: " + err));
       });
    }
 
@@ -364,16 +411,18 @@
                   </td>`;
                tbody += `<td>${categ}</td>`;
                tbody += `<td><span class="badge bg-${active?'success':'danger'}">${active?'Active':'Inactive'}</span></td>`;
-               tbody += `<td class="text-right">
-                     <a class="btn btn-sm btn-success" href="#" onclick="updateDate({
+               tbody += `<td class="text-center">
+                     <button class="btn btn-sm btn-success" href="#" onclick="updateDate({
                         username : '${row.username}',
                         id : '${row.id}', 
                         fullname : '${row.fullname}', 
                         category : '${row.category}', 
                         contact : '${row.contact}', 
                         active : '${row.active}'
-                     })"><i class="fa fa-edit"></i> edit</a>
-                     <a class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${row.id}" data-name="${row.fullname}"><i class="fa fa-trash-alt"></i> delete</a>
+                     })"><i class="fa fa-edit"></i> Edit</button>
+                     <button class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${row.id}" data-name="${row.fullname}">
+                        <i class="fa fa-trash-alt"></i> Delete
+                     </button>
                   </td>`;
             }
             tbody += `</tr>`;
@@ -400,6 +449,9 @@
          const form = new FormData();
          form.append("id", id);
          form.append("uid", USER_DATA.id);
+
+         if(!validForm(form)) return;
+
          fetch(`${BASE_URL}php/user_delete.php`, {
             method : 'post',
             body : form

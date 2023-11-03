@@ -262,40 +262,10 @@
                                     <th>Center Name</th>
                                     <th>Address</th>
                                     <th>Contact</th>
-                                    <th class="text-right">Action</th>
+                                    <th class="text-center">Action</th>
                                  </tr>
                               </thead>
                               <tbody>
-                                 <tr>
-                                    <td>Evacuation Center 1</td>
-                                    <td>Pasig</td>
-                                    <td>09534464565</td>
-                                    <td class="text-right">
-                                       <a class="btn btn-sm btn-success" href="#"><i class="fa fa-edit"></i> edit</a>
-                                       <a class="btn btn-sm btn-danger" href="#" data-toggle="modal"
-                                          data-target="#delete"><i class="fa fa-trash-alt"></i> delete</a>
-                                    </td>
-                                 </tr>
-                                 <tr>
-                                    <td>Evacuation Center 2</td>
-                                    <td>Makati</td>
-                                    <td>09534464565</td>
-                                    <td class="text-right">
-                                       <a class="btn btn-sm btn-success" href="#"><i class="fa fa-edit"></i> edit</a>
-                                       <a class="btn btn-sm btn-danger" href="#" data-toggle="modal"
-                                          data-target="#delete"><i class="fa fa-trash-alt"></i> delete</a>
-                                    </td>
-                                 </tr>
-                                 <tr>
-                                    <td>Evacuation Center 3</td>
-                                    <td>Taguig</td>
-                                    <td>09534464565</td>
-                                    <td class="text-right">
-                                       <a class="btn btn-sm btn-success" href="#"><i class="fa fa-edit"></i> edit</a>
-                                       <a class="btn btn-sm btn-danger" href="#" data-toggle="modal"
-                                          data-target="#delete"><i class="fa fa-trash-alt"></i> delete</a>
-                                    </td>
-                                 </tr>
                               </tbody>
                            </table>
                         </div>
@@ -431,11 +401,13 @@
             tbody += `<td>${row.name}</td>`;
             tbody += `<td>${row.address}</td>`;
             tbody += `<td>${row.contact}</td>`;
-            tbody += `<td class="text-right">
-               <a class="btn btn-sm btn-success" href="#" onclick="updateDate([
+            tbody += `<td class="text-center">
+               <button class="btn btn-sm btn-success" href="#" onclick="updateDate([
                      '${row.id}', '${row.name}', '${row.address}', '${row.contact}'
-                  ])"><i class="fa fa-edit"></i> edit</a>`;
-            tbody += (USER_DATA.category === "A") ? `<a class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${row.id}" data-name="${row.name}"><i class="fa fa-trash-alt"></i> delete</a>
+                  ])"><i class="fa fa-edit"></i> Edit</button>`;
+            tbody += (USER_DATA.category === "A") ? ` <button class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${row.id}" data-name="${row.name}">
+                  <i class="fa fa-trash-alt"></i> Ddelete
+               </button>
             </td>` : "";
             tbody += `</tr>`;
          }

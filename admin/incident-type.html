@@ -247,7 +247,7 @@
                               <thead>
                                  <tr>
                                     <th>Incident Name</th>
-                                    <th class="text-right">Action</th>
+                                    <th class="text-center">Action</th>
                                  </tr>
                               </thead>
                               <tbody></tbody>
@@ -372,12 +372,14 @@
          for(let row of result){
             tbody += `<tr>`;
             tbody += `<td>${row.name}</td>`;
-            tbody += `<td class="text-right">
-                  <a class="btn btn-sm btn-success" href="#" onclick="updateDate([
+            tbody += `<td class="text-center">
+                  <button class="btn btn-sm btn-success" href="#" onclick="updateDate([
                      '${row.id}', '${row.name}'
-                  ])"><i class="fa fa-edit"></i> edit</a>`;
-            tbody += (USER_DATA.category === "A") ? `
-                  <a class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${row.id}" data-name="${row.name}"><i class="fa fa-trash-alt"></i> delete</a>
+                  ])"><i class="fa fa-edit"></i> Edit</button>`;
+            tbody += (USER_DATA.category === "A" ) ? `
+                  <button class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${row.id}" data-name="${row.name}">
+                     <i class="fa fa-trash-alt"></i> Delete
+                  </button>
                </td>` : "";
             tbody += `</tr>`;
          }

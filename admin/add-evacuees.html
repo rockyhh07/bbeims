@@ -236,14 +236,16 @@
             <div class="container-fluid card p-3">
                <div class="d-flex align-items-center justify-content-between">
                   <h4 id="table-title">Overall Population</h4>
-                  <button id="btn-add-house" class="btn btn-primary" onclick="openModal('add-house')">Add Representative</button>
+                  <button id="btn-add-house" class="btn btn-primary" onclick="openModal('add-house')">
+                     <i class="fas fa-plus"></i> Add Representative
+                  </button>
                </div>
                <hr>
                <table id="dataTable" class="table table-bordered table-striped"></table>
                <div class="d-flex flex-row-reverse justify-content-between" style="gap: 1rem;">
                   <span class="d-flex align-items-end p-2" style="gap: 1rem; justify-self: flex-end;">
                      <button id="btn-add-evacuee" class="btn btn-success hidden" onclick="openModal('add-evacuee')">
-                        Add Member
+                        <i class="fas fa-plus"></i> Add Member
                      </button>
                      <button id="btn-cancel-view" class="btn btn-primary hidden" onclick="loadAllRepresentative()">
                         Cancel
@@ -267,7 +269,7 @@
                         </select>
                      </div>
                      <button id="btn-add-report" class="btn btn-warning align-self-end" style="white-space: nowrap;">
-                        Add Evacuees
+                        <i class="fas fa-plus"></i> Add Evacuees
                      </button>
                   </form>
                </div>

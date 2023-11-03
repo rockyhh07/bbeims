@@ -1,4 +1,5 @@
 let representative_selected = null;
+let address_selected = null;
 
 $("#modal-footer-add-evacuee").on("click", async function(e){
     const form = new FormData(document.getElementById("modal-body-add-evacuee"));
@@ -104,6 +105,8 @@ function openModal(id, body = {}) {
     $(`#modal-body-${id}`).removeClass("hidden");
     $(`#modal-footer-${id}`).removeClass("hidden");
 
+    console.log({body});
+
     if(id != "add-evacuee" && id != "add-house") {
         $(`#modal-body-${id} input[name='id']`).val(body.id);
         $(`#modal-body-${id} input[name='fname']`).val(body.name.fname);
@@ -114,6 +117,10 @@ function openModal(id, body = {}) {
         $(`#modal-body-${id} input[name='birthday']`).val(dateToInputDate(body.birthday));
         $(`#modal-body-${id} select[name='gender']`).val(body.gender);
         $(`#modal-body-${id} select[name='civil_status']`).val(body.cs[0]);
+    }
+
+    if(id == "add-evacuee") {
+        $(`#modal-body-${id} input[name='address']`).val(address_selected);
     }
 
     $("#modal-holder").removeClass("hidden");
@@ -174,6 +181,7 @@ function updateHoseMember(e) {
     $("#table-title").text("House Information");
 
     const id = $(e).data("rep_id");
+    address_selected = $(e).data("address");
     loadAllHouseMember(id, "houseInformation");
 
 }
@@ -212,6 +220,10 @@ async function loadAllHouseMember(id, table){
             let name = `${row.lname}, ${row.fname} ${row.mname}`;
             let age = getAge(row.birthday)
 
+            let cs= (row.civil_status == 'S') ? "SINGLE" :
+                    (row.civil_status == 'M') ? "MARRIED" :
+                    (row.civil_status == 'W') ? "WIDOWED" : "--";
+
             tbody += `<tr>`;
             tbody += `<td style="white-space: nowrap;" class="member-list">${"M-"+row.id.padStart(6, "0")}</td>`;
             tbody += `<td>
@@ -220,11 +232,11 @@ async function loadAllHouseMember(id, table){
                 <div><b>Gnder:</b> ${row.gender}</div>
                 <div><b>Contact:</b> ${row.contact}</div>
             </td>`;
-            tbody += `<td>${row.civil_status}</td>`;
+            tbody += `<td>${cs}</td>`;
             tbody += `<td>${row.representative}</td>`;
             tbody += `<td>${row.address}</td>`;
             tbody += (table === "calamaityReport") ? "" : `<td class="d-flex justify-content-center" style="gap: .5rem;">
-                <button class="btn btn-success" onclick="openModal('edit-house-member', 
+                <button class="btn btn-sm btn-success" onclick="openModal('edit-house-member', 
                     {
                         vid:'${"M-"+row.id.padStart(6, "0")}',
                         rep:'${row.representative}',
@@ -236,9 +248,11 @@ async function loadAllHouseMember(id, table){
                         cs:'${row.civil_status}', 
                         id:'${row.id}'
                     })
-                ">Edit</button>`;
+                "><i class="fas fa-user-edit"></i> Edit</button>`;
             tbody += (USER_DATA.category === "A") ? `
-                <button data-member_id="${row.id}" class="btn btn-danger" onclick="deleteMember(this)">Delete</button>
+                <button data-member_id="${row.id}" class="btn btn-sm btn-danger" onclick="deleteMember(this)">
+                    <i class="fas fa-trash-alt"></i> Delete
+                </button>
             </td>` : "";
             tbody += `</tr>`;
         }
@@ -250,6 +264,7 @@ async function loadAllHouseMember(id, table){
 }
 
 async function loadAllRepresentative() {
+    address_selected = null;
     representative_selected = null;
 
     $("#btn-add-evacuee").addClass("hidden")
@@ -287,7 +302,7 @@ async function loadAllRepresentative() {
             tbody += `<td>${name}</td>`;
             tbody += `<td>${row.contact}</td>`;
             tbody += `<td class="d-flex justify-content-center" style="gap: .5rem;">
-                <button class="btn btn-success" onclick="openModal('edit-house', 
+                <button class="btn btn-sm btn-success" onclick="openModal('edit-house', 
                 {
                     vid:'${"H-"+row.id.padStart(6, "0")}',
                     rep:'${row.representative}',
@@ -299,10 +314,14 @@ async function loadAllRepresentative() {
                     cs:'${row.civil_status}', 
                     id:'${row.id}'
                 })
-                ">Edit</button>
-                <button data-rep_id="${row.id}" onclick="updateHoseMember(this)" class="btn btn-warning">Update</button>`;
+                "><i class="fas fa-user-edit"></i> Edit</button>
+                    <button data-address="${row.address}" data-rep_id="${row.id}" onclick="updateHoseMember(this)" class="btn btn-sm btn-warning">
+                        <i class="fas fa-pencil-alt"></i> Update
+                    </button>`;
             tbody += (USER_DATA.category === "A") ? ` 
-                <button data-rep_id="${row.id}" class="btn btn-danger" onclick="deleteHouse(this)">Delete</button>
+                    <button data-rep_id="${row.id}" class="btn btn-sm btn-danger" onclick="deleteHouse(this)">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
                 </td>` : "";
             tbody += '</tr>';
         }

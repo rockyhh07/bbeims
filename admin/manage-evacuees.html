@@ -224,6 +224,11 @@
                <div class="card card-info p-3">
 
                   <div class="col-md-12">
+                     <div class="d-flex flex-row-reverse">
+                        <button class="btn btn-primary" onclick="archive()">
+                           <i class="fas fa-archive"></i> Archive
+                        </button>
+                     </div>
                      <table id="evacuee" class="table table-bordered table-striped">
                         <thead>
                            <tr>
@@ -233,11 +238,12 @@
                               <th>Representative</th>
                               <th>Evacuation Center</th>
                               <th>Incident</th>
-                              <th>Action</th>
+                              <th class="text-center">Action</th>
                            </tr>
                         </thead>
                         <tbody></tbody>
                      </table>
+                     
                   </div>
                </div>
             </div>
@@ -278,6 +284,39 @@
 <script src="../asset/js/logout.js"></script>
 
 <script>
+   
+   let evacCount = 0;
+
+   async function archive() {
+
+      if(evacCount == 0) {
+         show_alert({
+            title : `<i class="fas fa-exclamation-triangle"></i> Error Archiving`,
+            body : "No Evacuees found",
+            buttons : ["Okay"]
+         });
+         return;
+      }
+
+      const form = new FormData();
+      form.append("uid", USER_DATA.id);
+      await fetch(`${BASE_URL}php/archive.php`,{
+         method : 'post',
+         body : form
+      })
+      .then(response => response.json())
+      .then(response => {
+         show_alert({
+            title : `Archived Successfully!`,
+            body : `<b>${evacCount}</b> evacuess archived.`,
+            buttons : ["Okay"]
+         });
+         evacCount = 0;
+         load_all_evacuess();
+      })
+      .catch(err => console.error("ERROR: " + err));
+   }
+
    function delete_data(e) {
       const name = String($(e).data("name"));
       const id = String($(e).data("id"));
@@ -302,6 +341,8 @@
             $('#evacuee > tbdoy').html("");
          }
          
+         evacCount = result.length;
+
          let tbody = `<tbody>`;
          for(let row of result){
             let fname = row.fname;
@@ -348,19 +389,15 @@
                      <b>Date: </b>${row.incident_date}
                   </div>
                </td>`;
-            tbody += `<td class="text-right d-flex" style="gap: .5rem;">
-                  <a class="btn btn-sm btn-success" onclick="editData({
+            tbody += `<td class="text-center">
+                  <button class="btn btn-sm btn-success" onclick="editData({
                      rep_id : '${row.id}',
                      incident_date : '${row.incident_date}',
                      evac_id : '${row.evac_id}',
                      incident_name : '${row.incident_name}',
                      representative : '${repName}',
-                  })"><i class="fa fa-edit"></i> edit</a>
+                  })"><i class="fa fa-edit"></i> Edit</button>
                 </td>`;
-            // tbody += `<td class="text-right d-flex" style="gap: .5rem;">
-            //       <a class="btn btn-sm btn-success"><i class="fa fa-edit"></i> edit</a>
-            //       <a class="btn btn-sm btn-danger" onclick="delete_data(this)" data-id="${row.id}" data-name="${name}"><i class="fa fa-trash-alt"></i> delete</a>
-            //    </td>`;
             tbody += `</tr>`;
          }
 

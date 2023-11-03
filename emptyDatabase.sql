@@ -116,30 +116,3 @@ SET
 `contact` = '09999999999',
 `category` = 'S',
 `created_by` = '1';
-
-INSERT INTO `evac_center`
-(`name`, `address`, `contact`,  `created_by`)
-VALUES
-('EVACUATION CENTER 1','PASIG','09765468621', '1'),
-('EVACUATION CENTER 2','MAKATI','09767733621', '1'),
-('EVACUATION CENTER 3','MANDALUYONG','09765461155', '1');
-
-INSERT INTO `incident`
-(`name`, `created_by`)
-VALUES
-('EARTH QUAKE', '1'),
-('FLOOD', '1'),
-('TYPHOON', '1');
-
-INSERT INTO `evacuee` 
-(`lname`,`fname`,`mname`,`contact`,`birthday`,`gender`,`civil_status`,`address`,`representative`, `created_by`)
-VALUES
-('ADMIN','','','09765468621',NULL,'M','S','Mandaluyong','1', '1'),
-('AZARRAGA','GEMMA','DELGADO','09123456789',NULL,'F','M','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','2','1'),
-('MAGALINO','BEBOT','S.','09123456789',NULL,'F','S','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','3','1'),
-('MEKUTO','FUKIKO','','09123456789',NULL,'F','S','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','4','1'),
-('MALONE','HOE','','09123456789',NULL,'F','S','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','5','1'),
-('WANG','MALOU','','09123456789',NULL,'F','S','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','6','1'),
-('AZARRAGA','ANGEL','DELGADO','09123456789',NULL,'F','W','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','2','1'),
-('AZARRAGA','ANDREA','DELGADO','09123456789',NULL,'F','S','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','2','1'),
-('AZARRAGA','LUCIA','DELGADO','09123456789',NULL,'F','W','949 MMR Track St., Brgy. Barangka Ibaba Mandaluyong City','2','1');

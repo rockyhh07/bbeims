@@ -76,14 +76,47 @@ class BBEIMS
     }
 
     public static function user_update(array $post_result) {
-        $query = new QueryBuilder(
-            QUERY_UPDATE,
-            "users",
-            $post_result,
-            ["id", "username", "fullname", "password"],
-            ["id" => $post_result["id"], "deletedflag" => 0]
-        );
-        return count($query->errors) > 0 ? $query->get_error_result() : QUERY::run($query->sql);
+        QUERY::escape_str_all($post_result);
+        $uid = $post_result['uid'];
+        $id = $post_result['id'];
+        $o_pass = $post_result['o_pass'];
+        $n_pass = $post_result['n_pass'];
+        $username = strtoupper($post_result['username']);
+
+        $query = "UPDATE `users` SET";
+
+        foreach($post_result as $key=>$val) {
+            if($key === "id") continue;
+            if($key === "uid") continue;
+            if($key === "o_pass") continue;
+            if($key === "n_pass") continue;
+
+            $query .= " `{$key}`='".strtoupper($val)."',";
+        }
+
+        $query .= "
+                `updated_by`='{$uid}',
+                `updated_date`=CURRENT_TIMESTAMP
+            WHERE
+                `id`='{$id}'
+        ";
+
+        $r1 = QUERY::run($query);
+
+        $matched = QUERY::run("SELECT `id` FROM `users` WHERE `username`='{$username}' AND `password`=PASSWORD('{$o_pass}')");
+
+        $query2 = "UPDATE `users` SET";
+        if(count($matched) > 0) {
+            $query2 .= "
+                `password`=PASSWORD('{$n_pass}')
+            WHERE 
+                `id` = '{$id}'
+            ";
+            array_push($r1, QUERY::run($query2)[0]);
+        }else {
+            array_push($r1, ["result"=>false]);
+        }
+        return $r1;
     }
 
     public static function user_delete($post_result) {
@@ -493,7 +526,9 @@ class BBEIMS
                 FROM `evacuee` e
                 WHERE
                     e.`deletedflag` = 0 AND
-                    e.`incident_date` IS NOT NULL
+                    e.`incident_date` IS NOT NULL AND
+                    e.`incident_id` IS NOT NULL AND
+                    e.`evac_id` IS NOT NULL
                 ";
         return QUERY::run($query);
     }
@@ -624,6 +659,75 @@ class BBEIMS
         ";
 
         return QUERY::run($query);
+    }
+
+    public static function archive(array $post_result) {
+        QUERY::escape_str_all($post_result);
+
+        $uid = $post_result['uid'];
+
+        $result = [];
+
+        // PHASE 1, Insert all evacuee in the archive
+        {
+            $query_allEvac = "SELECT 
+                            e.`id`,
+                            e.`incident_id`,
+                            e.`incident_date`,
+                            e.`evac_id`
+                        FROM `evacuee` e
+                        WHERE
+                            e.`deletedflag` = 0 AND
+                            e.`incident_date` IS NOT NULL AND
+                            e.`incident_id` IS NOT NULL AND
+                            e.`evac_id` IS NOT NULL
+            ";
+    
+            $query = "INSERT INTO `incident_archive` 
+                (`evacuee_id`, `incident_id`, `incident_date`,`evac_id`, `created_by`, `created_date`) VALUES";
+            foreach(QUERY::run($query_allEvac) as $obj) {
+                $evacuee_id = $obj["id"];
+                $incident_id = $obj["incident_id"];
+                $incident_date = $obj["incident_date"];
+                $evac_id = $obj["evac_id"];
+    
+                $query .= "('{$evacuee_id}', '{$incident_id}', '{$incident_date}', '{$evac_id}', '{$uid}', CURRENT_TIMESTAMP),";
+            }
+            $query = rtrim($query, ",");
+    
+            array_push($result, QUERY::run($query)[0]);
+        }
+
+        // PHASE 2, Clearing incident record
+        {
+            $query_repEvacuee = "SELECT 
+                        e.`representative`
+                    FROM `evacuee` e
+                    WHERE
+                        e.`deletedflag` = 0 AND
+                        e.`incident_date` IS NOT NULL AND
+                        e.`incident_id` IS NOT NULL AND
+                        e.`evac_id` IS NOT NULL
+                    GROUP BY e.`representative`
+            ";
+    
+            foreach(QUERY::run($query_repEvacuee) as $obj) {
+                $repID = $obj["representative"];
+    
+                $query = "UPDATE `evacuee` 
+                        SET 
+                            `evac_id`=NULL,
+                            `incident_id`=NULL,
+                            `incident_date`=NULL,
+                            `updated_by`='{$uid}',
+                            `updated_date`=CURRENT_TIMESTAMP
+                        WHERE 
+                            `representative`={$repID} 
+                ";
+                array_push($result, QUERY::run($query)[0]);
+            }
+        }
+        return $result;
     }
 
     // PRIVATES //
