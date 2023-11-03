@@ -492,7 +492,10 @@ class BBEIMS
                         count(`id`)
                     FROM `evacuee` e
                     WHERE
-                        e.`deletedflag` = 0
+                        e.`deletedflag` = 0 AND
+                        e.`incident_date` IS NOT NULL AND
+                        e.`incident_id` IS NOT NULL AND
+                        e.`evac_id` IS NOT NULL
                     ) `evacuees`,
                     (SELECT 
                         COUNT(`rep_tbl`.`rep`)
@@ -535,7 +538,7 @@ class BBEIMS
 
     public static function report_by_age(array $post_result) {
         $query = "SELECT 
-                    e.`age`
+                    e.`birthday`
                 FROM `evacuee` e
                 WHERE
                     e.`deletedflag` = 0 AND
