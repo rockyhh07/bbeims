@@ -22,10 +22,16 @@
 
       table tr td {
          padding: 0.3rem !important;
-         font-size: 13px;
+         font-size: 13px !important;
       }
    </style>
    <link rel="stylesheet" href="../asset/css/font.css">
+   <style>
+      table * {
+         font-family: 'Poppins', sans-serif;
+         font-size: 13px !important;
+      }
+   </style>
    <!-- Font Awesome -->
    <link rel="stylesheet" href="../asset/fontawesome/css/all.min.css">
    <script src="../asset/js/constants.js"></script>
@@ -233,7 +239,7 @@
                         <thead>
                            <tr>
                               <th>ID</th>
-                              <th>Evacuees info</th>
+                              <th style="min-width: 225px;">Evacuee's Information</th>
                               <th>Address</th>
                               <th>Representative</th>
                               <th>Evacuation Center</th>
@@ -366,15 +372,20 @@
             let id = (row.id == row.representative) ? 
                         "H-"+row.id.padStart(6, "0") : 
                         "M-"+row.id.padStart(6, "0")
+
+            let cs= (row.civil_status == 'S') ? "SINGLE" :
+                    (row.civil_status == 'M') ? "MARRIED" :
+                    (row.civil_status == 'SP') ? "Separated" :
+                    (row.civil_status == 'W') ? "WIDOWED" : "--";
  
             tbody += `<tr>`;
             tbody += `<td style="white-space: nowrap;">${id}</td>`;
             tbody += `<td>
-                  <p class="info">Name: <b>${name}</b></p>
-                  <p class="info">Age: <b>${age}</b></p>
-                  <p class="info">Gender: <b>${row.gender}</b></p>
-                  <p class="info">Contact: <b>${row.contact}</b></p>
-                  <p class="info">Civil status: <b>${row.civil_status}</b></p>
+                  <p class="info"><b>Name:</b>${name}</p>
+                  <p class="info"><b>Age:</b>${age}</p>
+                  <p class="info"><b>Gender:</b>${row.gender}</p>
+                  <p class="info"><b>Contact:</b>${row.contact}</p>
+                  <p class="info"><b>Civil status:</b>${cs}</p>
                </td>`;
             tbody += `<td>${row.address}</td>`;
             tbody += `<td>
