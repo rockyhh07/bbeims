@@ -213,6 +213,7 @@ async function loadAllHouseMember(id, table){
 
             let cs= (row.civil_status == 'S') ? "SINGLE" :
                     (row.civil_status == 'M') ? "MARRIED" :
+                    (row.civil_status == 'SP') ? "Separated" :
                     (row.civil_status == 'W') ? "WIDOWED" : "--";
 
             let gender = (row.gender == "M") ? "Male" : "Female";
