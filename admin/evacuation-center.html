@@ -260,7 +260,7 @@
                               <thead>
                                  <tr>
                                     <th>Center Name</th>
-                                    <th>Address</th>
+                                    <th style="min-width: 300px;">Address</th>
                                     <th>Contact</th>
                                     <th class="text-center">Action</th>
                                  </tr>
@@ -406,7 +406,7 @@
                      '${row.id}', '${row.name}', '${row.address}', '${row.contact}'
                   ])"><i class="fa fa-edit"></i> Edit</button>`;
             tbody += (USER_DATA.category === "A") ? ` <button class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${row.id}" data-name="${row.name}">
-                  <i class="fa fa-trash-alt"></i> Ddelete
+                  <i class="fa fa-trash-alt"></i> Delete
                </button>
             </td>` : "";
             tbody += `</tr>`;

@@ -44,6 +44,7 @@ function validForm(form) {
 }
 
 function getAge(dateString) {
+   if(!dateString) return 0;
    var today = new Date();
    var birthDate = new Date(dateString);
    var age = today.getFullYear() - birthDate.getFullYear();

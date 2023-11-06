@@ -280,56 +280,56 @@
    function updateDate(body = {}) {
       show_alert({
          title : "Update User",
-         body : `<div class="d-flex flex-column" style="gap: .5rem;">
+         body : `<form id="user-update-form" class="d-flex flex-column" style="gap: .5rem;">
                <div class="input-group">
                   <span class="input-group-text" id="user-username">Username</span>
-                  <input id="update-user-username" value="${body.username}" type="text" class="form-control" placeholder="Username" aria-describedby="user-username">
+                  <input name="username" value="${body.username}" type="text" class="form-control" placeholder="Username" aria-describedby="user-username" readonly>
                </div>
                <div class="input-group">
                   <span class="input-group-text" id="user-fullname">Full name</span>
-                  <input id="update-user-fullname" value="${body.fullname}" type="text" class="form-control" placeholder="Fullname" aria-describedby="user-fullname">
+                  <input name="fullname" value="${body.fullname}" type="text" class="form-control" placeholder="Fullname" aria-describedby="user-fullname">
                </div>
                <div class="input-group">
                   <span class="input-group-text" id="user-contact">Contact</span>
-                  <input id="update-user-contact" value="${body.contact}" type="text" class="form-control" placeholder="Contact" aria-describedby="user-contact">
+                  <input name="contact" value="${body.contact}" type="text" class="form-control" placeholder="Contact" aria-describedby="user-contact">
                </div>
                <div class="input-group">
+                  <span class="input-group-text" id="user-birthday">Birthday</span>
+                  <input name="birthday" value="${body.birthday}" type="date" class="form-control" placeholder="Contact" aria-describedby="user-birthday">
+               </div>
+               <hr>
+               <div class="input-group">
                   <span class="input-group-text" id="user-category">Category</span>
-                  <select id="update-user-category" class="form-control">
+                  <select name="category" class="form-control">
                      <option value="A" ${body.category == "A" ? "selected" : ""}>Admin</option>   
                      <option value="S" ${body.category == "S" ? "selected" : ""}>Staff</option>   
                   </select>
                </div>
                <div class="custom-control custom-switch">
-                  <input type="checkbox" class="custom-control-input" id="update-user-active" ${body.active ? "checked" : ""}>
+                  <input type="checkbox" class="custom-control-input" name="active" ${body.active ? "checked" : ""}>
                   <label class="custom-control-label" for="update-user-active">Active</label>
                </div>
-
+               <hr>
                <div class="input-group">
                   <span class="input-group-text" id="user-o_password">Old password</span>
-                  <input id="update-user-o_password" type="password" class="form-control" placeholder="Password" aria-describedby="user-o_password">
+                  <input name="o_password" type="password" class="form-control" placeholder="Password" aria-describedby="user-o_password" autocomplete>
                </div>
                <div class="input-group">
                   <span class="input-group-text" id="user-n_password">New password</span>
-                  <input id="update-user-n_password" type="password" class="form-control" placeholder="Password" aria-describedby="user-n_password">
+                  <input id="n_password" name="n_password" type="password" class="form-control" placeholder="Password" aria-describedby="user-n_password" autocomplete>
                </div>
             </div>`,
          buttons : ["Save", "Cancel"]
       }, function(ans){
          if(!ans) return;
 
-         const form = new FormData();
+         const form = new FormData(document.getElementById("user-update-form"));
          form.append("uid", USER_DATA.id);
          form.append("id", body.id);
-         form.append("username", $("#update-user-username").val());
-         form.append("fullname", $("#update-user-fullname").val());
-         form.append("contact", $("#update-user-contact").val());
-         form.append("category", $("#update-user-category").val());
-         form.append("active", $("#update-user-active").prop("checked"));
-         form.append("o_pass", $("#update-user-o_password").val());
-         form.append("n_pass", $("#update-user-n_password").val());
 
          // if(!validForm(form)) return;
+
+         const n_pass = $("#n_password").val();
 
          // form.forEach((val, key) => { console.log({key, val}); });
 
@@ -341,35 +341,39 @@
          .then(response => {
             const res1 = response.result[0].result;
             const res2 = response.result[1].result;
-            if(res2) {
-               show_alert({
-                  title : "Password updated!",
-                  body : "Successfully updated user password.",
-                  buttons : ["Okay"]
-               });
-            }
+            
             if(res1) {
                show_alert({
                   title : "Account updated!",
                   body : "Successfully updated user information.",
                   buttons : ["Okay"]
                });
-            }  
-
-            if(!res1) {
+            } else {
                show_alert({
                   title : `<i class="fas fa-exclamation-triangle"></i> Error updating information`,
                   body : "Error occured while updating user information.",
                   buttons : ["Okay"]
                });
             }
-            if(!res2) {
-               show_alert({
-                  title : `<i class="fas fa-exclamation-triangle"></i> Error updating password`,
-                  body : "Password did not matched.",
-                  buttons : ["Okay"]
-               });
-            }  
+
+            if(n_pass != "") {
+               if(res2) {
+                  show_alert({
+                     title : "Password updated!",
+                     body : "Successfully updated user password.",
+                     buttons : ["Okay"]
+                  });
+               } else {
+                  show_alert({
+                     title : `<i class="fas fa-exclamation-triangle"></i> Error updating password`,
+                     body : "Password did not matched.",
+                     buttons : ["Okay"]
+                  });
+               }  
+            }
+
+            loadUsers();
+
          })
          .catch(err => console.error("ERROR: " + err));
       });
@@ -416,6 +420,7 @@
                         username : '${row.username}',
                         id : '${row.id}', 
                         fullname : '${row.fullname}', 
+                        birthday : '${row.birthday}', 
                         category : '${row.category}', 
                         contact : '${row.contact}', 
                         active : '${row.active}'
