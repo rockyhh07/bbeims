@@ -7,8 +7,6 @@ $("#modal-footer-add-evacuee").on("click", async function(e){
     form.append("rep", "mem");
     form.append("representative", representative_selected);
 
-    if(!validForm(form)) return;
-
     await fetch(`${BASE_URL}php/evacuee_new.php`,{
         method : 'post',
         body : form
@@ -27,8 +25,6 @@ $("#modal-footer-add-house").on("click", async function(e){
     form.append("uid", USER_DATA.id);
     form.append("rep", "rep");
 
-    if(!validForm(form)) return;
-
     await fetch(`${BASE_URL}php/evacuee_new.php`,{
         method : 'post',
         body : form
@@ -45,8 +41,6 @@ $("#modal-footer-add-house").on("click", async function(e){
 $("#modal-footer-edit-house").on("click", async function(e){
     const form = new FormData(document.getElementById("modal-body-edit-house"));
     form.append("uid", USER_DATA.id);
-
-    if(!validForm(form)) return;
 
     await fetch(`${BASE_URL}php/evacuee_update.php`,{
         method : 'post',
@@ -66,8 +60,6 @@ $("#modal-footer-edit-house").on("click", async function(e){
 $("#modal-footer-edit-house-member").on("click", async function(e){
     const form = new FormData(document.getElementById("modal-body-edit-house-member"));
     form.append("uid", USER_DATA.id);
-
-    if(!validForm(form)) return;
 
     await fetch(`${BASE_URL}php/evacuee_update.php`,{
         method : 'post',
@@ -105,8 +97,6 @@ function openModal(id, body = {}) {
     $(`#modal-body-${id}`).removeClass("hidden");
     $(`#modal-footer-${id}`).removeClass("hidden");
 
-    console.log({body});
-
     if(id != "add-evacuee" && id != "add-house") {
         $(`#modal-body-${id} input[name='id']`).val(body.id);
         $(`#modal-body-${id} input[name='fname']`).val(body.name.fname);
@@ -114,7 +104,7 @@ function openModal(id, body = {}) {
         $(`#modal-body-${id} input[name='mname']`).val(body.name.mname);
         $(`#modal-body-${id} input[name='contact']`).val(body.contact);
         $(`#modal-body-${id} input[name='address']`).val(body.address);
-        $(`#modal-body-${id} input[name='birthday']`).val(dateToInputDate(body.birthday));
+        $(`#modal-body-${id} input[name='birthday']`).val(body.birthday);
         $(`#modal-body-${id} select[name='gender']`).val(body.gender);
         $(`#modal-body-${id} select[name='civil_status']`).val(body.cs[0]);
     }
@@ -218,18 +208,21 @@ async function loadAllHouseMember(id, table){
         let tbody = '';
         for(let row of result) {
             let name = `${row.lname}, ${row.fname} ${row.mname}`;
+            
             let age = getAge(row.birthday)
 
             let cs= (row.civil_status == 'S') ? "SINGLE" :
                     (row.civil_status == 'M') ? "MARRIED" :
                     (row.civil_status == 'W') ? "WIDOWED" : "--";
 
+            let gender = (row.gender == "M") ? "Male" : "Female";
+
             tbody += `<tr>`;
             tbody += `<td style="white-space: nowrap;" class="member-list">${"M-"+row.id.padStart(6, "0")}</td>`;
             tbody += `<td>
                 <div><b>Name:</b> ${name}</div>
                 <div><b>Age:</b> ${age}</div>
-                <div><b>Gnder:</b> ${row.gender}</div>
+                <div><b>Gender:</b> ${gender}</div>
                 <div><b>Contact:</b> ${row.contact}</div>
             </td>`;
             tbody += `<td>${cs}</td>`;
@@ -241,7 +234,7 @@ async function loadAllHouseMember(id, table){
                         vid:'${"M-"+row.id.padStart(6, "0")}',
                         rep:'${row.representative}',
                         name:{lname:'${row.lname}',fname:'${row.fname}',mname:'${row.mname}'},
-                        bday:'${row.birthday}',
+                        birthday:'${row.birthday}',
                         address:'${row.address}',
                         contact:'${row.contact}',
                         gender: '${row.gender}',
@@ -307,7 +300,7 @@ async function loadAllRepresentative() {
                     vid:'${"H-"+row.id.padStart(6, "0")}',
                     rep:'${row.representative}',
                     name:{lname:'${row.lname}',fname:'${row.fname}',mname:'${row.mname}'},
-                    bday:'${row.birthday}',
+                    birthday:'${row.birthday}',
                     address:'${row.address}',
                     contact:'${row.contact}',
                     gender: '${row.gender}',
@@ -425,7 +418,7 @@ const body = {
     vid:'${"M-"+row.id.padStart(6, "0")}',
     rep:'${row.representative}',
     name:{lname:'${row.lname}',fname:'${row.fname}',mname:'${row.mname}'},
-    bday:'${row.birthday}',
+    birthday:'${row.birthday}',
     address:'${row.address}',
     contact:'${row.contact}',
     gender: '${row.gender}',

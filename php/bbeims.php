@@ -17,7 +17,7 @@ class BBEIMS
             QUERY_SELECT,
             "users",
             $post_result,
-            ["id", "username", "fullname", "contact", "category", "active"],
+            ["id", "username", "fullname", "contact", "category", "active", "birthday"],
             ["deletedflag" => "0"]
         );
         return QUERY::run($query->sql);
@@ -79,8 +79,8 @@ class BBEIMS
         QUERY::escape_str_all($post_result);
         $uid = $post_result['uid'];
         $id = $post_result['id'];
-        $o_pass = $post_result['o_pass'];
-        $n_pass = $post_result['n_pass'];
+        $o_pass = $post_result['o_password'];
+        $n_pass = $post_result['n_password'];
         $username = strtoupper($post_result['username']);
 
         $query = "UPDATE `users` SET";
@@ -88,8 +88,8 @@ class BBEIMS
         foreach($post_result as $key=>$val) {
             if($key === "id") continue;
             if($key === "uid") continue;
-            if($key === "o_pass") continue;
-            if($key === "n_pass") continue;
+            if($key === "o_password") continue;
+            if($key === "n_password") continue;
 
             $query .= " `{$key}`='".strtoupper($val)."',";
         }
@@ -374,7 +374,7 @@ class BBEIMS
                 WHERE
                     `id` = '{$id}'
         ";
-        
+
         return QUERY::run($query);
     }
 
@@ -537,6 +537,7 @@ class BBEIMS
     }
 
     public static function report_by_age(array $post_result) {
+        QUERY::escape_str_all($post_result);
         $query = "SELECT 
                     e.`birthday`
                 FROM `evacuee` e
@@ -627,7 +628,6 @@ class BBEIMS
                     `birthday`,
                     `gender`,
                     `civil_status`,
-                    
                     `representative`
                 FROM `evacuee` e
                 WHERE 
