@@ -400,6 +400,8 @@
          for(let row of result){
             let active = row.active;
             let categ = undefined;
+            let age = getAge(row.birthday)
+
             switch (row.category){
                case 'A' : categ = 'Admin'; break;
                case 'S' : categ = 'Staff'; break;
@@ -412,6 +414,7 @@
                tbody += `<td>
                      <p class="info">Name: <b>${row.fullname}</b></p>
                      <p class="info"><small>Contact: <b>${row.contact}</b></small></p>
+                     <p class="info"><small>Age: <b>${age ? age : 0}</b></small></p>
                   </td>`;
                tbody += `<td>${categ}</td>`;
                tbody += `<td><span class="badge bg-${active?'success':'danger'}">${active?'Active':'Inactive'}</span></td>`;

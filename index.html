@@ -19,6 +19,8 @@
 
    <script src="./asset/js/constants.js"></script>
    <script src="./asset/js/redirect_to_admin.js"></script>
+   <script src="./asset/jquery/jquery.min.js"></script>
+   <script src="./asset/js/alert.js"></script>
 </head>
 
 <body class="hold-transition login-page">
@@ -55,6 +57,9 @@
                   </div>
                </div>
             </form>
+            <div style="font-size: small; text-align: right; margin-top: 1rem;" onclick="privacy()">
+               Read <a href="#">Privacy policy</a>.
+            </div>
          </div>
          <!-- /.card-body -->
       </div>
@@ -66,6 +71,14 @@
 </html>
 
 <script>
+   function privacy() {
+      show_alert({
+         title : "<div style='font-size: large; font-weight: bold;'>Privacy policy</div>",
+         body : "<div style='font-size: medium'>The terms and condition</div>",
+         buttons : ["Close"]
+      })
+   }
+
    document.getElementById('login-button').addEventListener("click", async function (e) {
       e.preventDefault();
       const form = new FormData(document.getElementById('login-form'));
