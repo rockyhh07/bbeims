@@ -62,3 +62,19 @@ function dateToInputDate(date){
    let month = (today.getMonth() + 1 < 10) ? "0" + (today.getMonth() + 1) : (today.getMonth() + 1);    
    let year = today.getFullYear();
 }
+
+
+async function loadColors(length) {
+   let newColors = [];
+   
+   await fetch(`${BASE_URL}asset/templates/colors.json`)
+   .then(response => response.json())
+   .then(response => {
+      for(let i = 0; i < length; i ++) {
+         newColors.push(response[i]);
+      }
+   })
+   .catch(err => console.error(err));
+
+   return newColors;
+}

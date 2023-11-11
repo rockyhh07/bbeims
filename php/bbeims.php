@@ -464,7 +464,10 @@ class BBEIMS
                             )
                     FROM `evacuee` e
                     WHERE
-                        e.`deletedflag` = 0
+                        e.`deletedflag` = 0 AND
+                        e.`incident_date` IS NOT NULL AND
+                        e.`incident_id` IS NOT NULL AND
+                        e.`evac_id` IS NOT NULL
                     ) `male`,
                     (SELECT 
                         count(
@@ -474,13 +477,19 @@ class BBEIMS
                             )
                     FROM `evacuee` e
                     WHERE
-                        e.`deletedflag` = 0
+                        e.`deletedflag` = 0 AND
+                        e.`incident_date` IS NOT NULL AND
+                        e.`incident_id` IS NOT NULL AND
+                        e.`evac_id` IS NOT NULL
                     ) `female`,
                     (SELECT 
                         count(`id`)
                     FROM `evacuee` e
                     WHERE
-                        e.`deletedflag` = 0
+                        e.`deletedflag` = 0 AND
+                        e.`incident_date` IS NOT NULL AND
+                        e.`incident_id` IS NOT NULL AND
+                        e.`evac_id` IS NOT NULL
                     ) `evacuees`,
                     (SELECT 
                         count(`id`)
@@ -501,13 +510,18 @@ class BBEIMS
                         COUNT(`rep_tbl`.`rep`)
                     FROM (
                         SELECT
-                            `representative` `rep`
-                        FROM `evacuee`
+                            e.`representative` `rep`
+                        FROM `evacuee` e
+                        WHERE
+                            e.`deletedflag` = 0 AND
+                            e.`incident_date` IS NOT NULL AND
+                            e.`incident_id` IS NOT NULL AND
+                            e.`evac_id` IS NOT NULL
                         GROUP BY `representative`
                         ) `rep_tbl`
                     ) `family`,
                     (SELECT 
-                        count(`id`)
+                        count(*)
                     FROM `evacuee` e
                     WHERE
                         e.`deletedflag` = 0
@@ -543,7 +557,9 @@ class BBEIMS
                 FROM `evacuee` e
                 WHERE
                     e.`deletedflag` = 0 AND
-                    e.`incident_date` IS NOT NULL 
+                    e.`incident_date` IS NOT NULL AND
+                    e.`incident_id` IS NOT NULL AND
+                    e.`evac_id` IS NOT NULL
         ";
         return QUERY::run($query);
     }
@@ -560,7 +576,9 @@ class BBEIMS
                     FROM `evacuee` e
                     WHERE
                         e.`deletedflag` = 0 AND
-                        e.`incident_date` IS NOT NULL 
+                        e.`incident_date` IS NOT NULL AND
+                        e.`incident_id` IS NOT NULL AND
+                        e.`evac_id` IS NOT NULL
                     ) `male`,
                     (SELECT 
                         count(
@@ -570,8 +588,10 @@ class BBEIMS
                             )
                     FROM `evacuee` e
                     WHERE
-                        e.`deletedflag` = 0 AND
-                        e.`incident_date` IS NOT NULL 
+                        e.`deletedflag` = 0  AND
+                        e.`incident_date` IS NOT NULL AND
+                        e.`incident_id` IS NOT NULL AND
+                        e.`evac_id` IS NOT NULL
                     ) `female`
         ";
         return QUERY::run($query);
@@ -588,9 +608,11 @@ class BBEIMS
         }
         $query = rtrim($query, ',');;
 
-        $query .= " FROM `evacuee` WHERE
-            `deletedflag` = 0 AND
-            `incident_date` IS NOT NULL 
+        $query .= " FROM `evacuee` e WHERE
+            e.`deletedflag` = 0 AND
+            e.`incident_date` IS NOT NULL AND
+            e.`incident_id` IS NOT NULL AND
+            e.`evac_id` IS NOT NULL
         ";
 
         return QUERY::run($query);
@@ -607,9 +629,11 @@ class BBEIMS
         }
         $query = rtrim($query, ',');;
 
-        $query .= " FROM `evacuee` WHERE 
-            `deletedflag` = 0 AND 
-            `incident_date` IS NOT NULL 
+        $query .= " FROM `evacuee` e WHERE 
+            e.`deletedflag` = 0 AND
+            e.`incident_date` IS NOT NULL AND
+            e.`incident_id` IS NOT NULL AND
+            e.`evac_id` IS NOT NULL
         ";
 
         return QUERY::run($query);

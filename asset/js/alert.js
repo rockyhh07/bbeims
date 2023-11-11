@@ -4,7 +4,7 @@ function show_alert(content = {}, callback = undefined) {
         class="d-flex justify-content-center align-items-center" 
         style="position: fixed; top: 0; left: 0; z-index: 11000; width: 100%; height: 100vh; background-color: rgba(0,0,0,0.8);"
     ></div>`);
-    const container = $(`<div class="card p-3 m-2"></div>`);
+    const container = $(`<div class="card p-3 m-2" style="max-height: 90vh;"></div>`);
     const header = $(`<h3 class="p-2" style="border-bottom: 1px solid rgba(0,0,0,0.6);">${content.title}</h3>`);
     const body = $(`<div class="mb-3 p-2">${content.body}</div>`);
     const footer = $(`<div class="d-flex justify-content-end" style="gap: 1rem;"></div>`);

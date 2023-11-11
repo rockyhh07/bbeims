@@ -232,20 +232,7 @@
                                     <th>Number</th>
                                  </tr>
                               </thead>
-                              <tbody>
-                                 <tr>
-                                    <td>Flood</td>
-                                    <td>25</td>
-                                 </tr>
-                                 <tr>
-                                    <td>Typhoon</td>
-                                    <td>50</td>
-                                 </tr>
-                                 <tr>
-                                    <td>Earthquake</td>
-                                    <td>25</td>
-                                 </tr>
-                              </tbody>
+                              <tbody></tbody>
                            </table>
                         </div>
                      </div>
@@ -277,19 +264,17 @@
    <script src="../asset/js/chart.js"></script>
    <script>
       function load_chart(keys = null, values = null) {
+
+         console.log(loadColors(keys.length));
+
          // Pie chart
          new Chart(document.getElementById("chartjs-pie"), {
             type: "pie",
             data: {
                labels: keys ? keys : ["Flood", "Typhoon", "Earthquake"],
                datasets: [{
-                  data: values ? values : [25, 50, 25],
-                  backgroundColor: [
-                     'rgb(255, 99, 132)',
-                     'rgb(54, 162, 235)',
-                     'rgb(255, 205, 86)',
-                     
-                  ],
+                  data: values ? values : [],
+                  backgroundColor: [],
                   borderColor: "transparent"
                }]
             },

@@ -8,7 +8,7 @@
    <link rel="stylesheet" href="../asset/css/adminlte.min.css">
    <link rel="stylesheet" href="../asset/css/dashboard.css">
    <style type="text/css">
-      td a.btn {
+      /* td a.btn {
          font-size: 0.7rem;
       }
 
@@ -23,6 +23,10 @@
       table tr td {
          padding: 0.3rem !important;
          font-size: 13px;
+      } */
+      table th {
+         min-width: 150px !important;
+         max-width: 150px !important;
       }
    </style>
    <link rel="stylesheet" href="../asset/css/font.css">
@@ -260,7 +264,7 @@
                               <thead>
                                  <tr>
                                     <th>Center Name</th>
-                                    <th style="min-width: 100px;">Address</th>
+                                    <th>Address</th>
                                     <th>Contact</th>
                                     <th class="text-center">Action</th>
                                  </tr>
@@ -401,7 +405,7 @@
             tbody += `<td>${row.name}</td>`;
             tbody += `<td>${row.address}</td>`;
             tbody += `<td>${row.contact}</td>`;
-            tbody += `<td class="text-center">
+            tbody += `<td class="d-flex flex-row flex-nowrap justify-content-center" style="gap: .5rem">
                <button class="btn btn-sm btn-success" href="#" onclick="updateDate([
                      '${row.id}', '${row.name}', '${row.address}', '${row.contact}'
                   ])"><i class="fa fa-edit"></i> Edit</button>`;
