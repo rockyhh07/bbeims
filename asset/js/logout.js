@@ -65,16 +65,15 @@ function dateToInputDate(date){
 
 
 async function loadColors(length) {
-   let newColors = [];
-   
-   await fetch(`${BASE_URL}asset/templates/colors.json`)
-   .then(response => response.json())
-   .then(response => {
-      for(let i = 0; i < length; i ++) {
-         newColors.push(response[i]);
-      }
-   })
-   .catch(err => console.error(err));
+   try {
+      const response = await fetch(`${BASE_URL}asset/templates/colors.json`);
+      const colorsData = await response.json();
 
-   return newColors;
+      let newColors = colorsData.slice(0, length);
+
+      return newColors;
+   } catch (error) {
+      console.error('Error loading colors:', error);
+      throw error;
+   }
 }
