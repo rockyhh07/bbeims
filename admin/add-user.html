@@ -272,8 +272,18 @@
                                  <div class="col-md-4">
                                     <div class="form-group">
                                        <label>Password</label>
-                                       <input name="password" type="password" class="form-control"
-                                          placeholder="**********">
+                                       <!-- <input name="password" type="password" class="form-control"
+                                          placeholder="**********"> -->
+                                       <div class="input-group">
+                                          <input name="password" type="password" class="form-control" placeholder="**********" id="input-password">
+                                          <span class="input-group-text">
+                                             <label for="input-show-pass" class="d-flex justify-content-center align-items-center mb-0" onclick="togglePass()" style="cursor: pointer;">
+                                                <i class="fas fa-eye" id="show-pass"></i>
+                                                <i class="fas fa-eye-slash" id="hide-pass" style="display: none;"></i>
+                                             </label>
+                                             <input type="checkbox" id="input-show-pass" style="display: none;">
+                                          </span>
+                                       </div>
                                     </div>
                                  </div>
                               </div>
@@ -308,6 +318,22 @@
 
 
 <script>
+   function togglePass() {
+      const checked = !document.getElementById("input-show-pass").checked;
+      const showLabel = document.getElementById("show-pass");
+      const hideLabel = document.getElementById("hide-pass");
+
+      if(checked) {
+         showLabel.style.display = "none";
+         hideLabel.style.display = "block";
+         document.getElementById("input-password").type = "text";
+      }else {
+         showLabel.style.display = "block";
+         hideLabel.style.display = "none";
+         document.getElementById("input-password").type = "password";
+      }
+   }
+
    function add_user(e) {
       e.preventDefault();
       const data = document.getElementById("new-user-form");
@@ -333,13 +359,13 @@
             }
 
             if (result[0].result) {
-               alert('User successfully added!');
+               addNotif("New User", "New user added successfully!", "g");
                data.reset();
-               window.location.href = `${BASE_URL}admin/manage-user.html`;
+               // window.location.href = `${BASE_URL}admin/manage-user.html`;
             } else {
                let msg = 'ERROR: \n';
-               for (let err in result[0].error) msg += result[0].error[err] + '\n';
-               alert(msg);
+               for (let err in result[0].error) msg += result[0].error[err] + '<br>';
+               addNotif("Error occurred", msg, "r");
             }
          });
    }

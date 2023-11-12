@@ -467,6 +467,7 @@
          .then(response => response.json())
          .then(response => {
             loadUsers();
+            addNotif("User Deleted", "User deleted successfully!", "g");
          })
          .catch(err => console.log("ERROR" + err));
       });

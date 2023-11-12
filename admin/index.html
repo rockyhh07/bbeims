@@ -370,6 +370,8 @@
 <script src="../asset/js/logout.js"></script>
 
 <script>
+   addNotif("BBEIMS", `Welcome <b>${USER_DATA.username}</b>`, "g");
+
    const NUMBER_FAMILY = document.getElementById("number-of-family");
    const NUMBER_EVACUEE = document.getElementById("number-of-evacuee");
    const NUMBER_FEMALE = document.getElementById("number-of-female");
@@ -446,6 +448,7 @@
       }, function(ans){
          if(!ans) return;
 
+         addNotif("Generate Report", "Report successfully generated!", "g");
       });
 
       $(".report-row").on("click", function(){

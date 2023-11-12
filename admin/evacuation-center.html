@@ -357,6 +357,8 @@
          .then(response => response.json())
          .then(response => {
             load_all_evac_center();
+            
+            addNotif("Center updated", "Center updated successfully!", "g");
          })
          .catch(err => console.error("ERROR: " + error));
       });
@@ -382,6 +384,7 @@
          .then(response => response.json())
          .then(response => {
             load_all_evac_center();
+            addNotif("Center deleted", "Center deleted successfully!", "g");
          })
          .catch(err => console.error("ERROR: " + error));
       });
@@ -444,6 +447,7 @@
          else document.getElementById("evac-center-add-form").reset();
 
          load_all_evac_center();
+         addNotif("New Center", "New center added successfully!", "g");
       })
       .catch(err => {
          console.error("ERROR: " + err);

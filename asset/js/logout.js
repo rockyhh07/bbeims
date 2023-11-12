@@ -77,3 +77,84 @@ async function loadColors(length) {
       throw error;
    }
 }
+
+
+/**
+ * For Notifications
+ */
+const notifHolder = document.createElement("div");
+(function(){
+   notifHolder.style.position = "fixed";
+   notifHolder.style.width = "300px";
+   notifHolder.style.bottom = "5px";
+   notifHolder.style.right = "0";
+   notifHolder.style.zIndex = "100";
+   notifHolder.style.display = "flex";
+   notifHolder.style.flexDirection = "column-reverse";
+   document.querySelector("body").append(notifHolder);
+})();
+
+function addNotif(title, message, flag){
+
+   let tColor = 
+       (flag == "g") ? "#C8FEE0" :
+       (flag == "r") ? "#FFAFAA" :
+       "#ECECEC";
+
+   let bColor = 
+       (flag == "g") ? "#EAFAF1" :
+       (flag == "r") ? "#FDEDEC" :
+       "#F8F9F9";
+
+   const notif = document.createElement("section");
+   notif.setAttribute("class", "notif shadow slide-in-out");
+   notif.addEventListener("animationend", ()=>{
+       notif.remove();
+   })
+   // notif.style.border = "1px solid " + tColor;
+   notif.style.backgroundColor = bColor;
+
+   const notif_close = document.createElement("button");
+   notif_close.setAttribute("class", "notif_close_btn");
+   notif_close.innerHTML = '<i class="fas fa-times"></i>';
+   notif_close.style.position = "absolute";
+   notif_close.style.top = "5px";
+   notif_close.style.right = "5px";
+   notif_close.style.background = "none";
+   notif_close.style.border = "none";
+   // notif_close.style.border = `1px solid ${tColor}`;
+   // notif_close.style.backgroundColor = bColor;
+   notif_close.addEventListener("click", ()=>{
+       notif.remove();
+       if(notifHolder.children.length == 0){
+           notifHolder.classList.add("hide");
+       }
+   });
+   
+   const notif_title = document.createElement("section");
+   notif_title.setAttribute("class", "notif-title fw-bold d-flex align-items-center");
+   notif_title.style.gap = ".5rem";
+   notif_title.style.backgroundColor = tColor;
+
+   const title_content = document.createElement('spam');
+   title_content.innerHTML = title;
+   notif_title.appendChild(title_content);
+
+   const notif_body = document.createElement("section");
+   notif_body.setAttribute("class", "notif-body");
+   notif_body.innerHTML = message;
+
+   notif.appendChild(notif_close);
+   notif.appendChild(notif_title);
+   notif.appendChild(notif_body);
+
+   
+   if(notifHolder.children.length < 3){
+       notifHolder.classList.remove("hide");
+       notifHolder.appendChild(notif);
+   }
+   else{
+       notifHolder.children[0].remove()
+       notifHolder.appendChild(notif);
+   }
+}

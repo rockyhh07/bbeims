@@ -16,6 +16,8 @@ $("#modal-footer-add-evacuee").on("click", async function(e){
         loadAllHouseMember(representative_selected, "");
         document.getElementById("modal-body-add-evacuee").reset();
         $(".modal-close-btn").trigger("click");
+        
+        addNotif("House member", "New house member added successfully!", "g");
     })
     .catch(err => console.log("ERROR: " + err));
 });
@@ -34,6 +36,7 @@ $("#modal-footer-add-house").on("click", async function(e){
         loadAllRepresentative();
         document.getElementById("modal-body-add-house").reset();
         $(".modal-close-btn").trigger("click");
+        addNotif("Representative", "New representative added successfully!", "g");
     })
     .catch(err => console.log("ERROR: " + err));
 });
@@ -51,6 +54,7 @@ $("#modal-footer-edit-house").on("click", async function(e){
         loadAllRepresentative();
         document.getElementById("modal-body-edit-house").reset();
         $(".modal-close-btn").trigger("click");
+        addNotif("Representative", "Representative updated successfully!", "g");
     })
     .catch(err => console.log("ERROR: " + err));
 
@@ -70,6 +74,7 @@ $("#modal-footer-edit-house-member").on("click", async function(e){
         loadAllHouseMember(representative_selected, "");
         document.getElementById("modal-body-edit-house-member").reset();
         $(".modal-close-btn").trigger("click");
+        addNotif("House member", "House member updated successfully!", "g");
     })
     .catch(err => console.log("ERROR: " + err));
 
@@ -345,6 +350,8 @@ function deleteHouse(e) {
         .then(response => response.json())
         .then(response => {
             loadAllRepresentative();
+        
+            addNotif("Evacuee", "Representative deleted successfully!", "g");
         })
         .catch(err => console.error("ERROR" + err));
     });
@@ -369,6 +376,7 @@ function deleteMember(e) {
         .then(response => response.json())
         .then(response => {
             loadAllHouseMember(representative_selected, "");
+            addNotif("Evacuee", "House member deleted successfully!", "g");
         })
         .catch(err => console.error("ERROR" + err));
     });
@@ -403,7 +411,11 @@ $("#add-incident-form").on("submit", async function(e){
         .then(response => {
             const result = response.result;
             console.log({result});
-            window.location.href = `${BASE_URL}admin/manage-evacuees.html`;
+            
+            addNotif("Incident Report", "Evacuees added successfully!", "g");
+            document.getElementById("add-incident-form").reset();
+
+            // window.location.href = `${BASE_URL}admin/manage-evacuees.html`;
         })
         .catch(err => console.error(err));
     

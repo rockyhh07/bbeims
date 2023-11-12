@@ -327,6 +327,7 @@
          .then(response => response.json())
          .then(response => {
             load_all_incident();
+            addNotif("Incident Updated", "Incident updated successfully!", "g");
          })
          .catch(err => console.error("ERROR: " + err));
       });
@@ -352,6 +353,7 @@
          .then(response => response.json())
          .then(response => {
             load_all_incident();
+            addNotif("Incident Deleted", "Incident deleted successfully!", "g");
          })
          .catch(err => console.error("ERROR: " + err));
       });
@@ -412,6 +414,7 @@
          else document.getElementById("incident-add-form").reset();
 
          load_all_incident();
+         addNotif("New Incident", "New incident added successfully!", "g");
       })
       .catch(err =>{
          console.error("ERROR: " + err);
