@@ -403,74 +403,94 @@
 
 
    async function generateReport() {
-      // const prom = new Promise((resolved, reject)=>{
-      //    if(false) return resolved(200)
-      //    else reject(500);
-      // });
 
-      // prom.then(resp => {
-      //    console.log(resp);
-      // })
-      // .catch(err => {
-      //    console.log(err);
-      // })
-      
-      // return;
-      // Promise.all([
-      //    fetch(`${BASE_URL}asset/templates/generateReport.html`),
-      //    fetch(`${BASE_URL}php/evacuee_get_all.php`)
-      // ])
-      // // .then(response => response.json())
-      // .then(response => {
-      //    response.forEach(async val=>{
-      //       console.log(await val.text());
-      //    })
-      // });
+      let incidentTypeOptions = '';
+      let incidentDateOptions = '';
+      let evacCenterOptions = '';
 
-      // return;
+      let layout = await fetch_data("asset/templates/generateReport.html");
 
-      
+      const incidentsTypes = (await fetch_data("php/incident_get_all.php", "json")).result;
+      // const incidentsDates = (await fetch_data("php/incident_get_dates.php", "json")).result;
+      const evacCenter = (await fetch_data("php/evac_center_get_all.php", "json")).result;
 
-      const generateReportRequest = await fetch(`${BASE_URL}asset/templates/generateReport.html`);
-      const generateReportLayout = await generateReportRequest.text();
+      incidentsTypes.forEach(e => { incidentTypeOptions += `<option value="${e.id}" >${e.name}</option>`; });
+      // incidentsDates.forEach(e => { incidentDateOptions += `<option value="${e.id}" >${e.name}</option>`; });
+      evacCenter.forEach(e => { evacCenterOptions += `<option value="${e.id}" >${e.name}</option>`; });
+
+      layout = layout.replaceAll("{select-incident-type}", incidentTypeOptions);
+      layout = layout.replaceAll("{select-incident-date}", incidentDateOptions);
+      layout = layout.replaceAll("{select-evac-center}", evacCenterOptions);
 
       show_alert({
          title : "Generate Report",
-         body : generateReportLayout,
+         body : layout,
          buttons : ["Generate", "Cancel"]
-      }, function(ans){
+      }, async function(ans){
          if(!ans) return;
 
-         addNotif("Generate Report", "Report successfully generated!", "g");
+         const form = new FormData(document.getElementById("report-form"));
+         await generateReportBy(form);
+
+         // addNotif("Generating report", "Report is being generated!", "g");
       });
 
       $(".report-row").on("click", function(){
          let radio = $(this).find("input[type='radio']").prop("checked", true);
-      })
-
-      // Load All Incident type here
-      await fetch(`${BASE_URL}php/evacuee_get_all.php`)
-      .then(response => response.json())
-      .then(response => {
-
-      })
-      .catch(err => console.error("ERROR: " + err));
-
-      // Load All Incident date here
-      await fetch(`${BASE_URL}php/evacuee_get_all.php`)
-      .then(response => response.json())
-      .then(response => {
-
-      })
-      .catch(err => console.error("ERROR: " + err));
-
-      // Load All Evacuation center here
-      await fetch(`${BASE_URL}php/evacuee_get_all.php`)
-      .then(response => response.json())
-      .then(response => {
-
-      })
-      .catch(err => console.error("ERROR: " + err));
+      });
    }
 
+   async function generateReportBy(form) {
+      switch (form.get("type")) {
+         case "incident-type": reportBy(form, "type"); break;
+         case "incident-date": reportBy(form, "date"); break;
+         case "evac-center": reportBy(form, "center"); break;
+         default: reportBy(form, ); break;
+      }
+   }
+
+   async function reportBy(form, condition = "") {
+      form.append("uid", USER_DATA.id);
+      form.append("condition", condition);
+
+      const thead = `<thead><tr>
+         <th>Fullname</th>
+         <th>Contact</th>
+         <th>Age</th>
+         <th>gender</th>
+         <th>Representative</th>
+         <th>Center</th>
+         <th>Incident</th>
+         <th>Date</th>
+      </tr></thead>`;
+      let tbody = '<tbody>';
+      const response = (await fetch_data('php/generate_report_all.php', "json", { method:"post", body:form })).result;
+      console.log({response});
+      for(const data of response) {
+         tbody += `<tr>
+            <td>${data.lname}, ${data.fname} ${data.mname}</td>
+            <td>${data.contact}</td>
+            <td>${getAge(data.birthday)}</td>
+            <td>${data.gender}</td>
+            <td>${data.repLname}, ${data.repFname} ${data.repMname}</td>
+            <td>${data.center}</td>
+            <td>${data.incident}</td>
+            <td>${data.date}</td>
+         </tr>`;
+      }
+      tbody += `</tbody>`;
+      const table = `<table class="table">${thead}${tbody}</table>`;
+
+      let s = `
+         <javascript src="${BASE_URL}asset/js/adminlte.js"></javascript>
+         <javascript>window.print();window.close();</javascript>
+         `;
+
+      const reportTab = window.open('about:blank', '_blank');
+      reportTab.document.write(
+         `<head> <link rel="stylesheet" href="${BASE_URL}asset/css/adminlte.min.css"> </head>`
+         + table +
+         s.replaceAll("javascript", "script")
+         );
+      }  
 </script>
