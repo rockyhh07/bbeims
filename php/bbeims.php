@@ -757,6 +757,50 @@ class BBEIMS
         return $result;
     }
 
+    public static function generate_report_all(array $post_result) {
+        QUERY::escape_str_all($post_result);
+
+        $type = !empty($post_result['incident-type']) ? $post_result['incident-type'] : null;
+        $date = !empty($post_result['incident-date']) ? $post_result['incident-date'] : null;
+        $center = !empty($post_result['evac-center']) ? $post_result['evac-center'] : null;
+
+        $con = "";
+        switch ($post_result['condition']) {
+            case 'type': $con = ($type==null) ? "" : "AND i.`id` = '{$type}'"; break;
+            case 'date': $con = ($date==null) ? "" : "AND i.`incident_date` = '{$date}'"; break;
+            case 'center': $con = ($center==null) ? "" : "AND c.`id` = '{$center}'"; break;
+            default: $con = ""; break;
+        }
+
+        $query = "SELECT
+                    a.incident_date `date`,
+                    e.lname,
+                    e.fname,
+                    e.mname,
+                    e.contact,
+                    e.birthday,
+                    e.gender,
+                    e.civil_status,
+                    e.address,
+                    e2.lname `repLname`,
+                    e2.fname `repFname`,
+                    e2.mname `repMname`,
+                    c.name `center`,
+                    i.name `incident`
+                FROM `incident_archive`             a
+                INNER JOIN `evacuee`                e
+                    ON e.`id` = a.`evacuee_id`
+                INNER JOIN `evacuee`                e2
+                    ON e2.`id` = e.`representative`
+                INNER JOIN `evac_center`            c
+                    ON c.`id` = a.`evac_id`
+                INNER JOIN `incident`               i
+                    ON i.`id` = a.`incident_id`
+                WHERE e.`deletedflag` = '0' {$con}
+        ";
+        return QUERY::run($query);
+    }
+
     // PRIVATES //
 
     private static function ageCalculator($date) {
