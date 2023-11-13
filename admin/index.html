@@ -5,6 +5,7 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <title>Barangka Ibaba Evacuation Information Management System</title>
+   <link rel="shortcut icon" href="../asset/img/logo.png" type="image/x-icon">
    <link rel="stylesheet" href="../asset/css/adminlte.min.css">
    <link rel="stylesheet" href="../asset/css/dashboard.css">
    <style type="text/css">
@@ -402,48 +403,40 @@
 
 
    async function generateReport() {
+      // const prom = new Promise((resolved, reject)=>{
+      //    if(false) return resolved(200)
+      //    else reject(500);
+      // });
+
+      // prom.then(resp => {
+      //    console.log(resp);
+      // })
+      // .catch(err => {
+      //    console.log(err);
+      // })
+      
+      // return;
+      // Promise.all([
+      //    fetch(`${BASE_URL}asset/templates/generateReport.html`),
+      //    fetch(`${BASE_URL}php/evacuee_get_all.php`)
+      // ])
+      // // .then(response => response.json())
+      // .then(response => {
+      //    response.forEach(async val=>{
+      //       console.log(await val.text());
+      //    })
+      // });
+
+      // return;
+
+      
+
+      const generateReportRequest = await fetch(`${BASE_URL}asset/templates/generateReport.html`);
+      const generateReportLayout = await generateReportRequest.text();
+
       show_alert({
          title : "Generate Report",
-         body : `<table class="table table-hover" id="table-report">
-            <tbody>
-               <tr class="report-row">
-                  <td>
-                     <input type="radio" name="type" checked> Generate All
-                  </td>
-                  <td></td>
-               </tr>
-               <tr class="report-row">
-                  <td>
-                     <input type="radio" name="type"> Generate by Incident type
-                  </td>
-                  <td class="d-flex flex-column" style="gap: 1rem;">
-                     <select id="incident-type" name="incident-type" class="card p-2 flex-row">
-                        <option value="" selected disabled>-- Select --</option>
-                     </select>
-                  </td>
-               </tr>
-               <tr class="report-row">
-                  <td>
-                     <input type="radio" name="type"> Generate by Incident date
-                  </td>
-                  <td class="d-flex flex-column" style="gap: 1rem;">
-                     <select id="incident-date" name="incident-date" class="card p-2 flex-row">
-                        <option value="" selected disabled>-- Select --</option>
-                     </select>
-                  </td>
-               </tr>
-               <tr class="report-row">
-                  <td>
-                     <input type="radio" name="type"> Generate by Evacuation Center
-                  </td>
-                  <td class="d-flex flex-column" style="gap: 1rem;">
-                     <select id="evac-center" name="evac-center" class="card p-2 flex-row">
-                        <option value="" selected disabled>-- Select --</option>
-                     </select>
-                  </td>
-               </tr>
-            </tbody>
-            </table>`,
+         body : generateReportLayout,
          buttons : ["Generate", "Cancel"]
       }, function(ans){
          if(!ans) return;

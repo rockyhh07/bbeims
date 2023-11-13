@@ -5,30 +5,9 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <title>Barangka Ibaba Evacuation Information Management System</title>
+   <link rel="shortcut icon" href="../asset/img/logo.png" type="image/x-icon">
    <link rel="stylesheet" href="../asset/css/adminlte.min.css">
    <link rel="stylesheet" href="../asset/css/dashboard.css">
-   <style type="text/css">
-      /* td a.btn {
-         font-size: 0.7rem;
-      }
-
-      td p {
-         padding-left: 0.5rem !important;
-      }
-
-      th {
-         padding: 1rem !important;
-      }
-
-      table tr td {
-         padding: 0.3rem !important;
-         font-size: 13px;
-      } */
-      table th {
-         min-width: 150px !important;
-         max-width: 150px !important;
-      }
-   </style>
    <link rel="stylesheet" href="../asset/css/font.css">
    <!-- Font Awesome -->
    <link rel="stylesheet" href="../asset/fontawesome/css/all.min.css">
@@ -261,16 +240,6 @@
                         </form>
                         <div class="col-md-9" style="border-left: 1px solid #ddd;">
                            <table id="evac_center" class="table table-bordered table-hover">
-                              <thead>
-                                 <tr>
-                                    <th>Center Name</th>
-                                    <th>Address</th>
-                                    <th>Contact</th>
-                                    <th class="text-center">Action</th>
-                                 </tr>
-                              </thead>
-                              <tbody>
-                              </tbody>
                            </table>
                         </div>
                      </div>
@@ -398,17 +367,27 @@
 
          if ($.fn.DataTable.isDataTable('#evac_center')) {
             $('#evac_center').DataTable().destroy();
-            $('#evac_center > tbdoy').html("");
+            $('#evac_center').html("");
          }
+
+         const thead = `
+            <thead>
+               <tr>
+                  <th>Center Name</th>
+                  <th>Address</th>
+                  <th>Contact</th>
+                  <th class="text-center" style="width: 160px !important;">Action</th>
+               </tr>
+            </thead>
+         `;
          
          let tbody = `<tbody>`;
-            
          for (let row of result) {
             tbody += `<tr>`;
             tbody += `<td>${row.name}</td>`;
             tbody += `<td>${row.address}</td>`;
             tbody += `<td>${row.contact}</td>`;
-            tbody += `<td class="d-flex flex-row flex-nowrap justify-content-center" style="gap: .5rem">
+            tbody += `<td class="d-flex flex-row flex-nowrap justify-content-center" style="gap: .5rem; width: 160px !important;">
                <button class="btn btn-sm btn-success" href="#" onclick="updateDate([
                      '${row.id}', '${row.name}', '${row.address}', '${row.contact}'
                   ])"><i class="fa fa-edit"></i> Edit</button>`;
@@ -418,10 +397,13 @@
             </td>` : "";
             tbody += `</tr>`;
          }
-         
          tbody += `</tbody>`;
-         document.querySelector("#evac_center > tbody").innerHTML = tbody;
-         $("#evac_center").DataTable();
+
+         $("#evac_center").append(thead + tbody);
+         $("#evac_center").DataTable({
+            bAutoWidth : false,
+            autoWidth: false
+         });
       })
       .catch(err => {
          console.error("ERROR: " + err);

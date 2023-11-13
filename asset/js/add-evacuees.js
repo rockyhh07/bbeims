@@ -207,7 +207,7 @@ async function loadAllHouseMember(id, table){
             <th>REPRESENTATIVE</th>
             <th>ADDRESS</th>`;
         thead += (table === "calamaityReport") ? "" : `
-            <th class="text-center">ACTION</th>
+            <th class="text-center" style="width: 17 0px !important;">ACTION</th>
         </tr>`;
         
         let tbody = '';
@@ -233,8 +233,8 @@ async function loadAllHouseMember(id, table){
             </td>`;
             tbody += `<td>${cs}</td>`;
             tbody += `<td>${row.representative}</td>`;
-            tbody += `<td>${row.address}</td>`;
-            tbody += (table === "calamaityReport") ? "" : `<td class="d-flex justify-content-center" style="gap: .5rem;">
+            tbody += `<td>${row.address}</td>`;    
+            tbody += (table === "calamaityReport") ? "" : `<td class="d-flex justify-content-center" style="gap: .5rem; width: 170px !important;">
                 <button class="btn btn-sm btn-success" onclick="openModal('edit-house-member', 
                     {
                         vid:'${"M-"+row.id.padStart(6, "0")}',
@@ -258,7 +258,10 @@ async function loadAllHouseMember(id, table){
 
         $('#dataTable > thead').html(thead);
         $('#dataTable > tbody').html(tbody);
-        $('#dataTable').DataTable();    
+        $('#dataTable').DataTable({
+            bAutoWidth : false,
+            autoWidth: false
+         });    
     });
 }
 
@@ -288,7 +291,7 @@ async function loadAllRepresentative() {
             <th>ADDRESS</th>
             <th>REPRESENTATIVE</th>
             <th>CONTACT</th>
-            <th class="text-center">ACTION</th>
+            <th class="text-center" style="width: 260px !important;">ACTION</th>
         </tr></thead>`;
         
         let tbody = '<tbody>';
@@ -300,7 +303,7 @@ async function loadAllRepresentative() {
             tbody += `<td>${row.address}</td>`;
             tbody += `<td>${name}</td>`;
             tbody += `<td>${row.contact}</td>`;
-            tbody += `<td class="d-flex justify-content-center" style="gap: .5rem;">
+            tbody += `<td class="d-flex justify-content-center" style="gap: .5rem; width: 260px !important;">
                 <button class="btn btn-sm btn-success" onclick="openModal('edit-house', 
                 {
                     vid:'${"H-"+row.id.padStart(6, "0")}',
@@ -314,9 +317,9 @@ async function loadAllRepresentative() {
                     id:'${row.id}'
                 })
                 "><i class="fas fa-user-edit"></i> Edit</button>
-                    <button data-address="${row.address}" data-rep_id="${row.id}" onclick="updateHoseMember(this)" class="btn btn-sm btn-warning">
-                        <i class="fas fa-pencil-alt"></i> Update
-                    </button>`;
+                <button data-address="${row.address}" data-rep_id="${row.id}" onclick="updateHoseMember(this)" class="btn btn-sm btn-warning">
+                    <i class="fas fa-pencil-alt"></i> Update
+                </button>`;
             tbody += (USER_DATA.category === "A") ? ` 
                     <button data-rep_id="${row.id}" class="btn btn-sm btn-danger" onclick="deleteHouse(this)">
                         <i class="fas fa-trash-alt"></i> Delete
@@ -327,7 +330,10 @@ async function loadAllRepresentative() {
         tbody += '</tbody>';
 
         $('#dataTable').append(thead, tbody);
-        $('#dataTable').DataTable();
+        $('#dataTable').DataTable({
+            bAutoWidth : false,
+            autoWidth: false
+         });
     });
 }
 

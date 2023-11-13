@@ -1,7 +1,7 @@
 <?php
 
 function base_url(){
-    return "http://localhost/bbeims/";
+    return "https://172.0.3.79/ojt/bbeims/";
 }
 
 function validate_POST(Array $post_result){

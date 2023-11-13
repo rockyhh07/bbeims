@@ -5,26 +5,9 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <title>Barangka Ibaba Evacuation Information Management System</title>
+   <link rel="shortcut icon" href="../asset/img/logo.png" type="image/x-icon">
    <link rel="stylesheet" href="../asset/css/adminlte.min.css">
    <link rel="stylesheet" href="../asset/css/dashboard.css">
-   <style type="text/css">
-      td a.btn {
-         font-size: 0.7rem;
-      }
-
-      td p {
-         padding-left: 0.5rem !important;
-      }
-
-      th {
-         padding: 1rem !important;
-      }
-
-      table tr td {
-         padding: 0.3rem !important;
-         font-size: 13px;
-      }
-   </style>
    <link rel="stylesheet" href="../asset/css/font.css">
    <!-- Font Awesome -->
    <link rel="stylesheet" href="../asset/fontawesome/css/all.min.css">
@@ -225,16 +208,6 @@
 
                   <div class="col-md-12">
                      <table id="users" class="table table-bordered table-hover">
-                        <thead>
-                           <tr>
-                              <th>ID</th>
-                              <th>Users info</th>
-                              <th>Account Category</th>
-                              <th>Account Status</th>
-                              <th class="text-center">Action</th>
-                           </tr>
-                        </thead>
-                        <tbody></tbody>
                      </table>
                   </div>
                </div>
@@ -393,8 +366,20 @@
 
          if ($.fn.DataTable.isDataTable('#users')) {
             $('#users').DataTable().destroy();
-            $('#users > tbdoy').html("");
+            $('#users').html("");
          }
+
+         const thead = `
+            <thead>
+               <tr>
+                  <th>ID</th>
+                  <th>Users info</th>
+                  <th>Account Category</th>
+                  <th>Account Status</th>
+                  <th class="text-center" style="width: 160px !important;">Action</th>
+               </tr>
+            </thead>
+         `;
          
          let tbody = `<tbody>`;
          for(let row of result){
@@ -418,7 +403,7 @@
                   </td>`;
                tbody += `<td>${categ}</td>`;
                tbody += `<td><span class="badge bg-${active?'success':'danger'}">${active?'Active':'Inactive'}</span></td>`;
-               tbody += `<td class="text-center">
+               tbody += `<td class="text-center" style="width: 160px !important;">
                      <button class="btn btn-sm btn-success" href="#" onclick="updateDate({
                         username : '${row.username}',
                         id : '${row.id}', 
@@ -437,8 +422,11 @@
          }
          tbody += `</tbody>`;
          
-         document.querySelector('table#users > tbody').innerHTML = tbody;
-         $("#users").DataTable();
+         $('#users').append(thead + tbody);
+         $("#users").DataTable({
+            bAutoWidth : false,
+            autoWidth: false
+         });
       });
    }
 

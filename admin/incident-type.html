@@ -5,26 +5,9 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <title>Barangka Ibaba Evacuation Information Management System</title>
+   <link rel="shortcut icon" href="../asset/img/logo.png" type="image/x-icon">
    <link rel="stylesheet" href="../asset/css/adminlte.min.css">
    <link rel="stylesheet" href="../asset/css/dashboard.css">
-   <style type="text/css">
-      td a.btn {
-         font-size: 0.7rem;
-      }
-
-      td p {
-         padding-left: 0.5rem !important;
-      }
-
-      th {
-         padding: 1rem !important;
-      }
-
-      table tr td {
-         padding: 0.3rem !important;
-         font-size: 13px;
-      }
-   </style>
    <link rel="stylesheet" href="../asset/css/font.css">
    <!-- Font Awesome -->
    <link rel="stylesheet" href="../asset/fontawesome/css/all.min.css">
@@ -244,13 +227,6 @@
                         </form>
                         <div class="col-md-9" style="border-left: 1px solid #ddd;">
                            <table id="incident" class="table table-bordered table-hover">
-                              <thead>
-                                 <tr>
-                                    <th>Incident Name</th>
-                                    <th class="text-center">Action</th>
-                                 </tr>
-                              </thead>
-                              <tbody></tbody>
                            </table>
                         </div>
                      </div>
@@ -360,7 +336,6 @@
    }
 
    async function load_all_incident() {
-      let tbody = `<tbody>`;
       await fetch(BASE_URL + 'php/incident_get_all.php')
       .then(response => response.json())
       .then(response => {
@@ -368,13 +343,23 @@
 
          if ($.fn.DataTable.isDataTable('#incident')) {
             $('#incident').DataTable().destroy();
-            $('#incident > tbdoy').html("");
+            $('#incident').html("");
          }
-         
+
+         const thead = `
+         <thead>
+            <tr>
+               <th>Incident Name</th>
+               <th class="text-center" style="width: 160px !important;">Action</th>
+            </tr>
+         </thead>
+         `;
+
+         let tbody = '<tbody>';
          for(let row of result){
             tbody += `<tr>`;
             tbody += `<td>${row.name}</td>`;
-            tbody += `<td class="text-center">
+            tbody += `<td class="text-center" style="width: 160px !important;">
                   <button class="btn btn-sm btn-success" href="#" onclick="updateDate([
                      '${row.id}', '${row.name}'
                   ])"><i class="fa fa-edit"></i> Edit</button>`;
@@ -385,15 +370,17 @@
                </td>` : "";
             tbody += `</tr>`;
          }
-         
+         tbody += "</tbody>";
+
+         $("#incident").append(thead + tbody);
+         $("#incident").DataTable({
+            bAutoWidth : false,
+            autoWidth: false
+         }); 
       })
       .catch(err => {
          console.error("ERROR: " + err);
-      });
-
-      tbody += `</tbody>`;
-      document.querySelector("#incident > tbody").innerHTML = tbody;
-      $("#incident").DataTable();      
+      });     
    }
 
    document.getElementById("incident-add-btn").addEventListener("click", async function(e) {
