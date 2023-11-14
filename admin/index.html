@@ -372,6 +372,7 @@
 
 <script>
    addNotif("BBEIMS", `Welcome <b>${USER_DATA.username}</b>`, "g");
+   load_dashboard();
 
    const NUMBER_FAMILY = document.getElementById("number-of-family");
    const NUMBER_EVACUEE = document.getElementById("number-of-evacuee");
@@ -381,29 +382,19 @@
    const NUMBER_EVAC_CENTER = document.getElementById("number-of-evac_center");
 
    async function load_dashboard() {
-      await fetch(BASE_URL + 'php/dashboard_get.php')
-         .then(response => response.json())
-         .then(response => {
-            let result = response.result[0];
-            if (!result) { alert("Failed to load dashboard. Try again later"); return; }
+      const data = (await fetch_data("php/dashboard_get.php", "json")).result[0];
+      if (!data) { addNotif("Server error", "Failed to load dashboard.", "r"); return; }
 
-            NUMBER_FAMILY.innerHTML = result.family;
-            NUMBER_EVACUEE.innerHTML = result.evacuees;
-            NUMBER_FEMALE.innerHTML = result.female;
-            NUMBER_MALE.innerHTML = result.male;
-            NUMBER_BRGY_POPU.innerHTML = result.brgy;
-            NUMBER_EVAC_CENTER.innerHTML = result.evac_center;
-         })
-         .catch(err => {
-            console.error("ERROR: " + err);
-         });
+      NUMBER_FAMILY.innerHTML = data.family;
+      NUMBER_EVACUEE.innerHTML = data.evacuees;
+      NUMBER_FEMALE.innerHTML = data.female;
+      NUMBER_MALE.innerHTML = data.male;
+      NUMBER_BRGY_POPU.innerHTML = data.brgy;
+      NUMBER_EVAC_CENTER.innerHTML = data.evac_center;
    }
-
-   load_dashboard();
 
 
    async function generateReport() {
-
       let incidentTypeOptions = '';
       let incidentDateOptions = '';
       let evacCenterOptions = '';
@@ -441,12 +432,11 @@
    }
 
    async function generateReportBy(form) {
-      switch (form.get("type")) {
-         case "incident-type": reportBy(form, "type"); break;
-         case "incident-date": reportBy(form, "date"); break;
-         case "evac-center": reportBy(form, "center"); break;
-         default: reportBy(form, ); break;
-      }
+      const type = form.get("type");
+      if (type === "incident-type") { reportBy(form, "type"  ); return; }
+      if (type === "incident-date") { reportBy(form, "date"  ); return; }
+      if (type === "evac-center"  ) { reportBy(form, "center"); return; }
+      reportBy(form);
    }
 
    async function reportBy(form, condition = "") {
@@ -464,8 +454,8 @@
          <th>Date</th>
       </tr></thead>`;
       let tbody = '<tbody>';
-      const response = (await fetch_data('php/generate_report_all.php', "json", { method:"post", body:form })).result;
-      console.log({response});
+         
+      const response = (await fetch_data('php/generate_report_all.php', "json", form)).result;
       for(const data of response) {
          tbody += `<tr>
             <td>${data.lname}, ${data.fname} ${data.mname}</td>
