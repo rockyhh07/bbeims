@@ -469,11 +469,11 @@
          </tr>`;
       }
       tbody += `</tbody>`;
-      const table = `<table class="table">${thead}${tbody}</table>`;
+      const table = `<table class="table mt-5" style="width: 700px;">${thead}${tbody}</table>`;
 
       let s = `
          <javascript src="${BASE_URL}asset/js/adminlte.js"></javascript>
-         <javascript>window.print();window.close();</javascript>
+         <javascript>window.print();</javascript>
          `;
 
       const reportTab = window.open('about:blank', '_blank');
