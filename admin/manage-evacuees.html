@@ -350,6 +350,16 @@
          
          evacCount = result.length;
 
+         const thead = `<thead><tr>
+            <th>ID</th>
+            <th style="min-width: 225px;">Evacuee's Information</th>
+            <th>Address</th>
+            <th>Representative</th>
+            <th>Evacuation Center</th>
+            <th>Incident</th>
+            <th class="text-center">Action</th>
+         </tr></thead>`;
+
          let tbody = `<tbody>`;
          for(let row of result){
             let fname = row.fname;
@@ -414,7 +424,7 @@
          }
 
          tbody += `</tbody>`;
-         document.querySelector('table#evacuee > tbody').innerHTML = tbody;
+         $("#evacuee").html(thead + tbody);
          $("#evacuee").DataTable();
       });
    }
