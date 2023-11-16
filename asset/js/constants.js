@@ -1,4 +1,4 @@
-const BASE_URL = "https://localhost/ojt/bbeims/";
+const BASE_URL = "http://localhost/bbeims/";
 
 let USER_DATA = JSON.parse(
     window.sessionStorage.getItem("user_data") ? 
