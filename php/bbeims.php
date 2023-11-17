@@ -72,7 +72,12 @@ class BBEIMS
             ["username" => $post_result["username"], "password" => $post_result['password'], "deletedflag" => "0"]
         );
         $result = QUERY::run($query->sql);
-        return $_SESSION["user"] = count($result) > 0 ? $result : null;
+
+        if(count($result) === 0) return ["result"=>false, "message"=>"Invalid username or password"];
+        if($result[0]["active"] === "0") return ["result"=>false, "message"=>"Account is deactivated"];
+
+        $result[0]["result"] = true;
+        return $_SESSION["user"] = $result[0];
     }
 
     public static function user_update(array $post_result) {
@@ -81,6 +86,7 @@ class BBEIMS
         $id = $post_result['id'];
         $o_pass = $post_result['o_password'];
         $n_pass = $post_result['n_password'];
+        $active = empty($post_result['active']) ? "0" :"1";
         $username = strtoupper($post_result['username']);
 
         $query = "UPDATE `users` SET";
@@ -90,11 +96,13 @@ class BBEIMS
             if($key === "uid") continue;
             if($key === "o_password") continue;
             if($key === "n_password") continue;
+            if($key === "active") continue;
 
             $query .= " `{$key}`='".strtoupper($val)."',";
         }
 
         $query .= "
+            	`active` = '{$active}',
                 `updated_by`='{$uid}',
                 `updated_date`=CURRENT_TIMESTAMP
             WHERE

@@ -85,11 +85,11 @@
       e.preventDefault();
 
       const form = new FormData(document.getElementById('login-form'));
-      const result = (await fetch_data("php/user_login.php", "json", form)).result;
+      const result = ((await fetch_data("php/user_login.php", "json", form)).result);
 
-      if (!result) { addNotif('Login failed', 'Invalid Username or password', 'r'); return; }
+      if(!result.result) { addNotif('Login failed', `${result.message}`, 'r'); return; }
 
-      window.sessionStorage.setItem("user_data", JSON.stringify(result[0]));
+      window.sessionStorage.setItem("user_data", JSON.stringify(result));
       window.location.href = BASE_URL + 'admin/'
    });
 </script>

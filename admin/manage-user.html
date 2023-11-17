@@ -279,8 +279,8 @@
                   </select>
                </div>
                <div class="custom-control custom-switch">
-                  <input type="checkbox" class="custom-control-input" name="active" ${body.active ? "checked" : ""}>
-                  <label class="custom-control-label" for="update-user-active">Active</label>
+                  <input type="checkbox" class="custom-control-input" name="active" id="active-switch" ${(body.active === "1") ? "checked" : ""}>
+                  <label class="custom-control-label" for="active-switch">Active</label>
                </div>
                <hr>
                <div class="input-group">
@@ -291,7 +291,7 @@
                   <span class="input-group-text" id="user-n_password">New password</span>
                   <input id="n_password" name="n_password" type="password" class="form-control" placeholder="Password" aria-describedby="user-n_password" autocomplete>
                </div>
-            </div>`,
+            </form>`,
          buttons : ["Save", "Cancel"]
       }, function(ans){
          if(!ans) return;
@@ -383,7 +383,7 @@
          
          let tbody = `<tbody>`;
          for(let row of result){
-            let active = row.active;
+            let active = row.active === "1";
             let categ = undefined;
             let age = getAge(row.birthday)
 
