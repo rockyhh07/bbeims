@@ -81,6 +81,7 @@ class BBEIMS
         $id = $post_result['id'];
         $o_pass = $post_result['o_password'];
         $n_pass = $post_result['n_password'];
+        $active = empty($post_result['active']) ? "0" :"1";
         $username = strtoupper($post_result['username']);
 
         $query = "UPDATE `users` SET";
@@ -90,11 +91,13 @@ class BBEIMS
             if($key === "uid") continue;
             if($key === "o_password") continue;
             if($key === "n_password") continue;
+            if($key === "active") continue;
 
             $query .= " `{$key}`='".strtoupper($val)."',";
         }
 
         $query .= "
+            	`active` = '{$active}',
                 `updated_by`='{$uid}',
                 `updated_date`=CURRENT_TIMESTAMP
             WHERE
