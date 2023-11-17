@@ -305,23 +305,32 @@
          return;
       }
 
-      const form = new FormData();
-      form.append("uid", USER_DATA.id);
-      await fetch(`${BASE_URL}php/archive.php`,{
-         method : 'post',
-         body : form
-      })
-      .then(response => response.json())
-      .then(response => {
-         show_alert({
-            title : `Archived Successfully!`,
-            body : `<b>${evacCount}</b> evacuess archived.`,
-            buttons : ["Okay"]
-         });
-         evacCount = 0;
-         load_all_evacuess();
-      })
-      .catch(err => console.error("ERROR: " + err));
+      await show_alert({
+         title : `Archive data`,
+         body : `Are you sure you want archive these evacuees?`,
+         buttons : ["Yes", "No"]
+      }, async function(ans) {
+         if(!ans) return;
+
+         const form = new FormData();
+         form.append("uid", USER_DATA.id);
+         await fetch(`${BASE_URL}php/archive.php`,{
+            method : 'post',
+            body : form
+         })
+         .then(response => response.json())
+         .then(response => {
+            show_alert({
+               title : `Archived Successfully!`,
+               body : `<b>${evacCount}</b> evacuess archived.`,
+               buttons : ["Okay"]
+            });
+            evacCount = 0;
+            load_all_evacuess();
+         })
+         .catch(err => console.error("ERROR: " + err));
+      });
+
    }
 
    function delete_data(e) {
