@@ -472,9 +472,9 @@
       const table = `<table class="table mt-5">${thead}${tbody}</table>`;
 
       let s = `
-         <javascript src="../asset/jquery/jquery.min.js"></javascript>
+         <javascript src="${BASE_URL}asset/jquery/jquery.min.js"></javascript>
          <javascript src="${BASE_URL}asset/js/adminlte.js"></javascript>
-         <javascript>window.print();window.close()</javascript>
+         <javascript> window.print(); window.close(); </javascript>
          `;
 
       const reportTab = window.open('about:blank', '_blank');

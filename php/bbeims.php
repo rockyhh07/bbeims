@@ -72,7 +72,12 @@ class BBEIMS
             ["username" => $post_result["username"], "password" => $post_result['password'], "deletedflag" => "0"]
         );
         $result = QUERY::run($query->sql);
-        return $_SESSION["user"] = count($result) > 0 ? $result : null;
+
+        if(count($result) === 0) return ["result"=>false, "message"=>"Invalid username or password"];
+        if($result[0]["active"] === "0") return ["result"=>false, "message"=>"Account is deactivated"];
+
+        $result[0]["result"] = true;
+        return $_SESSION["user"] = $result[0];
     }
 
     public static function user_update(array $post_result) {
