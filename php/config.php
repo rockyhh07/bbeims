@@ -1,8 +1,8 @@
 <?php
 
-function base_url(){
-    return "http://localhost/bbeims/";
-}
+// function base_url(){
+//     return "http://localhost/bbeims/";
+// }
 
 function validate_POST(Array $post_result){
     if(empty($post_result)){

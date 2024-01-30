@@ -4,25 +4,32 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Barangka Ibaba Evacuation Information Management System</title>
-  <link rel="shortcut icon" href="../asset/img/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="../asset/css/adminlte.min.css">
-  <link rel="stylesheet" href="../asset/css/dashboard.css">
-  <style type="text/css">
-    #table-report * {
-      font-size: medium;
-    }
+  <title>BBEIMS</title>
 
-    .report-row {
-      height: 70px;
-    }
-  </style>
-  <link rel="stylesheet" href="../asset/css/font.css">
+
+  <link rel="shortcut icon" href="<?= Core::base_url() ?>/asset/img/logo.png" type="image/x-icon">
+
+
+  <link rel="stylesheet" href="<?= Core::base_url() ?>/asset/css/adminlte.min.css">
+
+
+  <?php if (!empty($css)) foreach ($css as $v) echo " <link rel='stylesheet' href='<?=Core::base_url()?>/asset/css/{$v}.css'>"; ?>
+  <!-- <link rel="stylesheet" href="<?= Core::base_url() ?>/asset/css/dashboard.css">
+  <link rel="stylesheet" href="<?= Core::base_url() ?>/asset/css/add-evacuees.css">
+  <link rel="stylesheet" href="<?= Core::base_url() ?>/asset/css/font.css"> -->
+
+
+
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="../asset/fontawesome/css/all.min.css">
-  <script src="../asset/js/constants.js"></script>
-  <script src="../asset/js/redirect_to_login.js"></script>
-  <script src="../asset/js/alert.js"></script>
+  <link rel="stylesheet" href="<?= Core::base_url() ?>/asset/fontawesome/css/all.min.css">
+
+  <?php if (!empty($js)) foreach ($js as $v) echo "<script src='<?=Core::base_url()?>/asset/js/{$v}.js'></script>"; ?>
+  <!-- <script src="<?= Core::base_url() ?>/asset/js/constants.js"></script>
+  <script src="<?= Core::base_url() ?>/asset/js/redirect_to_login.js"></script>
+  <script src="<?= Core::base_url() ?>/asset/js/alert.js"></script> -->
+
+  <?php echo "<script>const base_url = () => '" . Core::base_url() . "'</script>"; ?>
+
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -209,136 +216,3 @@
         <!-- /.container-fluid -->
       </div>
       <!-- /.content-header -->
-      <!-- Main content -->
-      
-        <!-- /.row (main row) -->
-    </div>
-    <!-- /.container-fluid -->
-    <!-- /.content -->
-    <!-- /.content-wrapper -->
-  </div>
-  <!-- ./wrapper -->
-  <!-- jQuery -->
-  <script src="../asset/jquery/jquery.min.js"></script>
-  <script src="../asset/js/adminlte.js"></script>
-</body>
-
-</html>
-
-<script src="../asset/js/logout.js"></script>
-
-<script>
-  addNotif("BBEIMS", `Welcome <b>${USER_DATA.username}</b>`, "g");
-  load_dashboard();
-
-  const NUMBER_FAMILY = document.getElementById("number-of-family");
-  const NUMBER_EVACUEE = document.getElementById("number-of-evacuee");
-  const NUMBER_FEMALE = document.getElementById("number-of-female");
-  const NUMBER_MALE = document.getElementById("number-of-male");
-  const NUMBER_BRGY_POPU = document.getElementById("number-of-brgy-population");
-  const NUMBER_EVAC_CENTER = document.getElementById("number-of-evac_center");
-
-  async function load_dashboard() {
-    const data = (await fetch_data("php/dashboard_get.php", "json")).result[0];
-    if (!data) { addNotif("Server error", "Failed to load dashboard.", "r"); return; }
-
-    NUMBER_FAMILY.innerHTML = data.family;
-    NUMBER_EVACUEE.innerHTML = data.evacuees;
-    NUMBER_FEMALE.innerHTML = data.female;
-    NUMBER_MALE.innerHTML = data.male;
-    NUMBER_BRGY_POPU.innerHTML = data.brgy;
-    NUMBER_EVAC_CENTER.innerHTML = data.evac_center;
-  }
-
-
-  async function generateReport() {
-    let incidentTypeOptions = '';
-    let incidentDateOptions = '';
-    let evacCenterOptions = '';
-
-    let layout = await fetch_data("asset/templates/generateReport.html");
-
-    const incidentsTypes = (await fetch_data("php/incident_get_all.php", "json")).result;
-    // const incidentsDates = (await fetch_data("php/incident_get_dates.php", "json")).result;
-    const evacCenter = (await fetch_data("php/evac_center_get_all.php", "json")).result;
-
-    incidentsTypes.forEach(e => { incidentTypeOptions += `<option value="${e.id}" >${e.name}</option>`; });
-    // incidentsDates.forEach(e => { incidentDateOptions += `<option value="${e.id}" >${e.name}</option>`; });
-    evacCenter.forEach(e => { evacCenterOptions += `<option value="${e.id}" >${e.name}</option>`; });
-
-    layout = layout.replaceAll("{select-incident-type}", incidentTypeOptions);
-    layout = layout.replaceAll("{select-incident-date}", incidentDateOptions);
-    layout = layout.replaceAll("{select-evac-center}", evacCenterOptions);
-
-    show_alert({
-      title: "Generate Report",
-      body: layout,
-      buttons: ["Generate", "Cancel"]
-    }, async function (ans) {
-      if (!ans) return;
-
-      const form = new FormData(document.getElementById("report-form"));
-      await generateReportBy(form);
-
-      // addNotif("Generating report", "Report is being generated!", "g");
-    });
-
-    $(".report-row").on("click", function () {
-      let radio = $(this).find("input[type='radio']").prop("checked", true);
-    });
-  }
-
-  async function generateReportBy(form) {
-    const type = form.get("type");
-    if (type === "incident-type") { reportBy(form, "type"); return; }
-    if (type === "incident-date") { reportBy(form, "date"); return; }
-    if (type === "evac-center") { reportBy(form, "center"); return; }
-    reportBy(form);
-  }
-
-  async function reportBy(form, condition = "") {
-    form.append("uid", USER_DATA.id);
-    form.append("condition", condition);
-
-    const thead = `<thead><tr>
-         <th>Fullname</th>
-         <th>Contact</th>
-         <th>Age</th>
-         <th>gender</th>
-         <th>Representative</th>
-         <th>Center</th>
-         <th>Incident</th>
-         <th>Date</th>
-      </tr></thead>`;
-    let tbody = '<tbody>';
-
-    const response = (await fetch_data('php/generate_report_all.php', "json", form)).result;
-    for (const data of response) {
-      tbody += `<tr>
-            <td>${data.lname}, ${data.fname} ${data.mname}</td>
-            <td>${data.contact}</td>
-            <td>${getAge(data.birthday)}</td>
-            <td>${data.gender}</td>
-            <td>${data.repLname}, ${data.repFname} ${data.repMname}</td>
-            <td>${data.center}</td>
-            <td>${data.incident}</td>
-            <td>${data.date}</td>
-         </tr>`;
-    }
-    tbody += `</tbody>`;
-    const table = `<table class="table mt-5">${thead}${tbody}</table>`;
-
-    let s = `
-         <javascript src="${BASE_URL}asset/jquery/jquery.min.js"></javascript>
-         <javascript src="${BASE_URL}asset/js/adminlte.js"></javascript>
-         <javascript> window.print(); window.close(); </javascript>
-         `;
-
-    const reportTab = window.open('about:blank', '_blank');
-    reportTab.document.write(
-      `<head> <link rel="stylesheet" href="${BASE_URL}asset/css/adminlte.min.css"> </head>`
-      + `<div class="d-flex justify-content-center">` + table + `</div>` +
-      s.replaceAll("javascript", "script")
-    );
-  }  
-</script>

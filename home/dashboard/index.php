@@ -1,6 +1,13 @@
-<?php require_once  "../core/Core.php"; ?>
+<!-- <?php require_once  "../core/Core.php"; ?> -->
 
-<?= Core::import('dashboard-header.layout', []) ?>
+<!-- <?=
+Core::importComponent([
+  'path' => '\admin\layout\footer\footer.component',
+  'properties' => []
+]);
+?> -->
+
+<?= __DIR__ ?>
 
 <section class="content">
   <div class="container-fluid">
@@ -37,7 +44,7 @@
               <button class="btn btn-primary" onclick="generateReport()">Generate Reports</button>
             </span>
           </div>
-          
+
           <!-- /.info-box-content -->
         </div>
         <!-- /.info-box -->
@@ -129,4 +136,9 @@
 
 <script type="module" src="./dashboard.script.js"></script>
 
-<?= Core::import('dashboard-footer.layout', []) ?>
+<!-- <?=
+      Core::importComponent([
+        'path' => '\admin\layout\footer\footer.component',
+        'properties' => []
+      ]);
+      ?> -->
