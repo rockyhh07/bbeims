@@ -18,19 +18,21 @@ class Core
   // }
 
 
-  public static function base_url() {
+  public static function base_url()
+  {
     return '../..';
   }
 
   /**
    * Keys:
-   * `path:string` -> main component path,
-   * `properties:string[]` -> main component 
+   * `path:string` -> component path,
+   * `properties:string[]` -> component  properties
    */
-  public static function importComponent($data = []) {
+  public static function importComponent($data = [])
+  {
     extract($data);
-    
-    if($path) include_once "{$path}index.php";
+
+    if ($path) require_once Core::base_url() . "{$path}index.php";
 
     unset($data);
   }

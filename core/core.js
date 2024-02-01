@@ -1,13 +1,29 @@
-export default class Core {
+class Core {
   static base_url() {
     return '../..';
   }
 
-  static USER_DATA = JSON.parse(
-    window.sessionStorage.getItem("user_data") ?
-      window.sessionStorage.getItem("user_data") :
-      '[]'
-  );
+  static getUserData = () => JSON.parse(sessionStorage.getItem("user_data") ?? '[]');
+
+  static async redirect_to_admin() {
+    const response = (await this.fetch_data(`${Core.base_url()}/php/session_status.php`, 'json')).result[0];
+    if (response.reesult) {
+      window.location.href = `${Core.base_url()}/home/admin/`;
+    }
+  }
+
+  static async redirect_to_login() {
+    const response = (await this.fetch_data(`${Core.base_url()}/php/session_status.php`, 'json')).result[0];
+    if (!response.reesult) {
+      window.location.href = `${Core.base_url()}/main/login/`;
+    }
+  }
+
+
+
+
+
+  
 
   static notifHolder = document.createElement("div");
   static getNotifHolder = () => {
@@ -94,10 +110,6 @@ export default class Core {
       if (type === "json") return response.json()
       return response.text();
     })
-      .catch(err => {
-        addNotif("Server error", "Contact system administrators. <b>Reference: E2002</b>", "r");
-        console.log(err);
-      });
   }
 
 }
