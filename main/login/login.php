@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Barangka Ibaba Evacuation Information Management System</title>
-  <link rel="shortcut icon" href="<?= Core::base_url(); ?>/assets/img/logo.png" type="image/x-icon">
+  <link rel="shortcut icon" href="<?= Core::base_url(); ?>/assets/img/logo-a.png" type="image/x-icon">
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
@@ -24,11 +24,10 @@
   <!-- Required -->
   <script src="<?= Core::base_url(); ?>/assets/jquery/jquery.min.js" defer></script>
   <script src="<?= Core::base_url(); ?>/assets/js/bootstrap.bundle.min.js" defer></script>
-  <script src="<?= Core::base_url(); ?>/core/core.js" defer></script>
 
   <!-- Custom -->
   <link rel="stylesheet" href="./login.css">
-  <script src="./login.js" defer></script>
+  <script type="module" src="./login.js"></script>
 </head>
 
 <body class="hold-transition login-page">
@@ -37,12 +36,12 @@
     <div class="card card-outline card-info">
       <div class="card-header text-center">
         <a href="." class="brand-link">
-          <img src="<?= Core::base_url(); ?>/assets/img/logoa.png" alt="DSMS Logo" width="200">
+          <img src="<?= Core::base_url(); ?>/assets/img/logo-b.png" alt="DSMS Logo" width="200">
         </a>
       </div>
       <div class="card-body">
         <!-- <form method="post" id="login-form"> -->
-        <form method="post" onsubmit="submit_login(this)">
+        <form method="post" id="login-form">
           <div class="input-group mb-3">
             <input name="username" type="text" class="form-control" placeholder="Username">
             <div class="input-group-append">
@@ -61,7 +60,7 @@
           </div>
           <div class="row">
             <div class="col-6 offset-3">
-              <button type="submit" class="btn btn-block btn-bg" style="background-color: rgb(116, 152, 87);">Login</button>
+              <button type="submit" class="btn btn-block btn-primary">Login</button>
             </div>
           </div>
         </form>
@@ -77,7 +76,7 @@
   <!-- /.login-box -->
 
   <?= Core::importComponent([
-    'path' => '/components/modal/',
+    'path' => '/components/modal',
     'properties' => [
       'id' => 'custom-modal',
       'title' => 'Privacy Policy',
@@ -86,7 +85,7 @@
   ]) ?>
 
   <?= Core::importComponent([
-    'path' => '/components/notification/',
+    'path' => '/components/notification',
   ]) ?>
 
 </body>

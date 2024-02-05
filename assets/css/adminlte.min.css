@@ -5805,7 +5805,7 @@
 {background-color: #749857;}.card-info:not(.card-outline)>.card-header,.card-info:not(.card-outline)>.card-header a
 {color:#fff}.card-info:not(.card-outline)>.card-header a.active
 {color:#1f2d3d}.card-info.card-outline
-{border-top: 3px solid #749857;}.card-info.card-outline-tabs>.card-header a:hover
+{border-top: 3px solid #007BFF;}.card-info.card-outline-tabs>.card-header a:hover
 {border-top:3px solid #dee2e6}.card-info.card-outline-tabs>.card-header a.active
 {border-top:3px solid #17a2b8}.bg-gradient-info>.card-header .btn-tool,.bg-info>.card-header .btn-tool,.card-info:not(.card-outline)>.card-header .btn-tool
 {color:rgba(255,255,255,.8)}.bg-gradient-info>.card-header .btn-tool:hover,.bg-info>.card-header .btn-tool:hover,.card-info:not(.card-outline)>.card-header .btn-tool:hover

@@ -1,0 +1,207 @@
+#notification_holder {
+  position: fixed;
+  width: 300px;
+  bottom: 5px;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.notif-item {
+  margin: .5rem;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  position: relative;
+  border-radius: 5px;
+}
+
+.notif-item.notif-item-secondary {
+  color: black;
+  background-color: #F8F9F9;
+}
+
+.notif-item.notif-item-success {
+  color: black;
+  background-color: #EAFAF1;
+}
+
+.notif-item.notif-item-danger {
+  color: black;
+  background-color: #FDEDEC;
+}
+
+.notif_close_btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none;
+  border: none;
+}
+
+.notif-title {
+  font-weight: bold;
+  padding: .5rem .75rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: normal;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  gap: .5rem;
+}
+
+.notif-title.notif-title-secondary {
+  background-color: #ECECEC;
+}
+
+.notif-title.notif-title-success {
+  background-color: #C8FEE0;
+}
+
+.notif-title.notif-title-danger {
+  background-color: #FFAFAA;
+}
+
+.notif-body {
+  padding: .75rem;
+  font-size: small;
+}
+
+
+
+
+.slide-in-out{
+  animation: slide-in-out 10s ease-in-out forwards;
+}
+
+@keyframes slide-in-out {
+  0%{ opacity: 1; transform: translateX(100%); }
+  5%{ transform: translateX(0); }
+  80%{ opacity: .9; }
+  100%{ opacity: 0; }
+}
+
+.slide-in-from-left {
+  animation: slide-in-from-left .3s linear forwards;
+}
+
+@keyframes slide-in-from-left {
+  0%{transform: translateX(150px); opacity: 0;}
+  50%{transform: translateX(-10px);}
+  100%{transform: translateX(0); opacity: 1;}
+}
+
+
+
+
+.fade-out {
+  animation: fade-out .5s linear forwards;
+}
+
+@keyframes fade-out {
+  0%{opacity: 1;}
+  100%{opacity: 0; display: none;}
+}
+
+.fade-in{
+  animation: fade-in .3s ease-in-out forwards;
+}
+
+@keyframes fade-in {
+  0%{ opacity: 0; }
+  100%{ opacity: 1; }
+}
+
+
+
+
+
+.fade-in-slide-up {
+  animation: fade-in-slide-up .3s linear forwards;
+}
+
+@keyframes fade-in-slide-up {
+  0%{opacity: 0; transform: translateY(100px);}
+  100%{opacity: 1; transform: translateY(0);}
+}
+
+.fade-in-slide-down {
+  animation: fade-in-slide-down .3s linear forwards;
+}
+
+@keyframes fade-in-slide-down {
+  0%{opacity: 0; transform: translateY(-100px);}
+  100%{opacity: 1; transform: translateY(0);}
+}
+
+.fade-in-slide-right {
+  animation: fade-in-slide-right .3s linear forwards;
+}
+
+@keyframes fade-in-slide-right {
+  0%{opacity: 0; transform: translateX(100px);}
+  100%{opacity: 1; transform: translateX(0);}
+}
+
+.fade-in-slide-left {
+  animation: fade-in-slide-left .3s linear forwards;
+}
+
+@keyframes fade-in-slide-left {
+  0%{opacity: 0; transform: translateX(-100px);}
+  100%{opacity: 1; transform: translateX(0);}
+}
+
+.fade-out-slide-up {
+  animation: fade-out-slide-up .5s linear forwards;
+}
+
+@keyframes fade-out-slide-up {
+  0%{opacity: 1; transform: translateY(0);}
+  100%{display: none; opacity: 0; transform: translateY(100px);}
+}
+
+.fade-out-slide-down {
+  animation: fade-out-slide-down .5s linear forwards;
+}
+
+@keyframes fade-out-slide-down {
+  0%{opacity: 1; transform: translateY(0);}
+  100%{display: none; opacity: 0; transform: translateY(-100px);}
+}
+
+.fade-out-slide-right {
+  animation: fade-out-slide-right .5s linear forwards;
+}
+
+@keyframes fade-out-slide-right {
+  0%{opacity: 1; transform: translateX(0);}
+  100%{display: none; opacity: 0; transform: translateX(100px);}
+}
+
+.fade-out-slide-left {
+  animation: fade-out-slide-left .5s linear forwards;
+}
+
+@keyframes fade-out-slide-left {
+  0%{opacity: 1; transform: translateX(0);}
+  100%{display: none; opacity: 0; transform: translateX(-100px);}
+}
+
+.pop-in {
+  animation: pop-in .3s linear forwards;
+}
+
+@keyframes pop-in {
+  0%{transform: scale(0);}
+  50%{transform: scale(120%);}
+  100%{transform: scale(100%);}
+}
+
+.pop-out {
+  animation: pop-out .3s linear forwards;
+}
+
+@keyframes pop-out {
+  0%{transform: scale(100%);}
+  50%{transform: scale(120%);}
+  100%{transform: scale(0);}
+}

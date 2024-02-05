@@ -1,24 +1,18 @@
-Core.redirect_to_admin();
+import { Core, CustomNotification } from "../../core/core.js";
 
-// document.getElementById('login-form').addEventListener("submit", async function (e) {
-//   e.preventDefault();
+Core.user_redirectToAdmin();
 
-//   const form = new FormData(document.getElementById('login-form'));
-//   const result = ((await Core.fetch_data(`${Core.base_url()}/php/user_login.php`, "json", form)).result);
-
-//   if (!result.result) { Core.addNotif('Login failed', `${result.message}`, 'r'); return; }
-
-//   window.sessionStorage.setItem("user_data", JSON.stringify(result));
-//   window.location.href = `${Core.base_url()}/home/admin/`
-// });
-
-function submit_login(e) {
+Core.f("#login-form").addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  console.log({ event: e })
-}
+  const form = new FormData(document.getElementById('login-form'));
+  const result = ((await Core.fetch_data(`${Core.base_url()}/php/user_login.php`, "json", form)).result);
 
+  if (!result.result) {
+    CustomNotification.add('Login failed', result.message, 'danger');
+    return;
+  }
 
-function submit_modal() {
-  console.log("SUBMIT");
-}
+  sessionStorage.setItem("user_data", JSON.stringify(result));
+  location.href = `${Core.base_url()}/home/dashboard/`
+});
