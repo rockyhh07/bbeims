@@ -1,7 +1,8 @@
-import { Core, CustomNotification } from "../../core/core.js";
+import { Core, CustomNotification, Helper } from "../../core/core.js";
+
+const generateModal = "#generate-report-modal";
 
 Core.user_redirectToLogin();
-
 CustomNotification.add("BBEIMS", `Welcome <b>${Core.user_getData().username}</b>`, "default");
 
 (async () => {
@@ -18,20 +19,15 @@ CustomNotification.add("BBEIMS", `Welcome <b>${Core.user_getData().username}</b>
 Core.f("#btn-gegerateReport").addEventListener("click", async (e) => {
   e.preventDefault();
 
-  console.log("Hello")
-})
-
-
-async function generateReport() {
   let incidentTypeOptions = '';
   let incidentDateOptions = '';
   let evacCenterOptions = '';
 
-  let layout = await fetch_data("asset/templates/generateReport.html");
+  let layout = await Core.fetch_data("generateReport.html");
 
-  const incidentsTypes = (await fetch_data("php/incident_get_all.php", "json")).result;
   // const incidentsDates = (await fetch_data("php/incident_get_dates.php", "json")).result;
-  const evacCenter = (await fetch_data("php/evac_center_get_all.php", "json")).result;
+  const incidentsTypes = (await Core.fetch_data(Core.base_url() + "/php/incident_get_all.php", "json")).result;
+  const evacCenter = (await Core.fetch_data(Core.base_url() + "/php/evac_center_get_all.php", "json")).result;
 
   incidentsTypes.forEach(e => { incidentTypeOptions += `<option value="${e.id}" >${e.name}</option>`; });
   // incidentsDates.forEach(e => { incidentDateOptions += `<option value="${e.id}" >${e.name}</option>`; });
@@ -41,23 +37,23 @@ async function generateReport() {
   layout = layout.replaceAll("{select-incident-date}", incidentDateOptions);
   layout = layout.replaceAll("{select-evac-center}", evacCenterOptions);
 
-  show_alert({
-    title: "Generate Report",
-    body: layout,
-    buttons: ["Generate", "Cancel"]
-  }, async function (ans) {
-    if (!ans) return;
-
-    const form = new FormData(document.getElementById("report-form"));
-    await generateReportBy(form);
-
-    // addNotif("Generating report", "Report is being generated!", "g");
-  });
+  Core.f(`${generateModal}-body`).innerHTML = layout;
 
   $(".report-row").on("click", function () {
-    let radio = $(this).find("input[type='radio']").prop("checked", true);
+    $(this).find("input[type='radio']").prop("checked", true);
   });
-}
+});
+
+Core.f(`${generateModal}-submit`).addEventListener("click", async () => {
+  Core.f(`${generateModal}-hide`).click();
+  await generateReportBy(Core.createFormData({}, new FormData(Core.f("#report-form"))));
+  CustomNotification.add("Generating report", "Report is being generated!", "success");
+});
+
+
+// ******************
+// *  Semi Private  *
+// ******************
 
 async function generateReportBy(form) {
   const type = form.get("type");
@@ -68,8 +64,6 @@ async function generateReportBy(form) {
 }
 
 async function reportBy(form, condition = "") {
-  form.append("uid", USER_DATA.id);
-  form.append("condition", condition);
 
   const thead = `<thead><tr>
          <th>Fullname</th>
@@ -84,15 +78,15 @@ async function reportBy(form, condition = "") {
   let tbody = '<tbody>';
 
   const response = (await Core.fetch_data(
-    'php/generate_report_all.php',
+    Core.base_url() + '/php/generate_report_all.php',
     "json",
-    Core.createFormData({ uid: Core.user_getData().id, condition: condition }))
+    Core.createFormData({ uid: Core.user_getData().id, condition: condition }, form))
   ).result;
   for (const data of response) {
     tbody += `<tr>
             <td>${data.lname}, ${data.fname} ${data.mname}</td>
             <td>${data.contact}</td>
-            <td>${getAge(data.birthday)}</td>
+            <td>${Helper.getAge(data.birthday)}</td>
             <td>${data.gender}</td>
             <td>${data.repLname}, ${data.repFname} ${data.repMname}</td>
             <td>${data.center}</td>
@@ -104,14 +98,14 @@ async function reportBy(form, condition = "") {
   const table = `<table class="table mt-5">${thead}${tbody}</table>`;
 
   let s = `
-         <javascript src="${BASE_URL}asset/jquery/jquery.min.js"></javascript>
-         <javascript src="${BASE_URL}asset/js/adminlte.js"></javascript>
-         <javascript> window.print(); window.close(); </javascript>
+         <javascript src="${Core.base_url()}/assets/jquery/jquery.min.js"></javascript>
+         <javascript src="${Core.base_url()}/assets/js/adminlte.js"></javascript>
+         <javascript> (()=>{ setTimeout(() => { window.print(); }, 1000); })(); </javascript>
          `;
 
-  const reportTab = window.open('about:blank', '_blank');
+  const reportTab = window.open('', '_blank', 'width=500,height=400');
   reportTab.document.write(
-    `<head> <link rel="stylesheet" href="${BASE_URL}asset/css/adminlte.min.css"> </head>`
+    `<head> <link rel="stylesheet" href="${Core.base_url()}/assets/css/adminlte.min.css"> </head>`
     + `<div class="d-flex justify-content-center">` + table + `</div>` +
     s.replaceAll("javascript", "script")
   );

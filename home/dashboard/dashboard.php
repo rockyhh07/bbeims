@@ -1,5 +1,3 @@
-<?= Core::importComponent(['path' => '/components/header']) ?>
-
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
@@ -45,7 +43,9 @@
           <div class="info-box-content">
             <span class="info-box-text d-flex flex-column align-items-start">
               Analytics
-              <button class="btn btn-primary" id="btn-gegerateReport">Generate Reports</button>
+              <button class="btn btn-primary" id="btn-gegerateReport" data-toggle="modal" data-target="#generate-report-modal">
+                Generate Reports
+              </button>
             </span>
           </div>
         </div>
@@ -118,8 +118,3 @@
   </div>
 </section>
 <!-- /.container-fluid -->
-
-<?= Core::importComponent(['path' => '/components/notification']) ?>
-<?= Core::importComponent(['path' => '/components/footer']) ?>
-
-<script type="module" src="./dashboard.js"></script>

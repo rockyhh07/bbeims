@@ -6,12 +6,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Barangka Ibaba Evacuation Information Management System</title>
   <link rel="shortcut icon" href="<?= Core::base_url() ?>/assets/img/logo-a.png" type="image/x-icon">
+
+  <!-- AdminLTE -->
   <link rel="stylesheet" href="<?= Core::base_url() ?>/assets/css/adminlte.min.css">
-  <link rel="stylesheet" href="<?= Core::base_url() ?>/assets/css/dashboard.css">
+
   <!-- Font Awesome -->
   <link rel="stylesheet" href="<?= Core::base_url() ?>/assets/fontawesome/css/all.min.css">
 
-  <script type="module" src="<?= Core::base_url() ?>/assets/js/header.js"></script>
+  <!-- jQuery -->
+  <script src="<?= Core::base_url() ?>/assets/jquery/jquery.min.js" defer></script>
+
+  <!-- bootrap -->
+  <script src="<?= Core::base_url() ?>/assets/js/bootstrap.bundle.min.js" defer></script>
+
+  <!-- DataTables  & Plugins -->
+  <script src="<?= Core::base_url() ?>/assets/tables/datatables/jquery.dataTables.min.js" defer></script>
+  <script src="<?= Core::base_url() ?>/assets/tables/datatables-bs4/js/dataTables.bootstrap4.min.js" defer></script>
+  <script src="<?= Core::base_url() ?>/assets/tables/datatables-responsive/js/responsive.bootstrap4.min.js" defer></script>
+  <script src="<?= Core::base_url() ?>/assets/tables/datatables-buttons/js/buttons.bootstrap4.min.js" defer></script>
+
+  <!-- AdminLTE -->
+  <script src="<?= Core::base_url() ?>/assets/js/adminlte.js" defer></script>
+
+  <link rel="stylesheet" href="<?= Core::base_url() ?>/assets/css/dashboard.css">
+  <script type="module" src="<?= Core::base_url() ?>/assets/js/header.js" defer></script>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -51,7 +69,7 @@
         <nav class="mt-2">
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <li class="nav-item">
-              <a href="<?=Core::base_url()?>/home/dashboard" class="nav-link">
+              <a href="<?= Core::base_url() ?>/home/dashboard" class="nav-link">
                 <i class="nav-icon fa fa-tachometer-alt"></i>
                 <p>
                   Dashboard
@@ -59,7 +77,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="<?=Core::base_url()?>/home/manage-incident"class="nav-link">
+              <a href="<?= Core::base_url() ?>/home/manage-incident" class="nav-link">
                 <i class="nav-icon fa fa-globe-asia"></i>
                 <p>
                   Type of Incident
@@ -69,7 +87,7 @@
 
 
             <li class="nav-item">
-              <a href="<?=Core::base_url()?>/home/manage-evacuation-center" class="nav-link">
+              <a href="<?= Core::base_url() ?>/home/manage-evacuation-center" class="nav-link">
                 <i class="nav-icon fa fa-hotel"></i>
                 <p>
                   Evacuation Center
@@ -86,13 +104,13 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="add-evacuees.html" class="nav-link">
+                  <a href="<?= Core::base_url() ?>/home/add-evacuee" class="nav-link">
                     <i class="nav-icon fa fa-address-book"></i>
                     <p>Manage</p>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="manage-evacuees.html" class="nav-link">
+                  <a href="<?= Core::base_url() ?>/home/manage-evacuees" class="nav-link">
                     <i class="nav-icon fas fa-list-ol"></i>
                     <p>List</p>
                   </a>
@@ -111,13 +129,13 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="add-user.html" class="nav-link">
+                  <a href="<?= Core::base_url() ?>/home/add-user" class="nav-link">
                     <i class="nav-icon fa fa-plus"></i>
                     <p>New</p>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="manage-user.html" class="nav-link">
+                  <a href="<?= Core::base_url() ?>/home/manage-users" class="nav-link">
                     <i class="nav-icon fa fa-address-book"></i>
                     <p>Manage</p>
                   </a>
@@ -136,32 +154,32 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="evacuees-report.html" class="nav-link">
+                  <a href="<?= Core::base_url() ?>/home/report-evacuees" class="nav-link">
                     <i class="nav-icon fa fa-users"></i>
                     <p>Evacuees</p>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="gender-report.html" class="nav-link">
+                  <a href="<?= Core::base_url() ?>/home/report-gender" class="nav-link">
                     <i class="nav-icon fa fa-venus-mars"></i>
                     <p>Evacuees by Gender</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
-                  <a href="age-report.html" class="nav-link">
+                  <a href="<?= Core::base_url() ?>/home/report-age" class="nav-link">
                     <i class="nav-icon fa fa-sort-numeric-up-alt"></i>
                     <p>Evacuees by Age</p>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="incident-report.html" class="nav-link">
+                  <a href="<?= Core::base_url() ?>/home/report-incident" class="nav-link">
                     <i class="nav-icon fa fa-globe-asia"></i>
                     <p>Evacuees by Incident</p>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="center-report.html" class="nav-link">
+                  <a href="<?= Core::base_url() ?>/home/report-evacuation-center" class="nav-link">
                     <i class="nav-icon fa fa-hospital-alt"></i>
                     <p>Evacuees by Center</p>
                   </a>

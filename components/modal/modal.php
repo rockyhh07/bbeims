@@ -7,16 +7,17 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" id="<?= $properties['id']; ?>-body">
         <?= empty($properties['children']) ? '' : require_once "{$properties['children']}"; ?>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="<?= empty($properties['onClose']) ? '' : $properties['onClose'] ?>" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" id="<?= $properties['id'] ?>-close" data-dismiss="modal">Close</button>
         <?php if (!empty($properties['success'])) { ?>
-          <button type="button" class="btn btn-primary" onclick="<?= empty($properties['onSubmit']) ? '' : $properties['onSubmit'] ?>">
+          <button type="button" class="btn btn-primary" id="<?= $properties['id'] ?>-submit">
             <?= empty($properties['success']) ? 'Okay' :  $properties['success'] ?>
           </button>
         <?php } ?>
+        <button type="button" style="display: none;" id="<?= $properties['id'] ?>-hide" data-dismiss="modal"></button>
       </div>
     </div>
   </div>

@@ -33,7 +33,7 @@ export class Core {
   static async user_redirectToAdmin() {
     const response = (await this.fetch_data(`${Core.base_url()}/php/session_status.php`, 'json')).result[0];
     if (response.result) {
-      window.location.href = `${Core.base_url()}/home/admin/`;
+      window.location.href = `${Core.base_url()}/home/dashboard/`;
     }
   }
 
@@ -58,14 +58,30 @@ export class Core {
       });
   }
 
-  static createFormData(object = {}) {
-    const data = new FormData();
-    for (const key in object) {
-      data.append(key, object[key]);
-    }
-    return data;
+  static createFormData(object = {}, passedData = new FormData()) {
+    for (const key in object) passedData.append(key, object[key]);
+    return passedData;
   }
 
+  static getDataFromFormData(formData) {
+    const data = {};
+    formData.forEach((val, key) => data[key] = val);
+    return data;
+  }
+}
+
+export class Helper {
+  static getAge(dateString) {
+    if (!dateString) return 0;
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  }
 }
 
 export class CustomNotification {
