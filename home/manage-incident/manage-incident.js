@@ -1,134 +1,139 @@
+import { Core, CustomNotification, Helper } from "../../core/core.js";
+Core.user_redirectToLogin();
 
-function updateDate(body = ["-1", ""]) {
-  show_alert({
-    title: "Update Incident",
-    body: `<div class="d-flex flex-column" style="gap: .5rem;">
-           <div class="input-group">
-              <span class="input-group-text" id="incident-name">Name</span>
-              <input id="update-incident-name" value="${body[1]}" type="text" class="form-control" placeholder="Incident name" aria-describedby="incident-name">
-           </div>
-        </div>`,
-    buttons: ["Save", "Cancel"]
-  }, function (ans) {
-    if (!ans) return;
+(await Load_Incidents)();
 
-    const form = new FormData();
-    form.append("uid", USER_DATA.id);
-    form.append("id", body[0]);
-    form.append("name", $("#update-incident-name").val());
+async function Load_Incidents() {
+  const data = (await Core.fetch_data(`${Core.base_url()}/php/incident_get_all.php`, "json")).result;
+  console.log({ data });
 
-    if (!validForm(form)) return;
+  if ($.fn.DataTable.isDataTable('#incident')) {
+    $('#incident').DataTable().destroy();
+    $('#incident').html("");
+  }
 
-    fetch(`${BASE_URL}php/incident_update.php`, {
-      method: 'post',
-      body: form
-    })
-      .then(response => response.json())
-      .then(response => {
-        load_all_incident();
-        addNotif("Incident Updated", "Incident updated successfully!", "g");
-      })
-      .catch(err => console.error("ERROR: " + err));
+  const thead = `
+    <thead>
+      <tr>
+          <th>Incident Name</th>
+          <th class="text-center" style="width: 160px !important;">Action</th>
+      </tr>
+    </thead>
+    `;
+
+  let tbody = '<tbody>';
+  for (let row of data) {
+    tbody += '<tr>';
+
+    tbody += `<td>${row.name}</td>`;
+    tbody +=
+      `<td class="text-center" style="width: 160px !important;">
+        <button 
+          class="btn btn-sm btn-success btn-open-edit"
+          data-binder-id="${row.id}"
+          data-binder-name="${row.name}"
+          data-toggle="modal" 
+          data-target="#edit-incident-modal"
+        >
+          <i class="fa fa-edit"></i> Edit
+        </button> `;
+    tbody += (Core.user_getData().category === "A" ?
+      `<button 
+        class="btn btn-sm btn-danger btn-open-delete"
+        data-binder-id="${row.id}"
+        data-binder-name="${row.name}"
+        data-toggle="modal"
+        data-target="#delete-incident-modal"
+      >
+        <i class="fa fa-trash-alt"></i> Delete
+      </button>`: null);
+
+    tbody +=
+      `</td>`;
+
+    tbody += '</tr>';
+  }
+  tbody += "</tbody>";
+
+  $("#incident").append(thead + tbody);
+  $("#incident").DataTable({
+    bAutoWidth: false,
+    autoWidth: false
+  });
+
+  Load_Functions();
+}
+
+const modal_addIncident = "#add-incident-modal";
+const modal_editIncident = "#edit-incident-modal";
+const modal_deleteIncident = "#delete-incident-modal";
+
+// <Add Incident>
+const submit_add_listener = async function (e) {
+  Core.f(`${modal_addIncident}-hide`).click();
+  const form = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#incident-add-form")));
+  await Core.fetch_data(`${Core.base_url()}/php/incident_new.php`, null, form).then(async data => {
+    console.log({ data });
+    CustomNotification.add("Success!", `New item added!`, "primary")
+    await Load_Incidents();
+    Core.f("#incident-add-form").reset();
   });
 }
+// </Add Incident>
 
-function delete_data(e) {
-  const name = String($(e).data("name"));
-  const id = String($(e).data("id"));
-  show_alert({
-    title: `<img src="${BASE_URL}asset/img/sent.png" > Delete record`,
-    body: `Are you sure you want to delete <b>${name}</b>?`,
-    buttons: ["Yes", "No"]
-  }, function (ans) {
-    if (!ans) return;
+// <Edit Incident>
+const open_edit_listener = async function (e) {
+  const replace = { name: Core.data(this, "binder-name"), id: Core.data(this, "binder-id") };
+  let layout = (await Core.fetch_data('modal-edit-incident.html', "text"));
+  layout = Core.replaceLayout(layout, replace);
+  Core.f(`${modal_editIncident}-body`).innerHTML = layout;
+}
 
-    const form = new FormData();
-    form.append("uid", USER_DATA.id);
-    form.append("id", id);
-    fetch(`${BASE_URL}php/incident_delete.php`, {
-      method: 'post',
-      body: form
-    })
-      .then(response => response.json())
-      .then(response => {
-        load_all_incident();
-        addNotif("Incident Deleted", "Incident deleted successfully!", "g");
-      })
-      .catch(err => console.error("ERROR: " + err));
+const submit_edit_listener = async function (e) {
+  Core.f(`${modal_editIncident}-hide`).click();
+  const form = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#incident-edit-form")));
+  await Core.fetch_data(`${Core.base_url()}/php/incident_update.php`, null, form).then(async data => {
+    console.log({ data });
+    CustomNotification.add("Success!", `Item updated!`, "primary")
+    await Load_Incidents();
   });
 }
+// </Edit Incident>
 
-async function load_all_incident() {
-  await fetch(BASE_URL + 'php/incident_get_all.php')
-    .then(response => response.json())
-    .then(response => {
-      let result = response.result;
-
-      if ($.fn.DataTable.isDataTable('#incident')) {
-        $('#incident').DataTable().destroy();
-        $('#incident').html("");
-      }
-
-      const thead = `
-     <thead>
-        <tr>
-           <th>Incident Name</th>
-           <th class="text-center" style="width: 160px !important;">Action</th>
-        </tr>
-     </thead>
-     `;
-
-      let tbody = '<tbody>';
-      for (let row of result) {
-        tbody += `<tr>`;
-        tbody += `<td>${row.name}</td>`;
-        tbody += `<td class="text-center" style="width: 160px !important;">
-              <button class="btn btn-sm btn-success" href="#" onclick="updateDate([
-                 '${row.id}', '${row.name}'
-              ])"><i class="fa fa-edit"></i> Edit</button>`;
-        tbody += (USER_DATA.category === "A") ? `
-              <button class="btn btn-sm btn-danger" href="#" onclick="delete_data(this)" data-id="${row.id}" data-name="${row.name}">
-                 <i class="fa fa-trash-alt"></i> Delete
-              </button>
-           </td>` : "";
-        tbody += `</tr>`;
-      }
-      tbody += "</tbody>";
-
-      $("#incident").append(thead + tbody);
-      $("#incident").DataTable({
-        bAutoWidth: false,
-        autoWidth: false
-      });
-    })
-    .catch(err => {
-      console.error("ERROR: " + err);
-    });
+// </Delete Incident>
+const open_delete_listener = async function (e) {
+  const replace = { name: Core.data(this, "binder-name"), id: Core.data(this, "binder-id") };
+  let layout = (await Core.fetch_data('modal-delete-incident.html', "text"));
+  layout = Core.replaceLayout(layout, replace);
+  Core.f(`${modal_deleteIncident}-body`).innerHTML = layout;
 }
 
-document.getElementById("incident-add-btn").addEventListener("click", async function (e) {
-  e.preventDefault();
-  const form = new FormData(document.getElementById("incident-add-form"));
-  form.append("uid", USER_DATA.id);
+const submit_delete_listener = async function (e) {
+  Core.f(`${modal_deleteIncident}-hide`).click();
+  const form = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#incident-delete-form")));
+  await Core.fetch_data(`${Core.base_url()}/php/incident_delete.php`, null, form).then(async data => {
+    console.log({ data });
+    CustomNotification.add("Success!", `Item deleted!`, "primary")
+    await Load_Incidents();
+  });
+}
+// </Delete Incident>
 
-  if (!validForm(form)) return;
+function Load_Functions() {
 
-  await fetch(BASE_URL + 'php/incident_new.php', {
-    method: 'post',
-    body: form
-  })
-    .then(response => response.json())
-    .then(response => {
-      let result = response.result[0];
-      if (!result.result) alert("Something went wrong. Please try again later.");
-      else document.getElementById("incident-add-form").reset();
+  Core.clearClick(`${modal_addIncident}-btn-add`, submit_add_listener);
+  Core.onClick(`${modal_addIncident}-btn-add`, submit_add_listener);
 
-      load_all_incident();
-      addNotif("New Incident", "New incident added successfully!", "g");
-    })
-    .catch(err => {
-      console.error("ERROR: " + err);
-    });
-});
+  Core.clearClick(`${modal_editIncident}-btn-edit`, submit_edit_listener);
+  Core.onClick(`${modal_editIncident}-btn-edit`, submit_edit_listener);
 
-load_all_incident();
+  Core.clearClick(`${modal_deleteIncident}-btn-delete`, submit_delete_listener);
+  Core.onClick(`${modal_deleteIncident}-btn-delete`, submit_delete_listener);
+
+  Core.clearClick(".btn-open-edit", open_edit_listener, true);
+  Core.onClick(".btn-open-edit", open_edit_listener, true);
+
+  Core.clearClick(".btn-open-delete", open_delete_listener, true);
+  Core.onClick(".btn-open-delete", open_delete_listener, true);
+
+}

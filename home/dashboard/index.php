@@ -8,7 +8,13 @@ Core::importComponent([
   'properties' => [
     'id' => 'generate-report-modal',
     'title' => 'Generate Report',
-    'success' => 'Okay',
+    'buttons' => [
+      [
+        'id' => 'generate',
+        'value' => 'Generate',
+        'type' => 'primary'
+      ]
+    ],
   ]
 ]);
 

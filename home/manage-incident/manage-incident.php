@@ -23,28 +23,16 @@
 <!-- Main content -->
 <section class="content">
   <div class="container-fluid">
-    <div class="card card-info p-3">
-      <!-- form start -->
+    <div class="card">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h5>Incidents Information</h5>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#add-incident-modal">
+          <i class="fas fa-plus"></i> Add Incident
+        </button>
+      </div>
       <div class="card-body">
         <div class="row">
-          <form class="col-md-3" id="incident-add-form">
-            <div class="card-header">
-              <span class="fa fa-globe-asia"> Incident Information</span>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <!-- <label>Incident Name</label> -->
-                  <input type="text" class="form-control mt-3" name="name" placeholder="Incident name">
-                </div>
-              </div>
-            </div>
-            <div class="col-md-12">
-              <button type="submit" class="btn btn-primary" id="incident-add-btn">Save</button>
-              <!-- <button type="submit" class="btn btn-danger">Cancel</button> -->
-            </div>
-          </form>
-          <div class="col-md-9" style="border-left: 1px solid #ddd;">
+          <div class="col-md-12">
             <table id="incident" class="table table-bordered table-hover">
             </table>
           </div>

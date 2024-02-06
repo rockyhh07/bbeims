@@ -1,8 +1,7 @@
 import { Core, CustomNotification, Helper } from "../../core/core.js";
+Core.user_redirectToLogin();
 
 const generateModal = "#generate-report-modal";
-
-Core.user_redirectToLogin();
 CustomNotification.add("BBEIMS", `Welcome <b>${Core.user_getData().username}</b>`, "default");
 
 (async () => {
@@ -44,7 +43,7 @@ Core.f("#btn-gegerateReport").addEventListener("click", async (e) => {
   });
 });
 
-Core.f(`${generateModal}-submit`).addEventListener("click", async () => {
+Core.f(`${generateModal}-btn-generate`).addEventListener("click", async () => {
   Core.f(`${generateModal}-hide`).click();
   await generateReportBy(Core.createFormData({}, new FormData(Core.f("#report-form"))));
   CustomNotification.add("Generating report", "Report is being generated!", "success");

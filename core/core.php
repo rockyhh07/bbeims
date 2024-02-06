@@ -20,7 +20,9 @@ class Core
   {
     extract($data);
 
-    if ($path) require_once Core::base_url() . "{$path}/index.php";
+    if ($path) {
+      include Core::base_url() . "{$path}/index.php";
+    }
 
     unset($data);
   }

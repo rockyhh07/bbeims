@@ -19,5 +19,3 @@
 </body>
 
 </html>
-
-<?php if (!empty($js)) foreach ($js as $v) echo "<script src='<?=Core::base_url()?>/assets/js/{$v}.js'></script>"; ?>

@@ -4,17 +4,38 @@ export class Core {
     return '../..';
   }
 
-  static f(element, mulitple = false) {
-    return mulitple ? document.querySelectorAll(element) : document.querySelector(element);
+  static replaceLayout(html_layout, replaces = {}) {
+    for (const key in replaces) html_layout = html_layout.replaceAll(`{{${key}}}`, replaces[key]);
+    return html_layout;
   }
+
+  static data = (element_reference, data_name) => element_reference.getAttribute(`data-${data_name}`);
+
+  static onClick = (element, callback, mulitple = false) =>
+    mulitple ?
+      Core.f(element, mulitple)().forEach(el => el.addEventListener("click", callback)) :
+      Core.f(element, mulitple).addEventListener("click", callback);
+
+  static clearClick = (element, callback, mulitple = false) =>
+    mulitple ?
+      Core.f(element, mulitple)().forEach(el => el.removeEventListener("click", callback)) :
+      Core.f(element, mulitple).removeEventListener("click", callback);
+
+  static f = (element, mulitple = false) =>
+    !mulitple ? document.querySelector(element) : () => {
+      const elems = [];
+      document.querySelectorAll(element).forEach(el => elems.push(el));
+      return elems;
+    };
+
 
   static async fetch_data(url = '', type = "text", form = new FormData()) {
     const args = (form) ? { method: 'post', body: form } : null;
 
-    return await fetch(url, args).then(response => {
-      if (type === "raw") return response;
-      if (type === "json") return response.json()
-      return response.text();
+    return await fetch(url, args).then(async response => {
+      if (type === "text") return await response.text();
+      if (type === "json") return await response.json()
+      return await response;
     })
   }
 
@@ -32,30 +53,21 @@ export class Core {
 
   static async user_redirectToAdmin() {
     const response = (await this.fetch_data(`${Core.base_url()}/php/session_status.php`, 'json')).result[0];
-    if (response.result) {
-      window.location.href = `${Core.base_url()}/home/dashboard/`;
-    }
+    if (response.result) window.location.href = `${Core.base_url()}/home/dashboard/`;
   }
 
   static async user_redirectToLogin() {
     const response = (await this.fetch_data(`${Core.base_url()}/php/session_status.php`, 'json')).result[0];
-    if (!response.result) {
-      window.location.href = `${Core.base_url()}/main/login/`;
-    }
+    if (!response.result) location.href = Core.base_url();
   }
 
-  static user_Logout(e) {
-    e.preventDefault();
-    fetch(`${Core.base_url()}/php/user_logout.php`, {
-      method: 'post',
-      body: Core.createFormData({ user: '' })
-    })
-      .then(response => response.json())
-      .then(data => {
-        let result = data.result[0];
-        if (result.result) { Core.user_clearData(); location.href = "."; }
-        else alert('Something went wrong!');
-      });
+  static async user_Logout(e) {
+    const data = await (Core.fetch_data(`${Core.base_url()}/php/user_logout.php`, "json", Core.createFormData({ user: JSON.stringify(Core.user_getData()) })));
+    console.log({ res: data.result[0].result });
+    if (data.result[0].result) {
+      Core.user_clearData();
+      location.href = Core.base_url();
+    }
   }
 
   static createFormData(object = {}, passedData = new FormData()) {
@@ -68,6 +80,11 @@ export class Core {
     formData.forEach((val, key) => data[key] = val);
     return data;
   }
+
+  // static getData = (element, data_name, mulitple = false) =>
+  //   !mulitple ?
+  //     Core.f(element, mulitple).getAttribute(`data-${data_name}`) :
+  //     Core.f(element, mulitple)().map(el => el.getAttribute(`data-${data_name}`));
 }
 
 export class Helper {
