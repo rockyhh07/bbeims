@@ -1,0 +1,54 @@
+<form id="user-edit-form">
+
+  <div class="row">
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Full Name <small class="text-danger">*</small></label>
+        <input name="fullname" type="text" class="form-control" placeholder="Enter Name" value="{{fullname}}">
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Contact No. <small class="text-danger">*</small></label>
+        <input name="contact" type="text" class="form-control" placeholder="Enter Contact No."  value="{{contact}}">
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Birthday <small class="text-danger">*</small></label>
+        <input name="birthday" type="date" class="form-control"  value="{{birthday}}">
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Username <small class="text-danger">*</small></label>
+        <input name="username" type="text" class="form-control" placeholder="Enter Username" value="{{username}}">
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4">
+      <div class="d-flex flex-column">
+        <button type="button" class="btn btn-warning text-white" id="new-user-save">
+          <i class="fas fa-save"></i> Save
+        </button>
+      </div>
+    </div>
+    <div class="col-sm-4"></div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <small class="error-msg text-danger"></small>
+    </div>
+  </div>
+
+</form>
+

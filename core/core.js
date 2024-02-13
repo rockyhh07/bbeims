@@ -4,12 +4,17 @@ export class Core {
     return '../..';
   }
 
+  static checked = (element) => Core.f(element).checked;
+
   static replaceLayout(html_layout, replaces = {}) {
     for (const key in replaces) html_layout = html_layout.replaceAll(`{{${key}}}`, replaces[key]);
     return html_layout;
   }
 
   static data = (element_reference, data_name) => element_reference.getAttribute(`data-${data_name}`);
+
+  static onChange = (element, callback) => Core.f(element).addEventListener("change", callback);
+  static onSubmit = (element, callback) => Core.f(element).addEventListener("submit", callback);
 
   static onClick = (element, callback, mulitple = false) =>
     mulitple ?
@@ -42,9 +47,9 @@ export class Core {
   static isValidForm(form = new FormData(), required = []) {
     let invalids = [];
     form.forEach((val, key) => {
-      if (required.includes(key) && !val) invalid.push(key);
+      if (required.includes(key) && !val) invalids.push(key);
     });
-    return invalids;
+    return invalids.length === 0;
   }
 
 
@@ -63,7 +68,6 @@ export class Core {
 
   static async user_Logout(e) {
     const data = await (Core.fetch_data(`${Core.base_url()}/php/user_logout.php`, "json", Core.createFormData({ user: JSON.stringify(Core.user_getData()) })));
-    console.log({ res: data.result[0].result });
     if (data.result[0].result) {
       Core.user_clearData();
       location.href = Core.base_url();
@@ -81,10 +85,7 @@ export class Core {
     return data;
   }
 
-  // static getData = (element, data_name, mulitple = false) =>
-  //   !mulitple ?
-  //     Core.f(element, mulitple).getAttribute(`data-${data_name}`) :
-  //     Core.f(element, mulitple)().map(el => el.getAttribute(`data-${data_name}`));
+
 }
 
 export class Helper {
@@ -99,6 +100,9 @@ export class Helper {
     }
     return age;
   }
+
+  static Promt_Error = (msg) => Core.f(".error-msg", true)().map(el => el.innerHTML = `<b>Error: </b>${msg}`);
+  static Promt_Clear = () => Core.f(".error-msg", true)().map(el => el.innerHTML = '');
 }
 
 export class CustomNotification {
@@ -160,4 +164,14 @@ export class CustomNotification {
   static __start__ = () => {
     if (!this.__initialized__) this.__initialize__();
   }
+}
+
+
+export class ModalHandler {
+
+  static onShow = (element, callback) => $(element).on('show.bs.modal', callback);
+  static whenShown = (element, callback) => $(element).on('shown.bs.modal', callback);
+  static onHide = (element, callback) => $(element).on('hide.bs.modal', callback);
+  static whenHidden = (element, callback) => $(element).on('hidden.bs.modal', callback);
+
 }

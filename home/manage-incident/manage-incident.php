@@ -26,7 +26,7 @@
     <div class="card">
       <div class="card-header d-flex align-items-center justify-content-between">
         <h5>Incidents Information</h5>
-        <button class="btn btn-primary" data-toggle="modal" data-target="#add-incident-modal">
+        <button class="btn btn-primary" id="btn-open-add" data-toggle="modal" data-target="#add-incident-modal">
           <i class="fas fa-plus"></i> Add Incident
         </button>
       </div>
@@ -34,6 +34,9 @@
         <div class="row">
           <div class="col-md-12">
             <table id="incident" class="table table-bordered table-hover">
+              <tr>
+                <th>No Data Found</th>
+              </tr>
             </table>
           </div>
         </div>

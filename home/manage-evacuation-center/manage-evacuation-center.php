@@ -23,41 +23,20 @@
 <!-- Main content -->
 <section class="content">
   <div class="container-fluid">
-    <div class="card card-info p-3">
-      <!-- form start -->
+  <div class="card">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h5>Evacuation Center Information</h5>
+        <button class="btn btn-primary" id="btn-open-add" data-toggle="modal" data-target="#add-evac-center-modal">
+          <i class="fas fa-plus"></i> Add New
+        </button>
+      </div>
       <div class="card-body">
         <div class="row">
-          <form class="col-md-3" id="evac-center-add-form">
-            <div class="card-header">
-              <span class="fa fa-hotel"> Evacuation Center Info</span>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label>Center Name</label>
-                  <input name="name" type="text" class="form-control" placeholder="Center Name">
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label>Address</label>
-                  <textarea name="address" class="form-control" width="100"></textarea>
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label>Contact Info</label>
-                  <input name="contact" type="text" class="form-control" placeholder="ex. 09827373213">
-                </div>
-              </div>
-            </div>
-            <div class="col-md-12">
-              <button type="submit" class="btn btn-primary" id="evac-center-add-btn">Save</button>
-              <!-- <button type="submit" class="btn btn-danger">Cancel</button> -->
-            </div>
-          </form>
-          <div class="col-md-9" style="border-left: 1px solid #ddd;">
+          <div class="col-md-12">
             <table id="evac_center" class="table table-bordered table-hover">
+              <tr>
+                <th>No Data Found</th>
+              </tr>
             </table>
           </div>
         </div>

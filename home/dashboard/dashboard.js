@@ -2,7 +2,7 @@ import { Core, CustomNotification, Helper } from "../../core/core.js";
 Core.user_redirectToLogin();
 
 const generateModal = "#generate-report-modal";
-CustomNotification.add("BBEIMS", `Welcome <b>${Core.user_getData().username}</b>`, "default");
+CustomNotification.add("BBEIMS", `Welcome <b>${Core.user_getData().username}</b>`, "primary");
 
 (async () => {
   const data = (await Core.fetch_data(`${Core.base_url()}/php/dashboard_get.php`, "json")).result[0];
