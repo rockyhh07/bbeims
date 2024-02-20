@@ -29,7 +29,7 @@
   <script src="<?= Core::base_url() ?>/assets/js/adminlte.js" defer></script>
 
   <link rel="stylesheet" href="<?= Core::base_url() ?>/assets/css/dashboard.css">
-  <script type="module" src="<?= Core::base_url() ?>/assets/js/header.js" defer></script>
+  <script type="module" src="<?= Core::base_url() ?>/assets/components/js/header.js" defer></script>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -49,6 +49,9 @@
             <i class="fas fa-expand-arrows-alt"></i>
           </a>
         </li> -->
+        <li class="nav-item">
+          <a class="nav-link text-white" href="#" role="button" id="username"><i class="fas fa-user"></i> </a>
+        </li>
         <li class="nav-item">
           <a class="nav-link text-white" id="btn-logout" href="#logout">
             <i class="fas fa-power-off"></i>
@@ -194,4 +197,3 @@
     </aside>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-      

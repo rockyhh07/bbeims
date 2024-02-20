@@ -23,10 +23,10 @@ class BBEIMS
         return QUERY::run($query->sql);
     }
 
-    public static function user_logout(array $post_result) {
-        QUERY::escape_str_all($post_result);
-        return [["result" => (session_status() !== PHP_SESSION_NONE) ? session_destroy() : false]];
-    }
+    // public static function user_logout(array $post_result) {
+    //     QUERY::escape_str_all($post_result);
+    //     return [["result" => (session_status() !== PHP_SESSION_NONE) ? session_destroy() : false]];
+    // }
 
     public static function user_new(array $post_result) {
         QUERY::escape_str_all($post_result);
@@ -77,7 +77,7 @@ class BBEIMS
         if($result[0]["active"] === "0") return ["result"=>false, "message"=>"Account is deactivated"];
 
         $result[0]["result"] = true;
-        return $_SESSION["user"] = $result[0];
+        return $result[0];
     }
 
     public static function user_update(array $post_result) {
@@ -129,6 +129,18 @@ class BBEIMS
 
     public static function user_delete($post_result) {
         BBEIMS::delete_data($post_result, 'users');
+    }
+
+    public static function user_resetPassword(array $post_result) {
+      QUERY::escape_str_all($post_result);
+      $query = "
+      UPDATE `users`
+      SET
+        `password` = password('default')
+      WHERE
+        `id` = {$post_result['id']}
+      ";
+      return ["result" => QUERY::run($query)];
     }
 
     public static function incident_get_all(array $post_result) {
@@ -867,3 +879,5 @@ class BBEIMS
         return QUERY::run($query);
     }
 }
+
+?>

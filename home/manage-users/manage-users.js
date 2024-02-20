@@ -1,5 +1,7 @@
-import { Core, CustomNotification, Helper } from "../../core/core.js";
-Core.user_redirectToLogin();
+import { Core } from "../../core/core.js";
+import { CustomNotification } from "../../core/customNotification.js";
+import { Helper } from "../../core/helper.js";
+import { ModalHandler } from "../../core/modalHandler.js";
 
 (await Load_Users)();
 
@@ -60,29 +62,35 @@ async function Load_Users() {
           </td>
         `;
 
-        tbody +=
-          `<td class="text-center" style="width: 160px !important;">
-            <button 
+        tbody += `<td class="text-center" style="width: 160px !important;">`;
+        {
+          tbody +=
+            `<button 
               class="btn btn-sm btn-success btn-open-edit"
-              
+              data-binder-id="${user.id}"
+              data-binder-fullname="${user.fullname}"
+              data-binder-contact="${user.contact}"
+              data-binder-username="${user.username}"
+              data-binder-birthday="${user.birthday}"
               data-toggle="modal" 
               data-target="#edit-user-modal"
             >
               <i class="fa fa-edit"></i> Edit
             </button> `;
 
-        tbody += (Core.user_getData().category === "A" ?
-          `<button 
-            class="btn btn-sm btn-danger btn-open-delete"
-            
-            data-toggle="modal"
-            data-target="#delete-user-modal"
-          >
-            <i class="fa fa-trash-alt"></i> Delete
-          </button>`: '');
+          tbody += (Core.user_getData().category === "A" ?
+            `<button 
+              class="btn btn-sm btn-danger btn-open-delete"
+              data-binder-id="${user.id}"
+              data-binder-fullname="${user.fullname}"
+              data-toggle="modal"
+              data-target="#delete-user-modal"
+            >
+              <i class="fa fa-trash-alt"></i> Delete
+            </button>`: '');
+        }
 
-        tbody +=
-          `</td>`;
+        tbody += `</td>`;
 
         // </Body>
 
@@ -105,6 +113,7 @@ async function Load_Users() {
 
 const modal_editUser = "#edit-user-modal";
 const modal_deleteUser = "#delete-user-modal";
+const modal_resetPassword = "#reset-password-user-modal";
 
 function Load_Functions() {
 
@@ -124,24 +133,76 @@ function Load_Functions() {
 
 // <Edit>
 async function open_edit_listener() {
- console.log("edit-opened")
+  const replace = {
+    fullname: Core.data(this, "binder-fullname"),
+    contact: Core.data(this, "binder-contact"),
+    username: Core.data(this, "binder-username"),
+    birthday: Core.data(this, "binder-birthday"),
+    id: Core.data(this, "binder-id"),
+  };
+  let layout = (await Core.fetch_data('modal-edit.html', "text"));
+  layout = Core.replaceLayout(layout, replace);
+  Core.f(`${modal_editUser}-body`).innerHTML = layout;
+  Core.onClick("#reset-password", open_resetPassword);
 }
 
 async function submit_edit_listener() {
- console.log("edit-submit")
+  console.log("edit-submit")
+}
+
+async function open_resetPassword() {
+  Core.f(`${modal_editUser}-hide`).click();
+
+  const replace = {
+    fullname: Core.data(this, "binder-fullname"),
+    id: Core.data(this, "binder-id"),
+  };
+  let layout = (await Core.fetch_data('modal-reset-password.html', "text"));
+  layout = Core.replaceLayout(layout, replace);
+  Core.f(`${modal_resetPassword}-body`).innerHTML = layout;
+  Core.onClick(`${modal_resetPassword}-btn-reset-password`, submit_resetPassword)
+}
+
+async function submit_resetPassword() {
+  const form_data = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#user-reset-password-form")));
+
+  await Core.fetch_data(`${Core.base_url()}/php/user_resetpassword.php`, null, form_data).then(async data => {
+    CustomNotification.add("Success!", `Item deleted!`, "primary");
+    Core.f(`${modal_resetPassword}-hide`).click();
+    Helper.Promt_Clear();
+    await Load_Incidents();
+  }).catch(err => {
+    CustomNotification.add("Error!", `Error occurred. Try again later.`, "danger");
+    Core.f(`${modal_resetPassword}-hide`).click();
+    Helper.Promt_Clear();
+  });
+
 }
 // </Edit>
 
 
-// <Edit>
+// <Delete>
 async function open_delete_listener() {
- console.log("delete-opened")
+  const replace = {
+    fullname: Core.data(this, "binder-fullname"),
+    id: Core.data(this, "binder-id"),
+  };
+  let layout = (await Core.fetch_data('modal-delete.html', "text"));
+  layout = Core.replaceLayout(layout, replace);
+  Core.f(`${modal_deleteUser}-body`).innerHTML = layout;
 }
 
 async function submit_delete_listener() {
- console.log("delete-submit")
+  const form = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#user-delete-form")));
+
+  await Core.fetch_data(`${Core.base_url()}/php/user_delete.php`, null, form).then(async data => {
+    CustomNotification.add("Success!", `Item deleted!`, "primary");
+    Core.f(`${modal_deleteUser}-hide`).click();
+    Helper.Promt_Clear();
+    await Load_Users();
+  });
 }
-// </Edit>
+// </Delete>
 
 /*
 

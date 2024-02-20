@@ -25,12 +25,28 @@ Core::importComponent([
   'properties' => [
     'id' => 'delete-user-modal',
     'title' => '<img src="' . Core::base_url() . '/assets/img/sent.png"> Delete User',
-    'success' => 'Delete',
     'buttons' => [
       [
         'id' => 'delete',
         'value' => 'Delete',
         'type' => 'danger'
+      ]
+    ],
+  ]
+]);
+
+
+
+Core::importComponent([
+  'path' => '/components/modal',
+  'properties' => [
+    'id' => 'reset-password-user-modal',
+    'title' => 'Reset password',
+    'buttons' => [
+      [
+        'id' => 'reset-password',
+        'value' => 'Reset password',
+        'type' => 'primary'
       ]
     ],
   ]

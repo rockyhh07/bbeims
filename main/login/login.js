@@ -1,4 +1,7 @@
-import { Core, CustomNotification } from "../../core/core.js";
+import { Core } from "../../core/core.js";
+import { CustomNotification } from "../../core/customNotification.js";
+import { Helper } from "../../core/helper.js";
+import { ModalHandler } from "../../core/modalHandler.js";
 
 Core.user_redirectToAdmin();
 
@@ -13,6 +16,6 @@ Core.f("#login-form").addEventListener("submit", async function (e) {
     return;
   }
 
-  sessionStorage.setItem("user_data", JSON.stringify(result));
+  localStorage.setItem("user_data", JSON.stringify(result));
   location.href = `${Core.base_url()}/home/dashboard/`
 });
