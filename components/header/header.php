@@ -71,6 +71,7 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
             <li class="nav-item">
               <a href="<?= Core::base_url() ?>/home/dashboard" class="nav-link">
                 <i class="nav-icon fa fa-tachometer-alt"></i>
@@ -79,6 +80,16 @@
                 </p>
               </a>
             </li>
+
+            <li class="nav-item">
+              <a href="<?= Core::base_url() ?>/home/manage-barangay" class="nav-link">
+                <i class="nav-icon fas fa-city"></i>
+                <p>
+                  Barangay
+                </p>
+              </a>
+            </li>
+            
             <li class="nav-item">
               <a href="<?= Core::base_url() ?>/home/manage-incident" class="nav-link">
                 <i class="nav-icon fa fa-globe-asia"></i>
@@ -87,7 +98,6 @@
                 </p>
               </a>
             </li>
-
 
             <li class="nav-item">
               <a href="<?= Core::base_url() ?>/home/manage-evacuation-center" class="nav-link">

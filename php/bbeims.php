@@ -212,7 +212,7 @@ class BBEIMS
         return QUERY::run($query);
     }
 
-    public static function  incident_delete(array $post_result) {
+    public static function incident_delete(array $post_result) {
         return BBEIMS::delete_data($post_result, 'incident');
     }
 
@@ -844,6 +844,83 @@ class BBEIMS
                 )
         ";
         return QUERY::run($query);
+    }
+
+    public static function barangay_get_all(array $post_result) {
+      QUERY::escape_str_all($post_result);
+      extract($post_result);
+      $query = "SELECT
+                  `id`,
+                  `name`
+              FROM `barangay` e
+              WHERE 
+                  e.`deletedflag` = 0
+      ";
+      return QUERY::run($query);
+      
+    }
+
+    public static function barangay_new(array $post_result) {
+      QUERY::escape_str_all($post_result);
+
+      $uid = $post_result['uid'];
+      $name = strtoupper($post_result['name']);
+      
+      $currentBarangay = QUERY::run("SELECT `name` FROM `barangay`");
+      
+      $alreadyExist = false;
+      foreach($currentBarangay as $obj) 
+          if($obj['name'] == $name) { $alreadyExist = true; break; }
+
+      if($alreadyExist) {
+          $query = "UPDATE `barangay` SET 
+                  `deletedflag` = 0,
+                  `updated_by` = '{$uid}',
+                  `updated_date` = CURRENT_TIMESTAMP
+              WHERE 
+                  `name` = '{$name}'
+          ";
+      }else {
+          $query = "INSERT INTO `barangay` SET 
+              `name` = '{$name}',
+              `created_by` = '{$uid}',
+              `created_date` = CURRENT_TIMESTAMP
+          ";
+      }
+
+      return QUERY::run($query);
+      
+    }
+
+    public static function barangay_update(array $post_result) {
+      QUERY::escape_str_all($post_result);
+
+      $id = $post_result['id'];
+      $uid = $post_result['uid'];
+
+      $data = "";
+      foreach($post_result as $key => $val) {
+          if($key === "uid") continue;
+          if($key === "id") continue;
+
+          $data .= " `{$key}`=".strtoupper("'$val',");
+      }
+      $data = rtrim($data, ",");
+
+      $query = "UPDATE `barangay`
+          SET {$data},
+              `updated_by`='{$uid}',
+              `updated_date`=CURRENT_TIMESTAMP
+          WHERE
+              `id`='{$id}'
+      ";
+
+      return QUERY::run($query);
+      
+    }
+
+    public static function barangay_delete(array $post_result) {
+      return BBEIMS::delete_data($post_result, 'barangay');
     }
 
     // PRIVATES //

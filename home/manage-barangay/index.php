@@ -1,7 +1,7 @@
 <?php
 require_once "../../core/core.php";
 Core::importComponent(['path' => '/components/header']);
-require_once "manage-incident.php";
+require_once "manage-barangay.php";
 Core::importComponent(['path' => '/components/notification']);
 Core::importComponent(['path' => '/components/footer']);
 
@@ -10,8 +10,8 @@ Core::importComponent(['path' => '/components/footer']);
 Core::importComponent([
   'path' => '/components/modal',
   'properties' => [
-    'id' => 'add-incident-modal',
-    'title' => 'Add Incident',
+    'id' => 'add-barangay-modal',
+    'title' => 'Add barangay',
     'buttons' => [
       [
         'id' => 'add',
@@ -25,8 +25,8 @@ Core::importComponent([
 Core::importComponent([
   'path' => '/components/modal',
   'properties' => [
-    'id' => 'edit-incident-modal',
-    'title' => 'Edit Incident',
+    'id' => 'edit-barangay-modal',
+    'title' => 'Edit barangay',
     'buttons' => [
       [
         'id' => 'edit',
@@ -40,8 +40,8 @@ Core::importComponent([
 Core::importComponent([
   'path' => '/components/modal',
   'properties' => [
-    'id' => 'delete-incident-modal',
-    'title' => '<img src="' . Core::base_url() . '/assets/img/sent.png"> Delete Incident',
+    'id' => 'delete-barangay-modal',
+    'title' => '<img src="' . Core::base_url() . '/assets/img/sent.png"> Delete barangay',
     'success' => 'Delete',
     'buttons' => [
       [
@@ -54,4 +54,4 @@ Core::importComponent([
 ]);
 ?>
 
-<script type="module" src="./manage-incident.js"></script>
+<script type="module" src="./manage-barangay.js"></script>

@@ -24,7 +24,7 @@ class QUERY
 
   private static function connection()
   {
-    return new mysqli("localhost", "root", "", "bbeims_db");
+    return new mysqli("localhost", "root", "", "beims_db");
   }
 
   private static function perform(String $query)
