@@ -22,4 +22,5 @@ Core::importComponent(['path' => '/components/notification']);
 Core::importComponent(['path' => '/components/footer']);
 ?>
 
+<script src="<?=Core::base_url()?>/assets/js/chart.js"></script>
 <script type="module" src="./dashboard.js"></script>

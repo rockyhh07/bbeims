@@ -1,5 +1,23 @@
 export class Helper {
 
+  static getCivilStatus(civilStatusID = '') {
+    switch (civilStatusID) {
+      case 'S': return 'SINGLE';
+      case 'M': return 'MARRIED';
+      case 'SP': return 'SEPARATED';
+      case 'W': return 'WIDOWED';
+      default: return '';
+    }
+  }
+
+  static AsID(id, padding_count = 0, padding_char = '', start = '', end = '') {
+    return `${start}${String(id).padStart(padding_count, padding_char)}${end}`
+  }
+
+  static ObjectToArray(obj) {
+    return Object.entries(obj).map(([name, value]) => ({ name, value }));
+  }
+
   static DataTable_Reset(tableElemenet = '') {
     if ($.fn.DataTable.isDataTable(tableElemenet)) $(tableElemenet).DataTable().destroy();
     $(tableElemenet).html("");

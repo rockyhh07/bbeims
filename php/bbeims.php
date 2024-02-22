@@ -333,6 +333,50 @@ class BBEIMS
       return QUERY::run($query->sql);
     }
 
+    public static function evacuee_archived(array $post_result) {
+      QUERY::escape_str_all($post_result);
+      $query = "SELECT
+                  a.`id`,
+                  e.`fname`,
+                  e.`lname`,
+                  e.`mname`,
+                  e.`contact`,
+                  e.`birthday`,
+                  CASE
+                    WHEN e.`gender` = 'M' THEN 'Male' ELSE 
+                    CASE
+                      WHEN e.`gender` = 'F' THEN 'Female'
+                      ELSE '...'
+                    END
+                  END `gender`, 
+                  e.`civil_status`, 
+                  e.`address`, 
+                  a.`incident_date`,
+                  e.`representative`,
+                  e2.`lname` `rep_lname`,
+                  e2.`fname` `rep_fname`,
+                  e2.`mname` `rep_mname`,
+                  ec.`name` `evac_name`,
+                  ec.`id` `evac_id`,
+                  i.`name` `incident_name`
+                FROM `incident_archive` a
+                INNER JOIN `incident` i
+                  ON i.`id` = a.`incident_id`
+                INNER JOIN `evacuee` e
+                  ON e.`id` = a.`evacuee_id`
+                INNER JOIN `evacuee` e2
+                  ON e2.`id` = e.`representative`
+                INNER JOIN `evac_center` ec
+                  ON ec.`id` = a.`evac_id`
+                WHERE
+                  a.`deletedflag` = 0 AND
+                  a.`incident_date` IS NOT NULL AND
+                  ec.`deletedflag` = 0
+      ";
+      return QUERY::run($query);
+      
+    }
+
     public static function evacuee_get_all(array $post_result) {
         QUERY::escape_str_all($post_result);
         $query = "SELECT 
