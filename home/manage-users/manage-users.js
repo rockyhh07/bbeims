@@ -13,10 +13,9 @@ async function Load_Users() {
       let users = data.result;
       users = users.filter(user => user.id != Core.user_getData().id)
 
-      if ($.fn.DataTable.isDataTable('#users')) {
-        $('#users').DataTable().destroy();
-        $('#users').html("");
-      }
+      console.log({ users })
+
+      Helper.DataTable_Reset('#users');
 
       const thead = `
         <thead>
@@ -70,8 +69,11 @@ async function Load_Users() {
               data-binder-id="${user.id}"
               data-binder-fullname="${user.fullname}"
               data-binder-contact="${user.contact}"
+              data-binder-category="${user.category}"
+              data-binder-barangay_id="${user.barangay_id}"
               data-binder-username="${user.username}"
               data-binder-birthday="${user.birthday}"
+              data-binder-active="${user.active}"
               data-toggle="modal" 
               data-target="#edit-user-modal"
             >
@@ -86,7 +88,7 @@ async function Load_Users() {
               data-toggle="modal"
               data-target="#delete-user-modal"
             >
-              <i class="fa fa-trash-alt"></i> Delete
+              <i class="fas fa-minus"></i> Hide
             </button>`: '');
         }
 
@@ -98,17 +100,73 @@ async function Load_Users() {
       });
       tbody += "</tbody>";
 
-
-      $('#users').html("");
-      $('#users').append(thead + tbody);
-
-      Load_Functions();
-
-      $("#users").DataTable({
-        bAutoWidth: false,
-        autoWidth: false
-      });
+      Helper.DataTable_Init('#users', thead + tbody, Load_Functions);
     });
+}
+
+let tableToggler = true;
+Core.onClick("#btn-toggle-table", async () => {
+  if (tableToggler) {
+    Core.f("#btn-toggle-table").innerHTML = "Show All Users";
+    Load_Archived();
+  } else {
+    Core.f("#btn-toggle-table").innerHTML = "Show Archived";
+    Load_Users();
+  }
+  tableToggler = !tableToggler;
+});
+async function Load_Archived() {
+  const archived = (await Core.fetch_data(`${Core.base_url()}/php/user_archived.php`, "json")).result;
+  Helper.DataTable_Reset('#users');
+
+  const thead = `
+    <thead>
+      <tr>
+        <th style="width: 40px !important;">#</th>
+        <th>User Fullname</th>
+        <th class="text-center" style="width: 160px !important;">Action</th>
+      </tr>
+    </thead>
+    `;
+
+  let tbody = '<tbody>';
+  archived.forEach((row, index) => {
+    tbody += '<tr>';
+
+    tbody += `<td class="text-center">${index + 1}</td>`
+
+    tbody += `<td>${row.fullname}</td>`;
+    tbody +=
+      `<td class="text-center" style="width: 160px !important;">
+        <button 
+          class="btn btn-sm btn-primary btn-recover"
+          data-binder-id="${row.id}"
+          data-binder-fullname="${row.fullname}"
+        >
+          <i class="fas fa-plus"></i> Recover
+        </button> `;
+
+    tbody +=
+      `</td>`;
+
+    tbody += '</tr>';
+  });
+  tbody += "</tbody>";
+
+
+  Helper.DataTable_Init('#users', thead + tbody, () => {
+    async function recover() {
+      const raw_data = { deletedflag: 0, fullname: Core.data(this, "binder-fullname"), id: Core.data(this, "binder-id") };
+      const form_data = Core.createFormData({ ...raw_data, uid: Core.user_getData().id });
+      await Core.fetch_data(`${Core.base_url()}/php/user_update.php`, null, form_data).then(async data => {
+        CustomNotification.add("Success!", `Item recovered!`, "primary");
+        await Load_Archived();
+      })
+    }
+
+    Core.clearClick(".btn-recover", recover, true);
+    Core.onClick(".btn-recover", recover, true);
+  });
 }
 
 const modal_editUser = "#edit-user-modal";
@@ -138,16 +196,38 @@ async function open_edit_listener() {
     contact: Core.data(this, "binder-contact"),
     username: Core.data(this, "binder-username"),
     birthday: Core.data(this, "binder-birthday"),
+    category: Core.data(this, "binder-category"),
+    barangay_id: Core.data(this, "binder-barangay_id"),
+    active: Core.data(this, "binder-active"),
+    barangay_list: (await Load_BarangayList()),
     id: Core.data(this, "binder-id"),
   };
   let layout = (await Core.fetch_data('modal-edit.html', "text"));
   layout = Core.replaceLayout(layout, replace);
+
   Core.f(`${modal_editUser}-body`).innerHTML = layout;
+  Core.f(`select[name="category"]`).value = replace.category;
+  Core.f(`select[name="barangay_id"]`).value = replace.barangay_id;
+  Core.f(`input[name="active"]`).checked = replace.active == "1";
+
   Core.onClick("#reset-password", open_resetPassword);
 }
 
+async function Load_BarangayList() {
+  const barangay_list = (await Core.fetch_data(`${Core.base_url()}/php/barangay_get_all.php`, "json")).result;
+  let barangay_selectTag = '';
+  barangay_list.forEach(v => barangay_selectTag += `<option value="${v.id}">${v.name}</option>`);
+  return barangay_selectTag;
+}
+
 async function submit_edit_listener() {
-  console.log("edit-submit")
+  const form_data = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#user-edit-form")));
+  await Core.fetch_data(`${Core.base_url()}/php/user_update.php`, null, form_data).then(async data => {
+    CustomNotification.add("Success!", `User Updated!`, "primary");
+    Core.f(`${modal_editUser}-hide`).click();
+    Helper.Promt_Clear();
+    await Load_Users();
+  });
 }
 
 async function open_resetPassword() {
@@ -167,10 +247,10 @@ async function submit_resetPassword() {
   const form_data = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#user-reset-password-form")));
 
   await Core.fetch_data(`${Core.base_url()}/php/user_resetpassword.php`, null, form_data).then(async data => {
-    CustomNotification.add("Success!", `Item deleted!`, "primary");
+    CustomNotification.add("Success!", `User password has been reset!`, "primary");
     Core.f(`${modal_resetPassword}-hide`).click();
     Helper.Promt_Clear();
-    await Load_Incidents();
+    await Load_Users();
   }).catch(err => {
     CustomNotification.add("Error!", `Error occurred. Try again later.`, "danger");
     Core.f(`${modal_resetPassword}-hide`).click();

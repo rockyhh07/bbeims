@@ -12,21 +12,32 @@ class BBEIMS
         ]];
     }
 
+    // public static function user_logout(array $post_result) {
+    //     QUERY::escape_str_all($post_result);
+    //     return [["result" => (session_status() !== PHP_SESSION_NONE) ? session_destroy() : false]];
+    // }
+
     public static function user_get_all(array $post_result) {
         $query = new QueryBuilder(
             QUERY_SELECT,
             "users",
             $post_result,
-            ["id", "username", "fullname", "contact", "category", "active", "birthday"],
+            ["id", "username", "fullname", "contact", "category", "barangay_id", "active", "birthday"],
             ["deletedflag" => "0"]
         );
         return QUERY::run($query->sql);
     }
 
-    // public static function user_logout(array $post_result) {
-    //     QUERY::escape_str_all($post_result);
-    //     return [["result" => (session_status() !== PHP_SESSION_NONE) ? session_destroy() : false]];
-    // }
+    public static function user_archived(array $post_result) {
+      $query = new QueryBuilder(
+          QUERY_SELECT,
+          "users",
+          $post_result,
+          ["id", "fullname"],
+          ["deletedflag" => 1]
+      );
+      return QUERY::run($query->sql);
+    }
 
     public static function user_new(array $post_result) {
         QUERY::escape_str_all($post_result);
@@ -54,6 +65,7 @@ class BBEIMS
                 $query .= " `{$key}`=PASSWORD('{$val}'),";
                 continue;
             }
+            if($key === 'barangay') $key = 'barangay_id';
             $query .= " `{$key}`='{$val}',";
         }
         $query .= "
@@ -68,7 +80,7 @@ class BBEIMS
             QUERY_SELECT,
             "users",
             $post_result,
-            ["id", "username", "fullname", "contact", "category", "active"],
+            ["id", "username", "fullname", "contact", "category", "barangay_id", "active"],
             ["username" => $post_result["username"], "password" => $post_result['password'], "deletedflag" => "0"]
         );
         $result = QUERY::run($query->sql);
@@ -97,6 +109,7 @@ class BBEIMS
             if($key === "o_password") continue;
             if($key === "n_password") continue;
             if($key === "active") continue;
+            if($key === "barangay") $key="barangay_id";
 
             $query .= " `{$key}`='".strtoupper($val)."',";
         }
@@ -141,6 +154,18 @@ class BBEIMS
         `id` = {$post_result['id']}
       ";
       return ["result" => QUERY::run($query)];
+    }
+
+    public static function incident_archived(array $post_result) {
+      $query = new QueryBuilder(
+        QUERY_SELECT,
+        "incident",
+        $post_result,
+        ["id", "name"],
+        ["deletedflag" => "1"],
+        ["ORDER BY `id`", "DESC"]
+      );
+      return QUERY::run($query->sql);
     }
 
     public static function incident_get_all(array $post_result) {
@@ -294,6 +319,18 @@ class BBEIMS
 
     public static function evac_center_delete(array $post_result) {
         BBEIMS::delete_data($post_result, 'evac_center');
+    }
+
+    public static function evac_center_archived(array $post_result) {
+      $query = new QueryBuilder(
+        QUERY_SELECT,
+        'evac_center',
+        $post_result,
+        ["id", "name"],
+        ["deletedflag" => 1],
+        ["ORDER BY `id`", "DESC"]
+      );
+      return QUERY::run($query->sql);
     }
 
     public static function evacuee_get_all(array $post_result) {
@@ -921,6 +958,19 @@ class BBEIMS
 
     public static function barangay_delete(array $post_result) {
       return BBEIMS::delete_data($post_result, 'barangay');
+    }
+
+    public static function barangay_archived(array $post_result) {
+      QUERY::escape_str_all($post_result);
+      $query = "SELECT
+                  `id`,
+                  `name`
+                FROM `barangay` e
+                WHERE 
+                  e.`deletedflag` = 1
+      ";
+
+      return QUERY::run($query);
     }
 
     // PRIVATES //

@@ -24,11 +24,11 @@ Core::importComponent([
   'path' => '/components/modal',
   'properties' => [
     'id' => 'delete-user-modal',
-    'title' => '<img src="' . Core::base_url() . '/assets/img/sent.png"> Delete User',
+    'title' => '<img src="' . Core::base_url() . '/assets/img/sent.png"> Hide User',
     'buttons' => [
       [
         'id' => 'delete',
-        'value' => 'Delete',
+        'value' => '<i class="fas fa-archive"></i> Archive',
         'type' => 'danger'
       ]
     ],

@@ -44,7 +44,7 @@ export class Core {
     })
   }
 
-  static isValidForm(form = new FormData(), required = []) {
+  static isValidForm(form = new FormData(), required = ['']) {
     let invalids = [];
     form.forEach((val, key) => {
       if (required.includes(key) && !val) invalids.push(key);

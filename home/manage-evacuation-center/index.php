@@ -39,12 +39,12 @@ Core::importComponent([
   'path' => '/components/modal',
   'properties' => [
     'id' => 'delete-evac-center-modal',
-    'title' => '<img src="' . Core::base_url() . '/assets/img/sent.png"> Delete Evacuation Center',
+    'title' => '<img src="' . Core::base_url() . '/assets/img/sent.png"> Hide Evacuation Center',
     'success' => 'Delete',
     'buttons' => [
       [
         'id' => 'delete',
-        'value' => 'Delete',
+        'value' => '<i class="fas fa-archive"></i> Archive',
         'type' => 'danger'
       ]
     ],

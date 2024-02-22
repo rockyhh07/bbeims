@@ -13,10 +13,7 @@ async function Load_EvacCenters() {
   const data = (await Core.fetch_data(`${Core.base_url()}/php/evac_center_get_all.php`, "json")).result;
   console.log({ data })
 
-  if ($.fn.DataTable.isDataTable('#evac_center')) {
-    $('#evac_center').DataTable().destroy();
-    $('#evac_center').html("");
-  }
+  Helper.DataTable_Reset('#evac_center');
 
   const thead = `
     <thead>
@@ -62,7 +59,7 @@ async function Load_EvacCenters() {
           data-binder-id="${row.id}"
           data-binder-name="${row.name}"
           >
-          <i class="fa fa-trash-alt"></i> Delete
+            <i class="fas fa-minus"></i> Hide
         </button> `
     tbody += "</td>";
 
@@ -70,16 +67,76 @@ async function Load_EvacCenters() {
   });
   tbody += "</tbody>";
 
-  $("#evac_center").html('');
-  $("#evac_center").append(thead + tbody);
+  Helper.DataTable_Init('#evac_center', thead + tbody, Load_Functions);
+}
 
-  Load_Functions();
+let tableToggler = true;
+Core.onClick("#btn-toggle-table", async () => {
+  if (tableToggler) {
+    Core.f("#btn-toggle-table").innerHTML = "Show All Evacuation Center";
+    Load_Archived();
+  } else {
+    Core.f("#btn-toggle-table").innerHTML = "Show Archived";
+    Load_EvacCenters();
+  }
+  tableToggler = !tableToggler;
+});
 
-  $("#evac_center").DataTable({
-    bAutoWidth: false,
-    autoWidth: false
+async function Load_Archived() {
+  const archived = (await Core.fetch_data(`${Core.base_url()}/php/evac_center_archived.php`, "json")).result;
+  Helper.DataTable_Reset('#evac_center');
+
+  const thead = `
+    <thead>
+      <tr>
+        <th style="width: 40px !important;">#</th>
+        <th>Evacuation Center Name</th>
+        <th class="text-center" style="width: 160px !important;">Action</th>
+      </tr>
+    </thead>
+    `;
+
+  let tbody = '<tbody>';
+  archived.forEach((row, index) => {
+    tbody += '<tr>';
+
+    tbody += `<td class="text-center">${index + 1}</td>`
+
+    tbody += `<td>${row.name}</td>`;
+    tbody +=
+      `<td class="text-center" style="width: 160px !important;">
+        <button 
+          class="btn btn-sm btn-primary btn-recover"
+          data-binder-id="${row.id}"
+          data-binder-name="${row.name}"
+        >
+          <i class="fas fa-plus"></i> Recover
+        </button> `;
+
+    tbody +=
+      `</td>`;
+
+    tbody += '</tr>';
+  });
+  tbody += "</tbody>";
+
+
+  Helper.DataTable_Init('#evac_center', thead + tbody, () => {
+    async function recover() {
+      const raw_data = { deletedflag: 0, name: Core.data(this, "binder-name"), id: Core.data(this, "binder-id") };
+      const form_data = Core.createFormData({ ...raw_data, uid: Core.user_getData().id });
+      await Core.fetch_data(`${Core.base_url()}/php/evac_center_update.php`, null, form_data).then(async data => {
+        CustomNotification.add("Success!", `Item recovered!`, "primary");
+        await Load_Archived();
+      })
+    }
+
+    Core.clearClick(".btn-recover", recover, true);
+    Core.onClick(".btn-recover", recover, true);
   });
 }
+
+
 
 function Load_Functions() {
 
@@ -139,7 +196,7 @@ async function submit_delete_listener() {
   const form = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#evac-center-delete-form")));
 
   await Core.fetch_data(`${Core.base_url()}/php/evac_center_delete.php`, null, form).then(async data => {
-    CustomNotification.add("Success!", `Item deleted!`, "primary");
+    CustomNotification.add("Success!", `Item archived!`, "primary");
     Core.f(`${modal_deleteEvacCenter}-hide`).click();
     Helper.Promt_Clear();
     await Load_EvacCenters();

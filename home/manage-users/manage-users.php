@@ -22,11 +22,20 @@
 <!-- Main content -->
 <section class="content">
   <div class="container-fluid">
-    <div class="card card-info p-3">
-
-      <div class="col-md-12">
-        <table id="users" class="table table-bordered table-hover">
-        </table>
+    <div class="card">
+      <div class="card-header">
+        <div class="d-flex align-items-center justify-content-between">
+          <h5>All Users</h5>
+          <small class="d-flex flex-column admin-dashboard-only">
+            <a id="btn-toggle-table" class="link link-primary" href="#">Show Archived</a>
+          </small>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="col-md-12">
+          <table id="users" class="table table-bordered table-hover">
+          </table>
+        </div>
       </div>
     </div>
   </div>

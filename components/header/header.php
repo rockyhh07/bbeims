@@ -81,7 +81,7 @@
               </a>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item admin-dashboard-only">
               <a href="<?= Core::base_url() ?>/home/manage-barangay" class="nav-link">
                 <i class="nav-icon fas fa-city"></i>
                 <p>
@@ -132,7 +132,7 @@
             </li>
 
 
-            <li class="nav-item" id="user-management">
+            <li class="nav-item admin-dashboard-only" id="user-management">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-user-lock"></i>
                 <p>
@@ -157,7 +157,7 @@
             </li>
 
 
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-chart-bar"></i>
                 <p>
@@ -198,7 +198,8 @@
                   </a>
                 </li>
               </ul>
-            </li>
+            </li> -->
+
           </ul>
         </nav>
         <!-- /.sidebar-menu -->

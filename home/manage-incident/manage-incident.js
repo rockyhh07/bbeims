@@ -8,10 +8,7 @@ import { ModalHandler } from "../../core/modalHandler.js";
 async function Load_Incidents() {
   const data = (await Core.fetch_data(`${Core.base_url()}/php/incident_get_all.php`, "json")).result;
 
-  if ($.fn.DataTable.isDataTable('#incident')) {
-    $('#incident').DataTable().destroy();
-    $('#incident').html("");
-  }
+  Helper.DataTable_Reset('#incident');
 
   const thead = `
     <thead>
@@ -49,7 +46,7 @@ async function Load_Incidents() {
         data-toggle="modal"
         data-target="#delete-incident-modal"
       >
-        <i class="fa fa-trash-alt"></i> Delete
+        <i class="fas fa-minus"></i> Hide
       </button>`: '');
 
     tbody +=
@@ -59,14 +56,73 @@ async function Load_Incidents() {
   });
   tbody += "</tbody>";
 
-  $("#incident").html('');
-  $("#incident").append(thead + tbody);
+  Helper.DataTable_Init('#incident', thead + tbody, Load_Functions);
+}
 
-  Load_Functions();
+let tableToggler = true;
+Core.onClick("#btn-toggle-table", async () => {
+  if (tableToggler) {
+    Core.f("#btn-toggle-table").innerHTML = "Show All Incidents";
+    Load_Archived();
+  } else {
+    Core.f("#btn-toggle-table").innerHTML = "Show Archived";
+    Load_Incidents();
+  }
+  tableToggler = !tableToggler;
+});
 
-  $("#incident").DataTable({
-    bAutoWidth: false,
-    autoWidth: false
+async function Load_Archived() {
+  const data = (await Core.fetch_data(`${Core.base_url()}/php/incident_archived.php`, "json")).result;
+
+  Helper.DataTable_Reset('#incident');
+
+  const thead = `
+    <thead>
+      <tr>
+        <th style="width: 40px !important;">#</th>
+        <th>Incident Name</th>
+        <th class="text-center" style="width: 160px !important;">Action</th>
+      </tr>
+    </thead>
+    `;
+
+  let tbody = '<tbody>';
+  data.forEach((row, index) => {
+    tbody += '<tr>';
+
+    tbody += `<td class="text-center">${index + 1}</td>`
+
+    tbody += `<td>${row.name}</td>`;
+    tbody +=
+      `<td class="text-center" style="width: 160px !important;">
+        <button 
+          class="btn btn-sm btn-primary btn-recover"
+          data-binder-id="${row.id}"
+          data-binder-name="${row.name}"
+        >
+        <i class="fas fa-plus"></i> Recover
+        </button> `;
+
+    tbody +=
+      `</td>`;
+
+    tbody += '</tr>';
+  });
+  tbody += "</tbody>";
+
+  Helper.DataTable_Init('#incident', thead + tbody, () => {
+    async function recover() {
+      const raw_data = { deletedflag: 0, name: Core.data(this, "binder-name"), id: Core.data(this, "binder-id") };
+      const form_data = Core.createFormData({ ...raw_data, uid: Core.user_getData().id });
+      await Core.fetch_data(`${Core.base_url()}/php/incident_update.php`, null, form_data).then(async data => {
+        CustomNotification.add("Success!", `Item recovered!`, "primary");
+        await Load_Archived();
+      })
+    }
+
+    Core.clearClick(".btn-recover", recover, true);
+    Core.onClick(".btn-recover", recover, true);
+
   });
 
 }
@@ -157,7 +213,7 @@ const submit_delete_listener = async function (e) {
   const form = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#incident-delete-form")));
 
   await Core.fetch_data(`${Core.base_url()}/php/incident_delete.php`, null, form).then(async data => {
-    CustomNotification.add("Success!", `Item deleted!`, "primary");
+    CustomNotification.add("Success!", `Item archived!`, "primary");
     Core.f(`${modal_deleteIncident}-hide`).click();
     Helper.Promt_Clear();
     await Load_Incidents();

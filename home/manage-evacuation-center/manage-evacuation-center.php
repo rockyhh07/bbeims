@@ -23,12 +23,17 @@
 <!-- Main content -->
 <section class="content">
   <div class="container-fluid">
-  <div class="card">
-      <div class="card-header d-flex align-items-center justify-content-between">
-        <h5>Evacuation Center Information</h5>
-        <button class="btn btn-primary" id="btn-open-add" data-toggle="modal" data-target="#add-evac-center-modal">
-          <i class="fas fa-plus"></i> Add New
-        </button>
+    <div class="card">
+      <div class="card-header">
+        <div class="d-flex align-items-center justify-content-between">
+          <h5>Evacuation Center Information</h5>
+          <button class="btn btn-primary" id="btn-open-add" data-toggle="modal" data-target="#add-evac-center-modal">
+            <i class="fas fa-plus"></i> Add New
+          </button>
+          <small class="d-flex flex-column admin-dashboard-only">
+            <a id="btn-toggle-table" class="link link-primary" href="#">Show Archived</a>
+          </small>
+        </div>
       </div>
       <div class="card-body">
         <div class="row">

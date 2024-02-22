@@ -41,12 +41,12 @@ Core::importComponent([
   'path' => '/components/modal',
   'properties' => [
     'id' => 'delete-incident-modal',
-    'title' => '<img src="' . Core::base_url() . '/assets/img/sent.png"> Delete Incident',
+    'title' => '<img src="' . Core::base_url() . '/assets/img/sent.png"> Hide Incident',
     'success' => 'Delete',
     'buttons' => [
       [
         'id' => 'delete',
-        'value' => 'Delete',
+        'value' => '<i class="fas fa-archive"></i> Archive',
         'type' => 'danger'
       ]
     ],

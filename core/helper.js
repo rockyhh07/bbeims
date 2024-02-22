@@ -1,4 +1,17 @@
 export class Helper {
+
+  static DataTable_Reset(tableElemenet = '') {
+    if ($.fn.DataTable.isDataTable(tableElemenet)) $(tableElemenet).DataTable().destroy();
+    $(tableElemenet).html("");
+  }
+
+  static DataTable_Init(tableElemenet = '', body = '', bindCallBackBeforeInitOfDataTable = () => { }, bindCallBackAfterInitOfDataTable = () => { }) {
+    $(tableElemenet).append(body);
+    bindCallBackBeforeInitOfDataTable();
+    $(tableElemenet).DataTable({ bAutoWidth: false, autoWidth: false });
+    bindCallBackAfterInitOfDataTable();
+  }
+
   static getAge(dateString) {
     if (!dateString) return 0;
     var today = new Date();

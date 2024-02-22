@@ -3,6 +3,15 @@ import { CustomNotification } from "../../core/customNotification.js";
 import { Helper } from "../../core/helper.js";
 import { ModalHandler } from "../../core/modalHandler.js";
 
+(await Load_Barangay)();
+
+async function Load_Barangay() {
+  const barangay_list = (await Core.fetch_data(`${Core.base_url()}/php/barangay_get_all.php`, "json")).result;
+  let barangay_selectTag = '';
+  barangay_list.forEach(v => barangay_selectTag += `<option value="${v.id}">${v.name}</option>`);
+  Core.f("#barangay_list").innerHTML += barangay_selectTag;
+}
+
 Core.onChange("#input-show-pass", () => {
   Core.f("#show-pass").style.display = "none";
   Core.f("#hide-pass").style.display = "none";
@@ -19,7 +28,7 @@ Core.onChange("#input-show-pass", () => {
 Core.onClick("#new-user-save", async () => {
   const form_data = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#new-user-form")))
 
-  if (!Core.isValidForm(form_data, ["fullname", "contact", "birthday", "category", "username", "password"])) {
+  if (!Core.isValidForm(form_data, ["fullname", "contact", "barangay", "birthday", "category", "username", "password"])) {
     Helper.Promt_Error("Please fill required fields.");
     return;
   }

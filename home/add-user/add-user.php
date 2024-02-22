@@ -52,7 +52,16 @@
             </div>
           </div>
 
-          <div class="col-md-4">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Barangay <small class="text-danger">*</small></label>
+              <select name="barangay" id="barangay_list" class="form-control">
+                <option value="" selected>-- Select --</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-3">
             <div class="form-group">
               <label>Account Category <small class="text-danger">*</small></label>
               <select name="category" class="form-control">
@@ -63,14 +72,14 @@
             </div>
           </div>
 
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div class="form-group">
               <label>Username <small class="text-danger">*</small></label>
               <input name="username" type="text" class="form-control" placeholder="Enter Username">
             </div>
           </div>
 
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div class="form-group">
               <label>Password <small class="text-danger">*</small></label>
               <div class="input-group">
@@ -107,7 +116,7 @@
         </div>
 
       </form>
-      
+
     </div>
   </div>
 

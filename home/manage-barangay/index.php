@@ -41,12 +41,12 @@ Core::importComponent([
   'path' => '/components/modal',
   'properties' => [
     'id' => 'delete-barangay-modal',
-    'title' => '<img src="' . Core::base_url() . '/assets/img/sent.png"> Delete barangay',
+    'title' => '<img src="' . Core::base_url() . '/assets/img/sent.png"> Hide barangay',
     'success' => 'Delete',
     'buttons' => [
       [
         'id' => 'delete',
-        'value' => 'Delete',
+        'value' => '<i class="fas fa-archive"></i> Archive',
         'type' => 'danger'
       ]
     ],

@@ -7,15 +7,12 @@ const modal_addbarangay = "#add-barangay-modal";
 const modal_editbarangay = "#edit-barangay-modal";
 const modal_deletebarangay = "#delete-barangay-modal";
 
-(await Load_barangays)();
+(await Load_Barangays)();
 
-async function Load_barangays() {
+async function Load_Barangays() {
   const data = (await Core.fetch_data(`${Core.base_url()}/php/barangay_get_all.php`, "json")).result;
 
-  if ($.fn.DataTable.isDataTable('#barangay')) {
-    $('#barangay').DataTable().destroy();
-    $('#barangay').html("");
-  }
+  Helper.DataTable_Reset('#barangay');
 
   const thead = `
     <thead>
@@ -53,7 +50,7 @@ async function Load_barangays() {
         data-toggle="modal"
         data-target="#delete-barangay-modal"
       >
-        <i class="fa fa-trash-alt"></i> Delete
+        <i class="fas fa-minus"></i> Hide
       </button>`: '');
 
     tbody +=
@@ -63,16 +60,74 @@ async function Load_barangays() {
   });
   tbody += "</tbody>";
 
-  $("#barangay").html('');
-  $("#barangay").append(thead + tbody);
 
-  Load_Functions();
+  Helper.DataTable_Init('#barangay', thead + tbody, Load_Functions);
+}
 
-  $("#barangay").DataTable({
-    bAutoWidth: false,
-    autoWidth: false
+let tableToggler = true;
+Core.onClick("#btn-toggle-table", async () => {
+  if (tableToggler) {
+    Core.f("#btn-toggle-table").innerHTML = "Show All Barangay";
+    Load_Archived();
+  } else {
+    Core.f("#btn-toggle-table").innerHTML = "Show Archived";
+    Load_Barangays();
+  }
+  tableToggler = !tableToggler;
+});
+
+async function Load_Archived() {
+  const archived = (await Core.fetch_data(`${Core.base_url()}/php/barangay_archived.php`, "json")).result;
+  Helper.DataTable_Reset('#barangay');
+
+  const thead = `
+    <thead>
+      <tr>
+        <th style="width: 40px !important;">#</th>
+        <th>Barangay Name</th>
+        <th class="text-center" style="width: 160px !important;">Action</th>
+      </tr>
+    </thead>
+    `;
+
+  let tbody = '<tbody>';
+  archived.forEach((row, index) => {
+    tbody += '<tr>';
+
+    tbody += `<td class="text-center">${index + 1}</td>`
+
+    tbody += `<td>${row.name}</td>`;
+    tbody +=
+      `<td class="text-center" style="width: 160px !important;">
+        <button 
+          class="btn btn-sm btn-primary btn-recover"
+          data-binder-id="${row.id}"
+          data-binder-name="${row.name}"
+        >
+          <i class="fas fa-plus"></i> Recover
+        </button> `;
+
+    tbody +=
+      `</td>`;
+
+    tbody += '</tr>';
   });
+  tbody += "</tbody>";
 
+
+  Helper.DataTable_Init('#barangay', thead + tbody, () => {
+    async function recover() {
+      const raw_data = { deletedflag: 0, name: Core.data(this, "binder-name"), id: Core.data(this, "binder-id") };
+      const form_data = Core.createFormData({ ...raw_data, uid: Core.user_getData().id });
+      await Core.fetch_data(`${Core.base_url()}/php/barangay_update.php`, null, form_data).then(async data => {
+        CustomNotification.add("Success!", `Item recovered!`, "primary");
+        await Load_Archived();
+      })
+    }
+
+    Core.clearClick(".btn-recover", recover, true);
+    Core.onClick(".btn-recover", recover, true);
+  });
 }
 
 function Load_Functions() {
@@ -115,7 +170,7 @@ async function submit_add_listener(e) {
     CustomNotification.add("Success!", `New item added!`, "primary");
     Core.f(`${modal_addbarangay}-hide`).click();
     Helper.Promt_Clear();
-    await Load_barangays();
+    await Load_Barangays();
   });
 }
 // </Add barangay>
@@ -140,7 +195,7 @@ async function submit_edit_listener(e) {
     CustomNotification.add("Success!", `Item updated!`, "primary");
     Core.f(`${modal_editbarangay}-hide`).click();
     Helper.Promt_Clear();
-    await Load_barangays();
+    await Load_Barangays();
   });
 }
 // </Edit barangay>
@@ -157,10 +212,10 @@ async function submit_delete_listener(e) {
   const form = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#delete-form")));
 
   await Core.fetch_data(`${Core.base_url()}/php/barangay_delete.php`, null, form).then(async data => {
-    CustomNotification.add("Success!", `Item deleted!`, "primary");
+    CustomNotification.add("Success!", `Item Archived!`, "primary");
     Core.f(`${modal_deletebarangay}-hide`).click();
     Helper.Promt_Clear();
-    await Load_barangays();
+    await Load_Barangays();
   });
 }
 // </Delete barangay>
