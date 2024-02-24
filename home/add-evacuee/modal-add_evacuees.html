@@ -1,0 +1,37 @@
+<form id="add_evacuees-form">
+  <div class="row">
+
+    <div class="col-lg-12">
+      <div class="form-group">
+        <label>Incident Date <small class="text-danger">*</small></label>
+        <input type="datetime-local" name="incident_date" class="form-control">
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Incident Type<small class="text-danger">*</small></label>
+        <select class="form-control" name="incident" id="incident">
+          <option value="" selected>Select Incident</option>
+          {{incident}}
+        </select>
+      </div>
+    </div>
+    
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Evacuation Center <small class="text-danger">*</small></label>
+        <select class="form-control" name="evac_center" id="evac_center">
+          <option value="" selected>Select Center</option>
+          {{evac_center}}
+        </select>
+      </div>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <small class="error-msg text-danger"></small>
+    </div>
+  </div>
+</form>

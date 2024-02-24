@@ -1,5 +1,21 @@
 export class Helper {
 
+  static getGender(genderID = '') {
+    switch (genderID) {
+      case 'M': return 'MALE';
+      case 'F': return 'FEMALE';
+      default: return '';
+    }
+  }
+
+  static toInputDate(string_date = '') {
+    const date = new Date(string_date);
+    const y = date.getFullYear();
+    const m = date.getMonth() + 1;
+    const d = date.getDate();
+    return `${y}-${m < 10 ? '0' + m : m}-${d < 10 ? '0' + d : d}`
+  }
+
   static getCivilStatus(civilStatusID = '') {
     switch (civilStatusID) {
       case 'S': return 'SINGLE';

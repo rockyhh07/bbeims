@@ -1,0 +1,34 @@
+<form id="edit-form">
+  <input type="hidden" name="representative" value="{{representative}}">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Representative</label>
+        <input type="text" class="form-control" value="{{rep_name}}" readonly>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Inciden</label>
+        <input type="text" class="form-control" value="{{incident_name}}" readonly>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Date <small class="text-danger">*</small></label>
+        <input name="incident_date" type="date" class="form-control" value="{{incident_date}}">
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Center <small class="text-danger">*</small></label>
+        <select class="form-control" name="evac_id" id="evac_id"></select>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <small class="error-msg text-danger"></small>
+    </div>
+  </div>
+</form>

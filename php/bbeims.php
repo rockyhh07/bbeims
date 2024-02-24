@@ -522,7 +522,6 @@ class BBEIMS
             `updated_by` = '{$uid}',
             `updated_date` = CURRENT_TIMESTAMP
         WHERE `id` = '{$id}'";
-        echo $query;
 
         return QUERY::run($query);
     }
@@ -551,7 +550,7 @@ class BBEIMS
     }
 
     public static function evacuee_delete(array $post_result) {
-        BBEIMS::delete_data($post_result, 'evacuee');
+      return BBEIMS::delete_data($post_result, 'evacuee');
     }
 
     public static function dashboard_get(array $post_result) {
@@ -762,6 +761,28 @@ class BBEIMS
         return QUERY::run($query);
     }
 
+    public static function representative_archived(array $post_result) {
+      QUERY::escape_str_all($post_result);
+      extract($post_result);
+      $query = "SELECT
+                  `id`,
+                  `address`,
+                  `lname`,
+                  `fname`,
+                  `mname`,
+                  `contact`,
+                  `birthday`,
+                  `gender`,
+                  `civil_status`,
+                  `representative`
+              FROM `evacuee` e
+              WHERE 
+                  e.`id` = e.`representative` AND
+                  e.`deletedflag` = 1
+      ";
+      return QUERY::run($query);
+    }
+
     public static function house_member_get(array $post_result) {
         QUERY::escape_str_all($post_result);
         extract($post_result);
@@ -787,6 +808,34 @@ class BBEIMS
         ";
 
         return QUERY::run($query);
+    }
+
+    public static function house_member_archived(array $post_result) {
+      QUERY::escape_str_all($post_result);
+      extract($post_result);
+
+      $rep = QUERY::run("SELECT `fname`, `lname`, `mname` FROM `evacuee` WHERE `id` = '{$rep_id}' LIMIT 1")[0];
+      $rep = "{$rep['lname']}, {$rep['fname']} {$rep['mname']}";
+
+      $query = "SELECT
+                  `id`,
+                  `address`,
+                  `lname`,
+                  `fname`,
+                  `mname`,
+                  `contact`,
+                  `birthday`,
+                  `gender`,
+                  `civil_status`,
+                  '{$rep}' `representative`
+              FROM `evacuee` e
+              WHERE 
+                  e.`representative` = '{$rep_id}' AND
+                  e.`deletedflag` = 1
+      ";
+
+      return QUERY::run($query);
+      
     }
 
     public static function archive(array $post_result) {

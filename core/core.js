@@ -4,9 +4,13 @@ export class Core {
     return '../..';
   }
 
+  static async api(url = '', type = null, form_data = null) {
+    return await Core.fetch_data(`${Core.base_url()}/php${url}.php`, type, form_data);
+  }
+
   static checked = (element) => Core.f(element).checked;
 
-  static replaceLayout(html_layout, replaces = {}) {
+  static replaceLayout(html_layout = '', replaces = {}) {
     for (const key in replaces) html_layout = html_layout.replaceAll(`{{${key}}}`, replaces[key]);
     return html_layout;
   }
@@ -47,9 +51,23 @@ export class Core {
   static isValidForm(form = new FormData(), required = ['']) {
     let invalids = [];
     form.forEach((val, key) => {
+      Core.f(`.form-control[name="${key}"]`, true)().forEach(e => e.style.border = "1px solid #CED4DA");
       if (required.includes(key) && !val) invalids.push(key);
     });
+    invalids.forEach(v => Core.f(`.form-control[name="${v}"]`, true)().forEach(e => e.style.border = "1px solid #DC3545"));
     return invalids.length === 0;
+  }
+
+  static formValidator(form = new FormData(), fields = [''], condition = () => false) {
+    let invalids = [];
+    form.forEach((val, key) => {
+      Core.f(`.form-control[name="${key}"]`, true)().forEach(e => e.style.border = "1px solid #CED4DA");
+      if (fields.includes(key) && val) {
+        if(!condition(val, key)) invalids.push(key);
+      }
+    });
+    invalids.forEach(v => Core.f(`.form-control[name="${v}"]`, true)().forEach(e => e.style.border = "1px solid #DC3545"));
+    return invalids
   }
 
 
@@ -57,11 +75,11 @@ export class Core {
   static user_getData = () => JSON.parse(localStorage.getItem("user_data") ?? '[]');
 
   static async user_redirectToAdmin() {
-    if(Core.user_getData().length > 0)location.href = `${Core.base_url()}/home/dashboard/`;
+    if (Core.user_getData().length > 0) location.href = `${Core.base_url()}/home/dashboard/`;
   }
 
   static async user_redirectToLogin() {
-    if(Core.user_getData().length === 0) location.href = Core.base_url();
+    if (Core.user_getData().length === 0) location.href = Core.base_url();
   }
 
   static async user_Logout(e) {

@@ -26,9 +26,9 @@
       <div class="card-header">
         <div class="d-flex align-items-center justify-content-between mb-3">
           <h5 class="m-0"><i class="fas fa-stream"></i> Evacuee List</h5>
-          <button class="btn btn-primary" id="btn-archive">
-            <i class="fas fa-archive"></i> Archive
-          </button>
+          <small class="d-flex flex-column admin-dashboard-only">
+            <a id="btn-toggle-table" class="link link-primary" href="#">Show Archived</a>
+          </small>
         </div>
       </div>
       <div class="card-body">
@@ -46,9 +46,9 @@
         </table>
       </div>
       <div class="card-footer">
-        <small class="d-flex flex-column admin-dashboard-only">
-          <a id="btn-toggle-table" class="link link-primary" href="#">Show Archived</a>
-        </small>
+        <button class="btn btn-primary" id="btn-archive" data-toggle="modal" data-target="#archive-modal">
+          <i class="fas fa-archive"></i> Archive Evacuees
+        </button>
       </div>
     </div>
   </div>

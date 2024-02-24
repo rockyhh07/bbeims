@@ -32,6 +32,12 @@ Core.onClick("#new-user-save", async () => {
     Helper.Promt_Error("Please fill required fields.");
     return;
   }
+
+  if (Core.formValidator(form_data, ["birthday"], v => Helper.getAge(v) >= 18).length > 0) {
+    Helper.Promt_Error("Invalid value. Age must be 18 or older.");
+    return;
+  }
+
   Helper.Promt_Clear();
 
   await Core.fetch_data(`${Core.base_url()}/php/user_new.php`, "json", form_data).then(data => {

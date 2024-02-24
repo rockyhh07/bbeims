@@ -1,0 +1,82 @@
+<form id="add_member-form">
+  <div class="row">
+
+    <div class="col-lg-12">
+      <div class="alert alert-primary" role="alert">
+        {{title}}
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>First Name <small class="text-danger">*</small></label>
+        <input type="text" name="fname" class="form-control">
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Middle Name <small class="text-danger">*</small></label>
+        <input type="text" name="mname" class="form-control">
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Last Name <small class="text-danger">*</small></label>
+        <input type="text" name="lname" class="form-control">
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Contact No. <small class="text-danger">*</small></label>
+        <input type="text" name="contact" class="form-control">
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Birthday <small class="text-danger">*</small></label>
+        <input type="date" name="birthday" class="form-control">
+      </div>
+    </div>
+
+    <div class="col-sm-12">
+      <div class="form-group">
+        <label>Address <small class="text-danger">*</small></label>
+        <input type="text" name="address" class="form-control" value="{{address}}">
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Gender <small class="text-danger">*</small></label>
+        <select class="form-control" name="gender" id="gender">
+          <option value="">Select Gender</option>
+          <option value="M">Male</option>
+          <option value="F">Female</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Civil Status <small class="text-danger">*</small></label>
+        <select class="form-control" name="civil_status" id="civil_status">
+          <option value="">Select Civil Status</option>
+          <option value="S">Single</option>
+          <option value="M">Married</option>
+          <option value="SP">Separated</option>
+          <option value="W">Widowed</option>
+        </select>
+      </div>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <small class="error-msg text-danger"></small>
+    </div>
+  </div>
+</form>
