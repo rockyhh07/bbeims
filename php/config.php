@@ -25,6 +25,7 @@ class QUERY
   private static function connection()
   {
     return new mysqli("localhost", "root", "", "beims_db");
+    // return new mysqli("sql213.infinityfree.com", "if0_36045973", "hGrhescir8O20hj", "if0_36045973_beims");
   }
 
   private static function perform(String $query)
