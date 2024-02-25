@@ -116,7 +116,7 @@
                     Gender
                   </a>
                   <a class="nav-item nav-link p-3" id="nav-incident-tab" data-toggle="tab" href="#report-incident" role="tab" aria-controls="nav-incident" aria-selected="false">
-                    Incident
+                    Disaster
                   </a>
                   <a class="nav-item nav-link p-3" id="nav-center-tab" data-toggle="tab" href="#report-center" role="tab" aria-controls="nav-center" aria-selected="false">
                     Evacuation Center
@@ -232,7 +232,7 @@
                     <table class="table table-bordered table-hover" id="incident-graph-table">
                       <thead>
                         <tr>
-                          <th>Incident</th>
+                          <th>Disaster</th>
                           <th>Occurrence</th>
                         </tr>
                       </thead>

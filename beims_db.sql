@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 22, 2024 at 03:42 AM
+-- Generation Time: Feb 25, 2024 at 10:33 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `beims`
+-- Database: `beims_db`
 --
 
 -- --------------------------------------------------------
@@ -42,8 +42,7 @@ CREATE TABLE `barangay` (
 --
 
 INSERT INTO `barangay` (`id`, `name`, `deletedflag`, `updated_by`, `updated_date`, `created_by`, `created_date`) VALUES
-(1, 'BARANGKA IBABA', 0, 1, '2024-02-20 17:13:09', 1, '2024-02-20 16:51:21'),
-(2, '4445', 1, 1, '2024-02-20 17:12:56', 1, '2024-02-20 17:12:07');
+(1, 'BARANGKA IBABA', 0, NULL, NULL, 1, '2024-02-26 05:32:33');
 
 -- --------------------------------------------------------
 
@@ -616,7 +615,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `barangay`
 --
 ALTER TABLE `barangay`
-  MODIFY `id` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `evacuee`

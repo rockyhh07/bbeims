@@ -11,7 +11,7 @@ Core::importComponent([
   'path' => '/components/modal',
   'properties' => [
     'id' => 'add-incident-modal',
-    'title' => 'Add Incident',
+    'title' => 'Add Disaster',
     'buttons' => [
       [
         'id' => 'add',
@@ -26,7 +26,7 @@ Core::importComponent([
   'path' => '/components/modal',
   'properties' => [
     'id' => 'edit-incident-modal',
-    'title' => 'Edit Incident',
+    'title' => 'Edit Disaster',
     'buttons' => [
       [
         'id' => 'edit',
@@ -41,7 +41,7 @@ Core::importComponent([
   'path' => '/components/modal',
   'properties' => [
     'id' => 'delete-incident-modal',
-    'title' => '<img src="' . Core::base_url() . '/assets/img/sent.png"> Hide Incident',
+    'title' => '<img src="' . Core::base_url() . '/assets/img/sent.png"> Hide Disaster',
     'success' => 'Delete',
     'buttons' => [
       [

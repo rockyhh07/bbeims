@@ -20,12 +20,13 @@ export class Core {
   }
 
   static data(element_reference, data_name) {
-    element_reference.getAttribute(`data-${data_name}`)
+    return element_reference.getAttribute(`data-${data_name}`)
   };
 
   static checked(element) {
-    if (Core.f(element)) Core.f(element).checked;
+    if (Core.f(element)) return Boolean(Core.f(element).checked);
     else { console.warn(`${element} not found.`); }
+    return false;
   };
 
   static replaceLayout(html_layout = '', replaces = {}) {
