@@ -67,7 +67,8 @@ export class Core {
   static isValidForm(form = new FormData(), required = ['']) {
     let invalids = [];
     form.forEach((val, key) => {
-      Core.f(`.form-control[name="${key}"]`, true)().forEach(e => e.style.border = "1px solid #CED4DA");
+      if (Core.f(`.form-control[name="${key}"]`))
+        Core.f(`.form-control[name="${key}"]`, true)().forEach(e => e.style.border = "1px solid #CED4DA");
       if (required.includes(key) && !val) invalids.push(key);
     });
     invalids.forEach(v => Core.f(`.form-control[name="${v}"]`, true)().forEach(e => e.style.border = "1px solid #DC3545"));
@@ -77,7 +78,8 @@ export class Core {
   static formValidator(form = new FormData(), fields = [''], condition = () => false) {
     let invalids = [];
     form.forEach((val, key) => {
-      Core.f(`.form-control[name="${key}"]`, true)().forEach(e => e.style.border = "1px solid #CED4DA");
+      if (Core.f(`.form-control[name="${key}"]`))
+        Core.f(`.form-control[name="${key}"]`, true)().forEach(e => e.style.border = "1px solid #CED4DA");
       if (fields.includes(key) && val) {
         if (!condition(val, key)) invalids.push(key);
       }
@@ -129,7 +131,7 @@ export class Core {
       }
       else return document.querySelector(element);
     }
-    else { console.warn(`${element} not found.`); }
+    // else { console.warn(`${element} not found.`); }
     return null;
   }
 

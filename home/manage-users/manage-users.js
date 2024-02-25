@@ -12,6 +12,7 @@ async function Load_Users() {
     .then(async data => {
       let users = data.result;
       users = users.filter(user => user.id != Core.user_getData().id);
+      console.log({ users })
 
       Helper.DataTable_Reset('#users');
 
@@ -20,7 +21,6 @@ async function Load_Users() {
           <tr>
             <th>ID</th>
             <th>Information</th>
-            <th>Category</th>
             <th>Status</th>
             <th class="text-center" style="width: 160px !important;">Action</th>
           </tr>
@@ -28,31 +28,35 @@ async function Load_Users() {
       `;
 
       let tbody = "<tbody>";
-      users.forEach((user, index) => {
-        let active = user.active === "1";
-        let categ = '';
-        let age = Helper.getAge(user.birthday)
-
-        switch (user.category) {
-          case 'A': categ = 'Admin'; break;
-          case 'S': categ = 'Staff'; break;
-          default: categ = ''; break;
-        }
+      users.forEach((v, i) => {
+        let active = v.active === "1";
 
         tbody += "<tr>";
 
         // <Body>
-        tbody += `<td>${"BB-" + user.id.padStart(6, "0")}</td>`;
-
+        tbody += `<td>${Helper.AsID(v.id, 6, "0", "BB-")}</td>`;
         tbody += `
           <td>
-            <p class="info">Name: <b>${user.fullname}</b></p>
-            <p class="info"><small>Contact: <b>${user.contact}</b></small></p>
-            <p class="info"><small>Age: <b>${age ? age : 0}</b></small></p>
+            <button class="btn btn-sm btn-link" data-toggle="collapse" data-target="#collapse-${i}" aria-expanded="false" aria-controls="collapse-${i}">
+              ${v.fullname}
+            </button>
+
+            <div id="collapse-${i}" class="collapse">
+              <div class="row pl-2">
+                <section class="col-sm-3 font-weight-bold" >Contact</section>
+                <section class="col-sm-9">${v.contact}</section>
+              </div>
+              <div class="row pl-2">
+                <section class="col-sm-3 font-weight-bold" >Age</section>
+                <section class="col-sm-9">${Helper.getAge(v.birthday)}</section>
+              </div>
+              <div class="row pl-2">
+                <section class="col-sm-3 font-weight-bold" >Role</section>
+                <section class="col-sm-9">${Helper.getCategory(v.category)}</section>
+              </div>
+            </div>
           </td>
         `;
-
-        tbody += `<td>${categ}</td>`;
         tbody += `
           <td>
             <span class="badge bg-${active ? 'success' : 'danger'}">${active ? 'Active' : 'Inactive'}</span>
@@ -64,14 +68,14 @@ async function Load_Users() {
           tbody +=
             `<button 
               class="btn btn-sm btn-success btn-open-edit"
-              data-binder-id="${user.id}"
-              data-binder-fullname="${user.fullname}"
-              data-binder-contact="${user.contact}"
-              data-binder-category="${user.category}"
-              data-binder-barangay_id="${user.barangay_id}"
-              data-binder-username="${user.username}"
-              data-binder-birthday="${user.birthday}"
-              data-binder-active="${user.active}"
+              data-binder-id="${v.id}"
+              data-binder-fullname="${v.fullname}"
+              data-binder-contact="${v.contact}"
+              data-binder-category="${v.category}"
+              data-binder-barangay_id="${v.barangay_id}"
+              data-binder-username="${v.username}"
+              data-binder-birthday="${v.birthday}"
+              data-binder-active="${v.active}"
               data-toggle="modal" 
               data-target="#edit-user-modal"
             >
@@ -81,8 +85,8 @@ async function Load_Users() {
           tbody += (Core.user_getData().category === "A" ?
             `<button 
               class="btn btn-sm btn-danger btn-open-delete"
-              data-binder-id="${user.id}"
-              data-binder-fullname="${user.fullname}"
+              data-binder-id="${v.id}"
+              data-binder-fullname="${v.fullname}"
               data-toggle="modal"
               data-target="#delete-user-modal"
             >

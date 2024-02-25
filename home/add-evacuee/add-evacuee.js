@@ -192,24 +192,24 @@ async function Load_Members({ id, fname, lname, mname, address }) {
           ${v.lname}, ${v.fname} ${v.mname}
         </button>
 
-        <div id="collapse-${i}" class="collapse p-2">
-          <div class="row">
+        <div id="collapse-${i}" class="collapse">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Age</section>
             <section class="col-sm-9">${Helper.getAge(v.birthday)}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Gender</section>
             <section class="col-sm-9">${Helper.getGender(v.gender)}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Contact</section>
             <section class="col-sm-9">${v.contact}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Civil status</section>
             <section class="col-sm-9">${Helper.getCivilStatus(v.civil_status)}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Address</section>
             <section class="col-sm-9">${v.address}</section>
           </div>
@@ -305,24 +305,24 @@ async function Load_Representatives() {
           ${v.lname}, ${v.fname} ${v.mname}
         </button>
 
-        <div id="collapse-${i}" class="collapse p-2">
-          <div class="row">
+        <div id="collapse-${i}" class="collapse">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Age</section>
             <section class="col-sm-9">${Helper.getAge(v.birthday)}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Gender</section>
             <section class="col-sm-9">${Helper.getGender(v.gender)}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Contact</section>
             <section class="col-sm-9">${v.contact}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Civil status</section>
             <section class="col-sm-9">${Helper.getCivilStatus(v.civil_status)}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Address</section>
             <section class="col-sm-9">${v.address}</section>
           </div>
@@ -569,24 +569,24 @@ async function Load_ArchivedRep() {
           ${v.lname}, ${v.fname} ${v.mname}
         </button>
 
-        <div id="collapse-${i}" class="collapse p-2">
-          <div class="row">
+        <div id="collapse-${i}" class="collapse">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Age</section>
             <section class="col-sm-9">${Helper.getAge(v.birthday)}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Gender</section>
             <section class="col-sm-9">${Helper.getGender(v.gender)}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Contact</section>
             <section class="col-sm-9">${v.contact}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Civil status</section>
             <section class="col-sm-9">${Helper.getCivilStatus(v.civil_status)}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Address</section>
             <section class="col-sm-9">${v.address}</section>
           </div>
@@ -651,24 +651,24 @@ async function Load_ArchivedMem() {
           ${v.lname}, ${v.fname} ${v.mname}
         </button>
 
-        <div id="collapse-${i}" class="collapse p-2">
-          <div class="row">
+        <div id="collapse-${i}" class="collapse">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Age</section>
             <section class="col-sm-9">${Helper.getAge(v.birthday)}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Gender</section>
             <section class="col-sm-9">${Helper.getGender(v.gender)}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Contact</section>
             <section class="col-sm-9">${v.contact}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Civil status</section>
             <section class="col-sm-9">${Helper.getCivilStatus(v.civil_status)}</section>
           </div>
-          <div class="row">
+          <div class="row pl-2">
             <section class="col-sm-3 font-weight-bold" >Address</section>
             <section class="col-sm-9">${v.address}</section>
           </div>

@@ -4,6 +4,14 @@ export class Helper {
     return Math.floor(Number(px) * 0.2645833333);
   }
 
+  static getCategory(categoryID) {
+    switch (categoryID) {
+      case 'A': return 'Admin';
+      case 'S': return 'Staff';
+      default: return '';
+    }
+  }
+
   static getGender(genderID = '') {
     switch (genderID) {
       case 'M': return 'MALE';
