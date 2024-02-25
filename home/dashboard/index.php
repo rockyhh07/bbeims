@@ -1,3 +1,5 @@
+<script src="https://cdn.jsdelivr.net/npm/jspdf@latest/dist/jspdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <?php
 require_once "../../core/core.php";
 Core::importComponent(['path' => '/components/header']);
@@ -22,5 +24,5 @@ Core::importComponent(['path' => '/components/notification']);
 Core::importComponent(['path' => '/components/footer']);
 ?>
 
-<script src="<?=Core::base_url()?>/assets/js/chart.js"></script>
+<script src="<?= Core::base_url() ?>/assets/js/chart.js"></script>
 <script type="module" src="./dashboard.js"></script>

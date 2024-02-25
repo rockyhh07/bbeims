@@ -14,7 +14,7 @@ async function Load_Incidents() {
     <thead>
       <tr>
         <th style="width: 40px !important;">#</th>
-        <th>Incident Name</th>
+        <th>Disaster Name</th>
         <th class="text-center" style="width: 160px !important;">Action</th>
       </tr>
     </thead>
@@ -62,7 +62,7 @@ async function Load_Incidents() {
 let tableToggler = true;
 Core.onClick("#btn-toggle-table", async () => {
   if (tableToggler) {
-    Core.f("#btn-toggle-table").innerHTML = "Show All Incidents";
+    Core.f("#btn-toggle-table").innerHTML = "Show All Disaster";
     Load_Archived();
   } else {
     Core.f("#btn-toggle-table").innerHTML = "Show Archived";
@@ -80,7 +80,7 @@ async function Load_Archived() {
     <thead>
       <tr>
         <th style="width: 40px !important;">#</th>
-        <th>Incident Name</th>
+        <th>Disaster Name</th>
         <th class="text-center" style="width: 160px !important;">Action</th>
       </tr>
     </thead>

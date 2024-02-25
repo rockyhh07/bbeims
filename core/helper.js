@@ -1,5 +1,9 @@
 export class Helper {
 
+  static px_to_mm(px) {
+    return Math.floor(Number(px) * 0.2645833333);
+  }
+
   static getGender(genderID = '') {
     switch (genderID) {
       case 'M': return 'MALE';

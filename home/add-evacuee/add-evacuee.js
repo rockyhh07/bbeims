@@ -11,9 +11,6 @@ let modal_add_evacuees = "#add_evacuees-modal";
 let center_list = (await Core.api('/evac_center_get_all', "json")).result;
 let incident_list = (await Core.api('/incident_get_all', "json")).result;
 
-console.log(center_list)
-console.log(incident_list)
-
 let selected_rep = {
   id: -1,
   fname: '-1',
@@ -37,7 +34,6 @@ function resetSelected_rep() {
 
 function set_repMode(newRepMode = undefined) {
   rep_MODE = newRepMode ?? rep_MODE;
-  console.log({ rep_MODE })
   if (rep_MODE) {
     Core.f(".memMode_content", true)().forEach(v => v.style.display = "none")
     Core.f(".repMode_content", true)().forEach(v => v.style.display = "flex")
@@ -98,7 +94,7 @@ Core.onClick(`${modal_addMember}-btn-add`, async function () {
     else await Load_Members(selected_rep);
   } else {
     CustomNotification.add("Error", "An Error occurred. Try again later.", "danger");
-    console.log({ data });
+    console.error({ data });
   }
 });
 
@@ -147,7 +143,7 @@ Core.onClick(`${modal_add_evacuees}-btn-add_evacuees`, async function () {
     await Load_Members(selected_rep);
   } else {
     CustomNotification.add("Error", "An Error occurred. Try again later.", "danger");
-    console.log({ res });
+    console.error({ res });
   }
 });
 
@@ -171,7 +167,6 @@ async function Load_Members({ id, fname, lname, mname, address }) {
   selected_rep = { id: id, fname: fname, lname: lname, mname: mname, address: address }
   const list = (await Core.api(`/house_member_get`, "json", Core.createFormData({ rep_id: selected_rep.id, uid: Core.user_getData().id }))).result;
   if (!list) { console.error("ERROR OCCURRED!"); return; }
-  console.log({ list });
 
   selected_rep.mem_ids = list.map(v => Number(v.id));
 
@@ -288,7 +283,6 @@ async function Load_Members({ id, fname, lname, mname, address }) {
 async function Load_Representatives() {
   const list = (await Core.api(`/representative_get_all`, "json")).result;
   if (!list) { console.error("ERROR OCCURRED!"); return; }
-  console.log({ list });
 
   Helper.DataTable_Reset('#representative_list');
 
@@ -418,7 +412,6 @@ function Load_Functions() {
 
 // -- < Open Member > --
 async function open_memberList_listener() {
-  console.log("HELLO  ")
   await Load_Members({
     id: Core.data(this, "binder-id"),
     fname: Core.data(this, "binder-fname"),
@@ -476,7 +469,7 @@ async function submit_edit_listener() {
     else await Load_Members(selected_rep);
   } else {
     CustomNotification.add("Error", "An Error occurred. Try again later.", "danger");
-    console.log({ res });
+    console.error({ res });
   }
 }
 // -- < /Edit > --
@@ -506,7 +499,7 @@ async function submit_delete_listener() {
     else await Load_Members(selected_rep);
   } else {
     CustomNotification.add("Error", "An Error occurred. Try again later.", "danger");
-    console.log({ res });
+    console.error({ res });
   }
 }
 // -- < /Delete > --
@@ -622,7 +615,6 @@ async function recoverMember() {
   const raw_data = { deletedflag: 0, id: Core.data(this, "binder-id") };
   const form_data = Core.createFormData({ ...raw_data, uid: Core.user_getData().id });
   const resp = (await Core.api('/evacuee_update', "json", form_data,));
-  console.log({ resp })
 
   if (resp.result) {
     CustomNotification.add("Success!", `Item recovered!`, "primary");
@@ -630,7 +622,7 @@ async function recoverMember() {
     else await Load_ArchivedMem();
   } else {
     CustomNotification.add("Error!", `Error occurred. Try again later.`, "danger");
-    console.log({ resp })
+    console.error({ resp })
   }
 }
 

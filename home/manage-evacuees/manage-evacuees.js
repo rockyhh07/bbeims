@@ -21,8 +21,6 @@ async function Load_EvacueeList() {
 
   evacuee_list_avail = list.map(v => v.id);
 
-  console.log({ list })
-
   Helper.DataTable_Reset('#evacuee_list');
 
   const thead = `

@@ -11,7 +11,6 @@ const modal_deleteEvacCenter = "#delete-evac-center-modal";
 
 async function Load_EvacCenters() {
   const data = (await Core.fetch_data(`${Core.base_url()}/php/evac_center_get_all.php`, "json")).result;
-  console.log({ data })
 
   Helper.DataTable_Reset('#evac_center');
 

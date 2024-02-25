@@ -1066,6 +1066,67 @@ class BBEIMS
       return QUERY::run($query);
     }
 
+    public static function incident_archived_getAll() {
+      $query = "SELECT * FROM `incident_archive` WHERE `deletedflag` = 0";
+      return QUERY::run($query);
+    }
+
+    public static function incident_archived_getAll_options() {
+      $query = "SELECT
+          ia.id `id`, 
+          i.`name` `name`,
+          ia.`incident_date` `incident_date`
+        FROM `incident_archive` ia
+        INNER JOIN `incident` i
+          ON i.`id` = ia.`incident_id` 
+        WHERE 
+          ia.`deletedflag` = 0 
+        GROUP BY ia.`incident_date` 
+        ORDER BY ia.`incident_id`
+      ";
+      return QUERY::run($query);
+    }
+
+    public static function generate_report_by_incident(array $post_result) {
+      // QUERY::escape_str_all($post_result);
+      $incident_date = $post_result['incident_date'];
+
+      $query = "SELECT
+          ia.id `id`,
+          e.`fname` `fname`,
+          e.`mname` `mname`,
+          e.`lname` `lname`,
+          e.`birthday` `birthday`,
+          e.`gender` `gender`,
+          e.`contact` `contact`,
+          e2.`fname` `rep_fname`,
+          e2.`mname` `rep_mname`,
+          e2.`lname` `rep_lname`,
+          e.`address` `address`,
+          e.`address` `address`,
+          c.`name` `center`,
+          i.`name` `incident_name`,
+          ia.`incident_date` `incident_date`
+        FROM `incident_archive` ia
+        INNER JOIN `incident` i
+          ON i.`id` = ia.`incident_id`
+        INNER JOIN `evacuee` e
+          ON e.`id` = ia.`evacuee_id`
+        INNER JOIN `evacuee` e2
+          ON e2.`id` = e.`representative`
+        INNER JOIN `evac_center` c
+          ON c.`id` = ia.`evac_id`
+        WHERE 
+          ia.`deletedflag` = 0 AND
+          ia.`incident_date` IN ({$incident_date})
+        ORDER BY ia.`incident_id`
+      ";
+      return QUERY::run($query);
+
+    }
+
+
+
     // PRIVATES //
 
     private static function ageCalculator($date) {

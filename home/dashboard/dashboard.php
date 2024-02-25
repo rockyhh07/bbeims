@@ -24,7 +24,7 @@
         <div class="info-box mb-3">
           <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-city"></i></span>
           <div class="info-box-content">
-            <span class="info-box-text">Barangay Population</span>
+            <span class="info-box-text">Total Family Records</span>
             <span class="info-box-number" id="number-of-brgy-population">0</span>
           </div>
         </div>
@@ -305,3 +305,6 @@
   </div>
 </section>
 <!-- /.container-fluid -->
+
+<div class="container-fluid" id="report-container">
+</div>

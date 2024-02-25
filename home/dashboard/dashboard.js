@@ -5,6 +5,7 @@ import { ModalHandler } from "../../core/modalHandler.js";
 
 const generateModal = "#generate-report-modal";
 CustomNotification.add("BBEIMS", `Welcome <b>${Core.user_getData().username}</b>`, "primary");
+const archived_list_options = (await Core.api('/incident_archived_getAll_options', "json", Core.createFormData({ uid: Core.user_getData().id }))).result;
 
 (async () => {
   const data = (await Core.fetch_data(`${Core.base_url()}/php/dashboard_get.php`, "json")).result[0];
@@ -29,92 +30,139 @@ CustomNotification.add("BBEIMS", `Welcome <b>${Core.user_getData().username}</b>
 Core.f("#btn-gegerateReport").addEventListener("click", async (e) => {
   e.preventDefault();
 
-  let incidentTypeOptions = '';
-  let incidentDateOptions = '';
-  let evacCenterOptions = '';
+  const replace = {
+    tbody: '',
+  }
+  archived_list_options.forEach(v => {
+    const date = new Date(v.incident_date);
 
-  let layout = await Core.fetch_data("generateReport.html");
-
-  // const incidentsDates = (await fetch_data("php/incident_get_dates.php", "json")).result;
-  const incidentsTypes = (await Core.fetch_data(Core.base_url() + "/php/incident_get_all.php", "json")).result;
-  const evacCenter = (await Core.fetch_data(Core.base_url() + "/php/evac_center_get_all.php", "json")).result;
-
-  incidentsTypes.forEach(e => { incidentTypeOptions += `<option value="${e.id}" >${e.name}</option>`; });
-  // incidentsDates.forEach(e => { incidentDateOptions += `<option value="${e.id}" >${e.name}</option>`; });
-  evacCenter.forEach(e => { evacCenterOptions += `<option value="${e.id}" >${e.name}</option>`; });
-
-  layout = layout.replaceAll("{select-incident-type}", incidentTypeOptions);
-  layout = layout.replaceAll("{select-incident-date}", incidentDateOptions);
-  layout = layout.replaceAll("{select-evac-center}", evacCenterOptions);
-
-  Core.f(`${generateModal}-body`).innerHTML = layout;
-
-  $(".report-row").on("click", function () {
-    $(this).find("input[type='radio']").prop("checked", true);
+    replace.tbody += `
+    <tr>
+      <td>
+        <input type="checkbox" name="incident_date" value="${v.incident_date},${v.name}" />
+      </td>
+      <td>
+        ${v.name}
+      </td>
+      <td>
+        ${date.toDateString()}
+      </td>
+      <td>
+        ${date.toLocaleTimeString()}
+      </td>
+    </tr>`
   });
+
+  let layout = (await Core.fetch_data("generateReport.html", "text"));
+  layout = Core.replaceLayout(layout, replace)
+  Core.f(`${generateModal}-body`).innerHTML = layout;
+  Core.onClick("#check-all", () => {
+    Core.fm('input[name="incident_date"]', v => v).forEach(e => e.checked = true);
+  })
 });
 
 Core.f(`${generateModal}-btn-generate`).addEventListener("click", async () => {
   Core.f(`${generateModal}-hide`).click();
-  await generateReportBy(Core.createFormData({}, new FormData(Core.f("#report-form"))));
-  CustomNotification.add("Generating report", "Report is being generated!", "success");
-});
 
-async function generateReportBy(form) {
-  const type = form.get("type");
-  if (type === "incident-type") { reportBy(form, "type"); return; }
-  if (type === "incident-date") { reportBy(form, "date"); return; }
-  if (type === "evac-center") { reportBy(form, "center"); return; }
-  reportBy(form);
-}
+  let incident_dates_list = [];
+  let incident_types_list = [];
+  let incident_dates = '';
+  let incident_types = '';
+  Core.fm('input[name="incident_date"]', v => v)
+    .filter(v => v.checked)
+    .map(v => v.value)
+    .forEach(v => {
+      const [date, type] = String(v).split(',');
+      incident_dates_list.push(date);
+      incident_types_list.push(type);
+    });
+  incident_dates_list = new Set(incident_dates_list)
+  incident_dates_list.forEach(v => incident_dates += `'${v}',`);
+  incident_dates = incident_dates.substring(0, incident_dates.length - 1);
 
-async function reportBy(form, condition = "") {
+  incident_types_list = new Set(incident_types_list)
+  incident_types_list.forEach(v => incident_types += `'${v}',`);
+  incident_types = incident_types.substring(0, incident_types.length - 1);
 
-  const thead = `<thead><tr>
-         <th>Fullname</th>
-         <th>Contact</th>
-         <th>Age</th>
-         <th>gender</th>
-         <th>Representative</th>
-         <th>Center</th>
-         <th>Incident</th>
-         <th>Date</th>
-      </tr></thead>`;
-  let tbody = '<tbody>';
-
-  const response = (await Core.fetch_data(
-    Core.base_url() + '/php/generate_report_all.php',
-    "json",
-    Core.createFormData({ uid: Core.user_getData().id, condition: condition }, form))
-  ).result;
-  for (const data of response) {
-    tbody += `<tr>
-            <td>${data.lname}, ${data.fname} ${data.mname}</td>
-            <td>${data.contact}</td>
-            <td>${Helper.getAge(data.birthday)}</td>
-            <td>${data.gender}</td>
-            <td>${data.repLname}, ${data.repFname} ${data.repMname}</td>
-            <td>${data.center}</td>
-            <td>${data.incident}</td>
-            <td>${data.date}</td>
-         </tr>`;
+  if (incident_dates_list.length == 0 || incident_types_list.length == 0 || incident_dates == '' || incident_types == '') {
+    CustomNotification.add("Error Generating", "Please select at least 1 disaster.", "danger");
+    Core.f("#report-container").innerHTML = '';
+    return;
   }
-  tbody += `</tbody>`;
-  const table = `<table class="table mt-5">${thead}${tbody}</table>`;
 
-  let s = `
-         <javascript src="${Core.base_url()}/assets/jquery/jquery.min.js"></javascript>
-         <javascript src="${Core.base_url()}/assets/js/adminlte.js"></javascript>
-         <javascript> (()=>{ setTimeout(() => { window.print(); }, 1000); })(); </javascript>
-         `;
+  CustomNotification.add("Generating report", "Report is being generated!", "secondary");
 
-  const reportTab = window.open('', '_blank', 'width=500,height=400');
-  reportTab.document.write(
-    `<head> <link rel="stylesheet" href="${Core.base_url()}/assets/css/adminlte.min.css"> </head>`
-    + `<div class="d-flex justify-content-center">` + table + `</div>` +
-    s.replaceAll("javascript", "script")
-  );
-}
+  const resp = (await Core.api('/generate_report_by_incident', "json", Core.createFormData({
+    incident_date: incident_dates
+  }))).result;
+
+  if (!resp) {
+    CustomNotification.add("Error", "An error occured. Try again later.", "danger");
+    Core.f("#report-container").innerHTML = '';
+    return;
+  }
+
+  const data = resp.map(v => ({
+    fullname: `${v.lname}, ${v.fname} ${v.mname}`,
+    age: Helper.getAge(v.birthday),
+    gender: v.gender,
+    contact: v.contact,
+    representative: `${v.rep_lname}, ${v.rep_fname} ${v.rep_mname}`,
+    address: v.address,
+    center: v.center,
+  }));
+
+  let tbody = '';
+  data.forEach(v => tbody += `
+    <tr>
+      <td class="text-center"><small>${v.fullname}</small></td>
+      <td class="text-center"><small>${v.age}</small></td>
+      <td class="text-center"><small>${v.gender}</small></td>
+      <td class="text-center"><small>${v.contact}</small></td>
+      <td class="text-center"><small>${v.representative}</small></td>
+      <td class="text-center"><small>${v.address}</small></td>
+      <td class="text-center"><small>${v.center}</small></td>
+    </tr>
+  `);
+
+  let layout = (await Core.fetch_data('reportcontent.html', "text"));
+  layout = Core.replaceLayout(layout, {
+    incident_type: String(incident_types).replaceAll("'", ''),
+    incident_date: String(incident_dates).replaceAll("'", ''),
+    total: data.length,
+    tbody: tbody,
+  });
+
+  Core.f("#report-container").innerHTML = layout;
+
+  const margin = 5;
+  const pageW = 210;
+  const pageH = 297;
+
+  const canvas = await html2canvas(Core.f("#report-container"), { allowTaint: true }).then((canvas) => canvas);
+  let canvas_width = Helper.px_to_mm(canvas.width);
+  let canvas_height = Helper.px_to_mm(canvas.height);
+
+  if (canvas_width > (pageW - (margin * 2))) {
+    const scale = (pageW - (margin * 2)) / canvas_width;
+    canvas_width *= scale;
+    canvas_height *= scale;
+  }
+  let x_offsest = 0;
+  if (canvas_height > (pageH - (margin * 2))) {
+    const scale = (pageH - (margin * 2)) / canvas_height;
+    canvas_width *= scale;
+    canvas_height *= scale;
+    x_offsest = ((pageW - (margin * 2)) / 2) - canvas_width;
+  }
+
+  const pdf_File = new jsPDF("p", "mm", "a4", true);
+  pdf_File.addImage(canvas.toDataURL('image/png'), 'PNG', x_offsest + margin, margin, canvas_width, canvas_height);
+  pdf_File.save(`incident_report-${new Date().getTime()}.pdf`);
+
+  CustomNotification.add("Generating report complete!", "Report is ready to download.", "success");
+  Core.f("#report-container").innerHTML = '';
+});
 // --</ Generate Report >--
 
 
@@ -338,7 +386,7 @@ async function Load_EvacueesGraph() {
       <td>${Helper.getAge(v.birthday)}</td>
     </tr>
   `);
-  
+
   Helper.DataTable_Init('#evacuee-graph-table', thead + tbody);
 }
 // --</ Evacuees Graph >--

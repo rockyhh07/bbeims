@@ -90,11 +90,11 @@
               </a>
             </li>
             
-            <li class="nav-item">
-              <a href="<?= Core::base_url() ?>/home/manage-incident" class="nav-link">
+            <li class="nav-item admin-dashboard-only">
+              <a href="<?= Core::base_url() ?>/home/manage-disaster" class="nav-link">
                 <i class="nav-icon fa fa-globe-asia"></i>
                 <p>
-                  Type of Incident
+                  Type of Disaster
                 </p>
               </a>
             </li>

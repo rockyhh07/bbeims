@@ -1,45 +1,15 @@
-<form method="post" id="report-form">
-  <table class="table table-hover" id="table-report">
+<form id="report-form">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th><input type="checkbox" id="check-all"></th>
+        <th>Disaster</th>
+        <th>Date</th>
+        <th>Time</th>
+      </tr>
+    </thead>
     <tbody>
-      <tr class="report-row">
-        <td>
-          <input type="radio" name="type" value="all" checked> Generate All
-        </td>
-        <td></td>
-      </tr>
-      <tr class="report-row">
-        <td class="">
-          <input type="radio" name="type" value="incident-type"> Generate by Incident type
-        </td>
-        <td class="d-flex flex-column" style="gap: 1rem;">
-          <select id="incident-type" name="incident-type" class="card m-0 p-2 flex-row">
-            <option value="" selected disabled>-- Select --</option>
-            {select-incident-type}
-          </select>
-        </td>
-      </tr>
-      <tr class="report-row">
-        <td class="">
-          <input type="radio" name="type" value="incident-date"> Generate by Incident date
-        </td>
-        <td class="d-flex flex-column" style="gap: 1rem;">
-          <select id="incident-date" name="incident-date" class="card m-0 p-2 flex-row">
-            <option value="" selected disabled>-- Select --</option>
-            {select-incident-date}
-          </select>
-        </td>
-      </tr>
-      <tr class="report-row">
-        <td class="">
-          <input type="radio" name="type" value="evac-center"> Generate by Evacuation Center
-        </td>
-        <td class="d-flex flex-column" style="gap: 1rem;">
-          <select id="evac-center" name="evac-center" class="card m-0 p-2 flex-row">
-            <option value="" selected disabled>-- Select --</option>
-            {select-evac-center}
-          </select>
-        </td>
-      </tr>
+      {{tbody}}
     </tbody>
   </table>
 </form>
