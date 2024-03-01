@@ -3,9 +3,13 @@ import { CustomNotification } from "../../core/customNotification.js";
 import { Helper } from "../../core/helper.js";
 import { ModalHandler } from "../../core/modalHandler.js";
 
+const setPasswordModal = "#setPassword";
 const generateModal = "#generate-report-modal";
 CustomNotification.add("BBEIMS", `Welcome <b>${Core.user_getData().username}</b>`, "primary");
 const archived_list_options = (await Core.api('/incident_archived_getAll_options', "json", Core.createFormData({ uid: Core.user_getData().id }))).result;
+
+let show_password = false;
+let show_cpassword = false;
 
 (async () => {
   const data = (await Core.fetch_data(`${Core.base_url()}/php/dashboard_get.php`, "json")).result[0];
@@ -23,11 +27,57 @@ const archived_list_options = (await Core.api('/incident_archived_getAll_options
   await Load_CenterGraph();
   await Load_EvacueesGraph();
 
+  const _protected = Core.user_getData().protected == "1";
+  console.log({ _protected, p: Core.user_getData().protected })
+  if (!_protected) {
+
+    Core.f(`${setPasswordModal}-body`).innerHTML = await Core.fetch_data(`setPassword.html`, "text");
+    Core.onClick("#show_password", () => {
+      show_password = !show_password;
+      Core.f('#show_password').innerHTML = show_password ? '<i class="fas fa-eye-slash">' : '<i class="fas fa-eye">';
+      Core.f("#password").type = show_password ? 'text' : 'password';
+    });
+    Core.onClick("#show_cpassword", () => {
+      show_cpassword = !show_cpassword;
+      Core.f('#show_cpassword').innerHTML = show_cpassword ? '<i class="fas fa-eye-slash">' : '<i class="fas fa-eye">';
+      Core.f("#cpassword").type = show_cpassword ? 'text' : 'password';
+    });
+    Core.onClick(`${setPasswordModal}-btn-setPassword`, async () => {
+      const form_data = new FormData(Core.f("#setPassword-form"));
+      const data = Core.getDataFromFormData(form_data);
+
+      if (!Core.isValidForm(form_data, ["password", "confirm_password"])) {
+        Helper.Promt_Error('Error: Passowrd must not be empty.')
+        return;
+      }
+
+      if (Core.formValidator(form_data, ["password", "confirm_password"], v => v.length >= 8).length > 0) {
+        Helper.Promt_Error('Error: Password must bne longer than 8 characters.')
+        return;
+      }
+
+      if (data.password != data.confirm_password) {
+        Helper.Promt_Error('Error: Password did not match.')
+        return;
+      }
+
+      Helper.Promt_Clear();
+
+      const resp = (await Core.api('/user_updatePassword', "json", Core.createFormData({ uid: Core.user_getData().id, password: data.password, username: Core.user_getData().username }))).result;
+      // console.log({ resp })
+      localStorage.setItem('user_data', JSON.stringify(resp));
+      location.reload()
+
+    });
+
+    Core.f("#btn-setPassword").click();
+  }
+
 })();
 
 
 // --< Generate Report >--
-Core.f("#btn-gegerateReport").addEventListener("click", async (e) => {
+Core.f("#btn-generateReport").addEventListener("click", async (e) => {
   e.preventDefault();
 
   const replace = {

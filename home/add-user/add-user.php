@@ -29,30 +29,32 @@
 
       <form class="card-body" id="new-user-form">
 
+        <input type="hidden" name="protected" value="1">
+
         <div class="row">
 
-          <div class="col-md-4">
+          <div class="col-md-4 col-sm-4">
             <div class="form-group">
               <label>Full Name <small class="text-danger">*</small></label>
               <input name="fullname" type="text" class="form-control" placeholder="Enter Name">
             </div>
           </div>
 
-          <div class="col-md-4">
+          <div class="col-md-4 col-sm-4">
             <div class="form-group">
               <label>Contact No. <small class="text-danger">*</small></label>
               <input name="contact" type="text" class="form-control" placeholder="Enter Contact No.">
             </div>
           </div>
 
-          <div class="col-md-4">
+          <div class="col-md-4 col-sm-4">
             <div class="form-group">
               <label>Birthday <small class="text-danger">*</small></label>
               <input name="birthday" type="date" class="form-control">
             </div>
           </div>
 
-          <div class="col-md-3">
+          <div class="col-md-3 col-sm-6">
             <div class="form-group">
               <label>Barangay <small class="text-danger">*</small></label>
               <select name="barangay" id="barangay_list" class="form-control">
@@ -61,7 +63,7 @@
             </div>
           </div>
 
-          <div class="col-md-3">
+          <div class="col-md-3 col-sm-6">
             <div class="form-group">
               <label>Account Category <small class="text-danger">*</small></label>
               <select name="category" class="form-control">
@@ -72,14 +74,14 @@
             </div>
           </div>
 
-          <div class="col-md-3">
+          <div class="col-md-3 col-sm-6">
             <div class="form-group">
               <label>Username <small class="text-danger">*</small></label>
               <input name="username" type="text" class="form-control" placeholder="Enter Username">
             </div>
           </div>
 
-          <div class="col-md-3">
+          <div class="col-md-3 col-sm-6">
             <div class="form-group">
               <label>Password <small class="text-danger">*</small></label>
               <div class="input-group">

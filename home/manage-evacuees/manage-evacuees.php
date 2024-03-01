@@ -24,11 +24,19 @@
   <div class="container-fluid">
     <div class="card">
       <div class="card-header">
+        <div class="row">
+          <div class="col-md-6 col-sm-6">
+            <h5 class="mt-2 mb-3"><i class="fas fa-stream"></i>
+              Evacuee List
+            </h5>
+          </div>
+          <div class="col-md-6 col-sm-6 text-center admin-dashboard-only">
+            <button id="btn-toggle-table" class="btn btn-secondary mb-3" href="#">
+              Show Archived
+            </button>
+          </div>
+        </div>
         <div class="d-flex align-items-center justify-content-between mb-3">
-          <h5 class="m-0"><i class="fas fa-stream"></i> Evacuee List</h5>
-          <small class="d-flex flex-column admin-dashboard-only">
-            <a id="btn-toggle-table" class="link link-primary" href="#">Show Archived</a>
-          </small>
         </div>
       </div>
       <div class="card-body">
@@ -37,7 +45,7 @@
             <tr>
               <th>ID</th>
               <th style="min-width: 225px;">Evacuee's Information</th>
-              <th>Incident</th>
+              <th>Disaster</th>
               <th>Date</th>
               <th class="text-center">Action</th>
             </tr>

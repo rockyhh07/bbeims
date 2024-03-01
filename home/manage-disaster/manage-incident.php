@@ -25,14 +25,22 @@
   <div class="container-fluid">
     <div class="card">
       <div class="card-header">
+        <div class="row">
+          <div class="col-md-4 col-sm-6">
+            <h5 class="mt-2">Disaster Information</h5>
+          </div>
+          <div class="col-md-4 col-sm-6 text-center">
+            <button class="btn btn-primary mb-3" id="btn-open-add" data-toggle="modal" data-target="#add-incident-modal">
+              <i class="fas fa-plus"></i> Add Disaster
+            </button>
+          </div>
+          <div class="col-md-4 col-sm-12 text-center admin-dashboard-only">
+            <button id="btn-toggle-table" class="btn btn-secondary mb-3" href="#">
+              Show Archived
+            </button>
+          </div>
+        </div>
         <div class="d-flex align-items-center justify-content-between">
-          <h5>Disaster Information</h5>
-          <button class="btn btn-primary" id="btn-open-add" data-toggle="modal" data-target="#add-incident-modal">
-            <i class="fas fa-plus"></i> Add Disaster
-          </button>
-          <small class="d-flex flex-column admin-dashboard-only">
-            <a id="btn-toggle-table" class="link link-primary" href="#">Show Archived</a>
-          </small>
         </div>
       </div>
       <div class="card-body">

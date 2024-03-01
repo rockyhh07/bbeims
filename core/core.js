@@ -1,3 +1,4 @@
+import { CustomNotification } from "./customNotification.js";
 import { Helper } from "./helper.js";
 
 export class Core {
@@ -12,11 +13,12 @@ export class Core {
       if (type === "text") return await response.text();
       if (type === "json") return await response.json()
       return await response;
-    });
+    }).catch(err => CustomNotification.add('Error Occurred', `Server Error. Contact administrator.`, 'danger'));
   }
 
   static async api(url = '', type = null, form_data = null) {
-    return await Core.fetch_data(`${Core.base_url()}/php${url}.php`, type, form_data);
+    return await Core.fetch_data(`${Core.base_url()}/php${url}.php`, type, form_data)
+      .catch(err => CustomNotification.add('Error Occurred', `Server Error. Contact administrator.`, 'danger'));
   }
 
   static data(element_reference, data_name) {

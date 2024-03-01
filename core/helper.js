@@ -1,4 +1,10 @@
+import { Core } from "./core.js";
+
 export class Helper {
+
+  static forceSelect(selectTagID, value) {
+    Core.f(`${selectTagID} > option[value="${value}"]`).setAttribute("selected", "");
+  }
 
   static px_to_mm(px) {
     return Math.floor(Number(px) * 0.2645833333);

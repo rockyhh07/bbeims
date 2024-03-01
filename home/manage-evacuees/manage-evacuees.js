@@ -28,7 +28,7 @@ async function Load_EvacueeList() {
       <tr>
         <th class="text-center">ID</th>
         <th style="min-width: 225px;">Evacuee's Information</th>
-        <th>Incident</th>
+        <th>Disaster</th>
         <th>Date</th>
         <th class="text-center">Action</th>
       </tr>

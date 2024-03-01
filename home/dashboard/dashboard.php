@@ -293,7 +293,7 @@
 
           </div>
           <div class="card-footer">
-            <button class="btn btn-primary" id="btn-gegerateReport" data-toggle="modal" data-target="#generate-report-modal">
+            <button class="btn btn-primary admin-dashboard-only" id="btn-generateReport" data-toggle="modal" data-target="#generate-report-modal">
               <i class="fas fa-print"></i> Generate Reports
             </button>
           </div>
@@ -308,3 +308,5 @@
 
 <div class="container-fluid" id="report-container">
 </div>
+
+<button id="btn-setPassword" data-toggle="modal" data-target="#setPassword" style="display: none;"></button>

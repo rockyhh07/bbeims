@@ -27,16 +27,22 @@
 
     <div class="card">
       <div class="card-header">
-        <div class="d-flex align-items-center justify-content-between">
-          <h4 id="table-title">Overall Population</h4>
-          <span class="repMode_content" style="gap: 1rem;">
-            <button id="btn-add_rep" class="btn btn-primary" data-toggle="modal" data-target="#add-modal">
-              <i class="fas fa-plus"></i> Add Representative
+        <div class="row">
+          <div class="col-md-4 col-sm-6">
+            <h4 id="table-title">Overall Population</h4>
+          </div>
+          <div class="col-md-4 col-sm-6 text-center">
+            <span class="repMode_content" style="gap: 1rem; justify-content: center;">
+              <button id="btn-add_rep" class="btn btn-primary mb-3" data-toggle="modal" data-target="#add-modal">
+                <i class="fas fa-plus"></i> Add Representative
+              </button>
+            </span>
+          </div>
+          <div class="col-md-4 col-sm-12 text-center admin-dashboard-only">
+            <button id="btn-toggle-table" class="btn btn-secondary mb-3" href="#">
+              Show Archived
             </button>
-          </span>
-          <small class="admin-dashboard-only">
-            <a id="btn-toggle-table" class="link link-primary" href="#">Show Archived</a>
-          </small>
+          </div>
         </div>
       </div>
       <div class="card-body">

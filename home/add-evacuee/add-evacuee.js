@@ -63,23 +63,22 @@ async function addNewEvacuee() {
 }
 
 Core.onClick(`${modal_addMember}-btn-add`, async function () {
-  const form_data = Core.createFormData(
-    {
-      rep: rep_MODE ? "rep" : undefined,
-      uid: Core.user_getData().id,
-      barangay_id: Core.user_getData().barangay_id,
-      representative: rep_MODE ? undefined : selected_rep.id,
-    },
-    new FormData(Core.f("#add_member-form"))
-  );
+  const body = {
+    rep: rep_MODE ? "rep" : undefined,
+    uid: Core.user_getData().id,
+    barangay_id: Core.user_getData().barangay_id,
+  };
+  if (!rep_MODE) body.representative = selected_rep.id;
+
+  const form_data = Core.createFormData(body, new FormData(Core.f("#add_member-form")));
 
   if (!Core.isValidForm(form_data, ["fname", "mname", "lname", "contact", "birthday", "address", "gender", "civil_status"])) {
     Helper.Promt_Error("Please fill required fields.");
     return;
   }
 
-  if (Core.formValidator(form_data, ["birthday"], v => Helper.getAge(v) >= 0).length > 0) {
-    Helper.Promt_Error("Invalid value. Please make sure values are valid.");
+  if (Core.formValidator(form_data, ["birthday"], v => Helper.getAge(v) >= (rep_MODE ? 18 : 0)).length > 0) {
+    Helper.Promt_Error("Invalid value. Please make sure birthday value are valid.");
     return;
   }
 
@@ -360,7 +359,7 @@ async function Load_Representatives() {
             >
               <i class="fas fa-user-check"></i> Manage Members
             </button>
-            <div class="dropdown-divider"></div>
+            ${Core.user_getData().category === "A" ? `<div class="dropdown-divider"></div>
             <button 
               class="dropdown-item btn btn-link btn-sm text-danger btn-open-delete"
               data-binder-id="${v.id}"
@@ -369,7 +368,7 @@ async function Load_Representatives() {
               data-target="#delete-modal"
             >
               <i class="fas fa-minus"></i> Hide
-            </button>
+            </button>` : ''}
           </div>
         </div>
       </td>
@@ -438,11 +437,18 @@ async function open_edit_listener() {
     gender: Core.data(this, "binder-gender"),
     civil_status: Core.data(this, "binder-civil_status"),
   }
+
   let layout = (await Core.fetch_data('./modal-edit_member.html', "text"));
   layout = Core.replaceLayout(layout, replace);
   Core.f(`${modal_editMember}-body`).innerHTML = layout;
-  Core.f('#gender').value = replace.gender;
-  Core.f('#civil_status').value = replace.civil_status;
+
+  Core.fm(".gender", v => v.value = replace.gender);
+  Core.fm(".civil_status", v => v.value = replace.civil_status);
+
+  // Helper.forceSelect("#gender", replace.gender);
+  // Helper.forceSelect("#civil_status", replace.civil_status);
+  // Core.f('#gender').value = replace.gender;
+  // Core.f('#civil_status').value = replace.civil_status;
 }
 
 async function submit_edit_listener() {

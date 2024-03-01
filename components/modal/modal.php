@@ -1,12 +1,13 @@
-
-<div class="modal fade" id="<?= $properties['id']; ?>" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="<?= $properties['id']; ?>" tabindex="-1" aria-hidden="true" <?= empty($properties['static']) ? '' : 'data-backdrop="static"' ?>>
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title"><?= $properties['title'] ?></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="<?= empty($properties['onClose']) ? '' : $properties['onClose'] ?>">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <?php if (empty($properties['noCloses'])) { ?>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="<?= empty($properties['onClose']) ? '' : $properties['onClose'] ?>">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        <?php } ?>
       </div>
       <div class="modal-body" id="<?= $properties['id']; ?>-body">
         <?php
@@ -19,7 +20,7 @@
         ?>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" id="<?= $properties['id'] ?>-close" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" id="<?= $properties['id'] ?>-close" data-dismiss="modal" <?= empty($properties['noCloses']) ? '' : 'style="display: none;"' ?>>Close</button>
         <?php
         if (!empty($properties['buttons'])) {
           foreach ($properties['buttons'] as $btn) { ?>

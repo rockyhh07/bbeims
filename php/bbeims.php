@@ -18,14 +18,22 @@ class BBEIMS
     // }
 
     public static function user_get_all(array $post_result) {
-        $query = new QueryBuilder(
-            QUERY_SELECT,
-            "users",
-            $post_result,
-            ["id", "username", "fullname", "contact", "category", "barangay_id", "active", "birthday"],
-            ["deletedflag" => "0"]
-        );
-        return QUERY::run($query->sql);
+      $query = "SELECT 
+          `id`,
+          `username`,
+          `fullname`,
+          `contact`,
+          `category`,
+          `barangay_id`,
+          `active`,
+          `birthday`
+        FROM 
+          `users`
+        WHERE
+          `deletedflag` = 0 AND
+          NOT `id` = 1
+      ";
+        return QUERY::run($query);
     }
 
     public static function user_archived(array $post_result) {
@@ -80,7 +88,7 @@ class BBEIMS
             QUERY_SELECT,
             "users",
             $post_result,
-            ["id", "username", "fullname", "contact", "category", "barangay_id", "active"],
+            ["id", "username", "fullname", "contact", "category", "barangay_id", "active", "protected"],
             ["username" => $post_result["username"], "password" => $post_result['password'], "deletedflag" => "0"]
         );
         $result = QUERY::run($query->sql);
@@ -90,6 +98,21 @@ class BBEIMS
 
         $result[0]["result"] = true;
         return $result[0];
+    }
+
+    public static function user_updatePassword(array $post_result) {
+      QUERY::escape_str_all($post_result);
+      $uid = $post_result['uid'];
+      $password = $post_result['password'];
+      $username = $post_result['username'];
+      $query = "UPDATE `users`
+        SET 
+        `password` = PASSWORD('{$password}'),
+        `protected` = 1
+        WHERE `id` = {$uid};
+      ";
+      QUERY::run($query);
+      return BBEIMS::user_login(['username' => $username, 'password' => $password]);
     }
 
     public static function user_update(array $post_result) {
@@ -149,7 +172,8 @@ class BBEIMS
       $query = "
       UPDATE `users`
       SET
-        `password` = password('default')
+        `password` = password('default'),
+        `protected` = 0
       WHERE
         `id` = {$post_result['id']}
       ";
@@ -246,7 +270,7 @@ class BBEIMS
             QUERY_SELECT,
             'evac_center',
             $post_result,
-            ["id", "name", "address", "contact"],
+            ["id", "name", "address", "contact", "capacity"],
             ["deletedflag" => 0],
             ["ORDER BY `id`", "DESC"]
         );
@@ -260,6 +284,7 @@ class BBEIMS
         $name = strtoupper($post_result['name']);
         $address = strtoupper($post_result['address']);
         $contact = strtoupper($post_result['contact']);
+        $capacity = $post_result['capacity'];
         
         $currentEvacCenter = QUERY::run("SELECT `name` FROM `evac_center`");
         
@@ -273,6 +298,7 @@ class BBEIMS
             $query = "UPDATE `evac_center` SET 
                     `address` = '{$address}',
                     `contact` = '{$contact}',
+                    `capacity` = '{$capacity}',
                     `deletedflag` = 0,
                     `updated_by` = '{$uid}',
                     `updated_date` = CURRENT_TIMESTAMP
@@ -284,6 +310,7 @@ class BBEIMS
                 `name` = '{$name}',
                 `address` = '{$address}',
                 `contact` = '{$contact}',
+                `capacity` = '{$capacity}',
                 `created_by` = '{$uid}',
                 `created_date` = CURRENT_TIMESTAMP
             ";
@@ -490,10 +517,12 @@ class BBEIMS
             $incident_date = $post_result['incident_date'];
             $incident_id = $post_result['incident'];
             $evac_id = $post_result['evac_center'];
+            $rescuer = strtoupper($post_result['rescuer']);
             foreach ($ids as $mem_id) {
                 $query = "UPDATE 
                             `evacuee` 
                         SET 
+                            `rescuer` =  '{$rescuer}',
                             `evac_id` =  '{$evac_id}',
                             `incident_id` =  '{$incident_id}',
                             `incident_date` =  '{$incident_date}',
@@ -851,7 +880,8 @@ class BBEIMS
                             e.`id`,
                             e.`incident_id`,
                             e.`incident_date`,
-                            e.`evac_id`
+                            e.`evac_id`,
+                            e.`rescuer`
                         FROM `evacuee` e
                         WHERE
                             e.`deletedflag` = 0 AND
@@ -861,14 +891,15 @@ class BBEIMS
             ";
     
             $query = "INSERT INTO `incident_archive` 
-                (`evacuee_id`, `incident_id`, `incident_date`,`evac_id`, `created_by`, `created_date`) VALUES";
+                (`evacuee_id`, `incident_id`, `incident_date`,`evac_id`, `created_by`, `rescuer`, `created_date`) VALUES";
             foreach(QUERY::run($query_allEvac) as $obj) {
                 $evacuee_id = $obj["id"];
                 $incident_id = $obj["incident_id"];
                 $incident_date = $obj["incident_date"];
                 $evac_id = $obj["evac_id"];
+                $rescuer = strtoupper($obj["rescuer"]);
     
-                $query .= "('{$evacuee_id}', '{$incident_id}', '{$incident_date}', '{$evac_id}', '{$uid}', CURRENT_TIMESTAMP),";
+                $query .= "('{$evacuee_id}', '{$incident_id}', '{$incident_date}', '{$evac_id}', '{$uid}', '{$rescuer}', CURRENT_TIMESTAMP),";
             }
             $query = rtrim($query, ",");
     
@@ -896,6 +927,7 @@ class BBEIMS
                             `evac_id`=NULL,
                             `incident_id`=NULL,
                             `incident_date`=NULL,
+                            `rescuer`=NULL,
                             `updated_by`='{$uid}',
                             `updated_date`=CURRENT_TIMESTAMP
                         WHERE 
@@ -1093,6 +1125,7 @@ class BBEIMS
 
       $query = "SELECT
           ia.id `id`,
+          ia.`rescuer` `rescuer`,
           e.`fname` `fname`,
           e.`mname` `mname`,
           e.`lname` `lname`,

@@ -45,6 +45,7 @@ async function Load_EvacCenters() {
         data-binder-name="${row.name}"
         data-binder-address="${row.address}"
         data-binder-contact="${row.contact}"
+        data-binder-capacity="${row.capacity}"
         >
         <i class="fa fa-edit"></i> Edit
       </button> `
@@ -168,7 +169,7 @@ async function open_add_listener() {
 async function submit_add_listener() {
   const form = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#evac-center-add-form")));
 
-  if (!Core.isValidForm(form, ["name", "address", "contact"])) {
+  if (!Core.isValidForm(form, ["name", "address", "contact", "capacity"])) {
     Helper.Promt_Error("Please fill required fields.");
     return;
   }
@@ -210,7 +211,9 @@ async function open_edit_listener() {
     name: Core.data(this, "binder-name"),
     address: Core.data(this, "binder-address"),
     contact: Core.data(this, "binder-contact"),
+    capacity: Core.data(this, "binder-capacity"),
   };
+  console.log({ replace })
   let layout = (await Core.fetch_data('modal-edit.html', "text"));
   layout = Core.replaceLayout(layout, replace);
   Core.f(`${modal_editEvacCenter}-body`).innerHTML = layout;
@@ -219,7 +222,7 @@ async function open_edit_listener() {
 async function submit_edit_listener() {
   const form = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#evac-center-edit-form")));
 
-  if (!Core.isValidForm(form, ["name", "address", "contact"])) {
+  if (!Core.isValidForm(form, ["name", "address", "contact", "capacity"])) {
     Helper.Promt_Error("Please fill required fields.");
     return;
   }

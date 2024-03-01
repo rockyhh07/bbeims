@@ -24,14 +24,20 @@
   <div class="container-fluid">
     <div class="card">
       <div class="card-header">
-        <div class="d-flex align-items-center justify-content-between">
-            <h5>Barangays Information</h5>
-            <button class="btn btn-primary" id="btn-open-add" data-toggle="modal" data-target="#add-barangay-modal">
+        <div class="row">
+          <div class="col-md-4 col-sm-6 align-middle">
+            <h5 class="mt-2">Barangays Information</h5>
+          </div>
+          <div class="col-md-4 col-sm-6 text-center">
+            <button class="btn btn-primary mb-3" id="btn-open-add" data-toggle="modal" data-target="#add-barangay-modal">
               <i class="fas fa-plus"></i> Add Barangay
             </button>
-            <small class="d-flex flex-column admin-dashboard-only">
-              <a id="btn-toggle-table" class="link link-primary" href="#">Show Archived</a>
-            </small>
+          </div>
+          <div class="col-md-4 col-sm-12 text-center admin-dashboard-only">
+            <button id="btn-toggle-table" class="btn btn-secondary mb-3" href="#">
+              Show Archived
+            </button>
+          </div>
         </div>
       </div>
       <div class="card-body">

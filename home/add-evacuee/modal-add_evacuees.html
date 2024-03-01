@@ -1,7 +1,14 @@
 <form id="add_evacuees-form">
   <div class="row">
 
-    <div class="col-lg-12">
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Rescuer's Name</label>
+        <input type="text" name="rescuer" class="form-control">
+      </div>
+    </div>
+
+    <div class="col-sm-6">
       <div class="form-group">
         <label>Incident Date <small class="text-danger">*</small></label>
         <input type="datetime-local" name="incident_date" class="form-control">
@@ -10,14 +17,14 @@
 
     <div class="col-sm-6">
       <div class="form-group">
-        <label>Incident Type<small class="text-danger">*</small></label>
+        <label>Disaster Type<small class="text-danger">*</small></label>
         <select class="form-control" name="incident" id="incident">
-          <option value="" selected>Select Incident</option>
+          <option value="" selected>Select Disaster</option>
           {{incident}}
         </select>
       </div>
     </div>
-    
+
     <div class="col-sm-6">
       <div class="form-group">
         <label>Evacuation Center <small class="text-danger">*</small></label>

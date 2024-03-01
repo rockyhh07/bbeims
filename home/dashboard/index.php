@@ -20,6 +20,23 @@ Core::importComponent([
   ]
 ]);
 
+Core::importComponent([
+  'path' => '/components/modal',
+  'properties' => [
+    'id' => 'setPassword',
+    'title' => 'Set New Password',
+    'static' => true,
+    'noCloses' => true,
+    'buttons' => [
+      [
+        'id' => 'setPassword',
+        'value' => 'Save',
+        'type' => 'primary'
+      ]
+    ],
+  ]
+]);
+
 Core::importComponent(['path' => '/components/notification']);
 Core::importComponent(['path' => '/components/footer']);
 ?>
