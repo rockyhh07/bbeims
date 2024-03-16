@@ -1,7 +1,7 @@
 <?php
 require_once "../../core/core.php";
 Core::importComponent(['path' => '/components/header']);
-require_once "manage-incident.php";
+require_once "manage-disaster.php";
 Core::importComponent(['path' => '/components/notification']);
 Core::importComponent(['path' => '/components/footer']);
 
@@ -10,7 +10,7 @@ Core::importComponent(['path' => '/components/footer']);
 Core::importComponent([
   'path' => '/components/modal',
   'properties' => [
-    'id' => 'add-incident-modal',
+    'id' => 'add-disaster-modal',
     'title' => 'Add Disaster',
     'buttons' => [
       [
@@ -25,7 +25,7 @@ Core::importComponent([
 Core::importComponent([
   'path' => '/components/modal',
   'properties' => [
-    'id' => 'edit-incident-modal',
+    'id' => 'edit-disaster-modal',
     'title' => 'Edit Disaster',
     'buttons' => [
       [
@@ -40,7 +40,7 @@ Core::importComponent([
 Core::importComponent([
   'path' => '/components/modal',
   'properties' => [
-    'id' => 'delete-incident-modal',
+    'id' => 'delete-disaster-modal',
     'title' => '<img src="' . Core::base_url() . '/assets/img/sent.png"> Hide Disaster',
     'success' => 'Delete',
     'buttons' => [
@@ -54,4 +54,4 @@ Core::importComponent([
 ]);
 ?>
 
-<script type="module" src="./manage-incident.js"></script>
+<script type="module" src="./manage-disaster.js"></script>

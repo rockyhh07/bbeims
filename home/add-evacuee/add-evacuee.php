@@ -68,14 +68,14 @@
             </button>
 
           </span>
-          <!-- <form id="add-incident-form" method="post" class="d-flex align-items-center p-2 hidden justify-content-between" style="gap: 1rem; flex-grow: 1;">
+          <!-- <form id="add-disaster-form" method="post" class="d-flex align-items-center p-2 hidden justify-content-between" style="gap: 1rem; flex-grow: 1;">
             <div class="d-flex flex-column" style="gap: .5rem;">
               <span class="m-0" style="font-weight: bold;" id="basic-addon1">Date</span>
-              <input name="incident_date" type="datetime-local" class="form-control" required>
+              <input name="disaster_date" type="datetime-local" class="form-control" required>
             </div>
             <div class="d-flex flex-column" style="gap: .5rem;">
-              <span class="m-0" style="font-weight: bold;" id="basic-addon1">Incident</span>
-              <select name="incident" class="form-control" id="select-incident" required>
+              <span class="m-0" style="font-weight: bold;" id="basic-addon1">disaster</span>
+              <select name="disaster" class="form-control" id="select-disaster" required>
                 <option value="" selected>-- Select --</option>
               </select>
             </div>

@@ -115,7 +115,7 @@
                   <a class="nav-item nav-link p-3" id="nav-gender-tab" data-toggle="tab" href="#report-gender" role="tab" aria-controls="nav-gender" aria-selected="false">
                     Gender
                   </a>
-                  <a class="nav-item nav-link p-3" id="nav-incident-tab" data-toggle="tab" href="#report-incident" role="tab" aria-controls="nav-incident" aria-selected="false">
+                  <a class="nav-item nav-link p-3" id="nav-disaster-tab" data-toggle="tab" href="#report-disaster" role="tab" aria-controls="nav-disaster" aria-selected="false">
                     Disaster
                   </a>
                   <a class="nav-item nav-link p-3" id="nav-center-tab" data-toggle="tab" href="#report-center" role="tab" aria-controls="nav-center" aria-selected="false">
@@ -224,12 +224,12 @@
               </div>
               <!-- / Gender -->
 
-              <!-- Incident -->
-              <div class="tab-pane fade" id="report-incident" role="tabpanel" aria-labelledby="nav-incident-tab">
+              <!-- disaster -->
+              <div class="tab-pane fade" id="report-disaster" role="tabpanel" aria-labelledby="nav-disaster-tab">
 
                 <div class="row">
                   <div class="col-md-4">
-                    <table class="table table-bordered table-hover" id="incident-graph-table">
+                    <table class="table table-bordered table-hover" id="disaster-graph-table">
                       <thead>
                         <tr>
                           <th>Disaster</th>
@@ -239,12 +239,12 @@
                     </table>
                   </div>
                   <div class="col-md-8">
-                    <canvas id="incident-graph"></canvas>
+                    <canvas id="disaster-graph"></canvas>
                   </div>
                 </div>
 
               </div>
-              <!-- / Incident -->
+              <!-- / disaster -->
 
               <!-- Center -->
               <div class="tab-pane fade" id="report-center" role="tabpanel" aria-labelledby="nav-center-tab">

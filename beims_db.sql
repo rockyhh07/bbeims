@@ -64,8 +64,8 @@ CREATE TABLE `evacuee` (
   `rescuer` varchar(255) DEFAULT NULL,
   `barangay_id` int(6) DEFAULT NULL,
   `evac_id` int(6) DEFAULT NULL,
-  `incident_id` int(6) DEFAULT NULL,
-  `incident_date` datetime DEFAULT NULL,
+  `disaster_id` int(6) DEFAULT NULL,
+  `disaster_date` datetime DEFAULT NULL,
   `deletedflag` int(1) DEFAULT 0,
   `updated_by` int(6) DEFAULT NULL,
   `updated_date` datetime DEFAULT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE `evacuee` (
 -- Dumping data for table `evacuee`
 --
 
-INSERT INTO `evacuee` (`id`, `lname`, `fname`, `mname`, `contact`, `birthday`, `gender`, `civil_status`, `address`, `representative`, `rescuer`, `barangay_id`, `evac_id`, `incident_id`, `incident_date`, `deletedflag`, `updated_by`, `updated_date`, `created_by`, `created_date`) VALUES
+INSERT INTO `evacuee` (`id`, `lname`, `fname`, `mname`, `contact`, `birthday`, `gender`, `civil_status`, `address`, `representative`, `rescuer`, `barangay_id`, `evac_id`, `disaster_id`, `disaster_date`, `deletedflag`, `updated_by`, `updated_date`, `created_by`, `created_date`) VALUES
 (1, 'ABAD', 'MARLYN', 'BRONDIAL', '264075735', '1954-06-12', 'F', 'M', '939 MRR TRACK ST., BRGY. BARANGKA IBABA', 1, NULL, 1, NULL, NULL, NULL, 0, 1, '2024-03-01 22:41:41', 1, '2023-11-09 21:18:58'),
 (2, 'ABASTILLAS', 'ANTONIO', 'QUIJANO', '09737482755', '1961-03-01', 'M', 'M', '943 MRR TRACK ST., BRGY. BARANGKA IBABA', 2, NULL, 1, NULL, NULL, NULL, 0, 1, '2023-11-15 08:21:42', 1, '2023-11-09 21:20:39'),
 (3, 'ADONA', 'DAISY', 'NUESTRO', '09266163420', '1963-10-15', 'F', 'W', '933 MRR TRACK ST., BRGY. BARANGKA IBABA', 3, NULL, 1, NULL, NULL, NULL, 0, 1, '2023-11-09 21:47:01', 1, '2023-11-09 21:23:06'),
@@ -372,10 +372,10 @@ INSERT INTO `evac_center` (`id`, `name`, `address`, `contact`, `barangay_id`, `c
 -- --------------------------------------------------------
 
 --
--- Table structure for table `incident`
+-- Table structure for table `disaster`
 --
 
-CREATE TABLE `incident` (
+CREATE TABLE `disaster` (
   `id` int(6) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
   `deletedflag` int(1) DEFAULT 0,
@@ -386,10 +386,10 @@ CREATE TABLE `incident` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `incident`
+-- Dumping data for table `disaster`
 --
 
-INSERT INTO `incident` (`id`, `name`, `deletedflag`, `updated_by`, `updated_date`, `created_by`, `created_date`) VALUES
+INSERT INTO `disaster` (`id`, `name`, `deletedflag`, `updated_by`, `updated_date`, `created_by`, `created_date`) VALUES
 (1, 'FLOOD', 0, NULL, NULL, 1, '2023-11-09 21:08:09'),
 (2, 'FIRE', 0, NULL, NULL, 1, '2023-11-09 21:08:13'),
 (3, 'TYPHOON', 0, NULL, NULL, 1, '2023-11-09 21:08:18'),
@@ -410,15 +410,15 @@ INSERT INTO `incident` (`id`, `name`, `deletedflag`, `updated_by`, `updated_date
 -- --------------------------------------------------------
 
 --
--- Table structure for table `incident_archive`
+-- Table structure for table `disaster_archive`
 --
 
-CREATE TABLE `incident_archive` (
+CREATE TABLE `disaster_archive` (
   `id` int(6) NOT NULL,
   `rescuer` varchar(255) DEFAULT NULL,
   `evacuee_id` int(6) NOT NULL,
-  `incident_id` int(6) NOT NULL,
-  `incident_date` datetime NOT NULL,
+  `disaster_id` int(6) NOT NULL,
+  `disaster_date` datetime NOT NULL,
   `evac_id` int(6) NOT NULL,
   `barangay_id` int(6) DEFAULT NULL,
   `deletedflag` int(1) DEFAULT 0,
@@ -429,10 +429,10 @@ CREATE TABLE `incident_archive` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `incident_archive`
+-- Dumping data for table `disaster_archive`
 --
 
-INSERT INTO `incident_archive` (`id`, `rescuer`, `evacuee_id`, `incident_id`, `incident_date`, `evac_id`, `barangay_id`, `deletedflag`, `updated_by`, `updated_date`, `created_by`, `created_date`) VALUES
+INSERT INTO `disaster_archive` (`id`, `rescuer`, `evacuee_id`, `disaster_id`, `disaster_date`, `evac_id`, `barangay_id`, `deletedflag`, `updated_by`, `updated_date`, `created_by`, `created_date`) VALUES
 (1, NULL, 1, 2, '2023-11-09 22:15:00', 1, 1, 0, NULL, NULL, 1, '2023-11-09 22:17:00'),
 (2, NULL, 11, 2, '2023-11-09 22:15:00', 1, 1, 0, NULL, NULL, 1, '2023-11-09 22:17:00'),
 (3, NULL, 12, 2, '2023-11-09 22:15:00', 1, 1, 0, NULL, NULL, 1, '2023-11-09 22:17:00'),
@@ -605,7 +605,7 @@ ALTER TABLE `evacuee`
   ADD KEY `updated_by` (`updated_by`),
   ADD KEY `created_by` (`created_by`),
   ADD KEY `evac_id` (`evac_id`),
-  ADD KEY `incident_id` (`incident_id`),
+  ADD KEY `disaster_id` (`disaster_id`),
   ADD KEY `evacuee_ibfk_6` (`barangay_id`);
 
 --
@@ -618,22 +618,22 @@ ALTER TABLE `evac_center`
   ADD KEY `evac_center_ibfk_3` (`barangay_id`);
 
 --
--- Indexes for table `incident`
+-- Indexes for table `disaster`
 --
-ALTER TABLE `incident`
+ALTER TABLE `disaster`
   ADD PRIMARY KEY (`id`),
   ADD KEY `updated_by` (`updated_by`),
   ADD KEY `created_by` (`created_by`);
 
 --
--- Indexes for table `incident_archive`
+-- Indexes for table `disaster_archive`
 --
-ALTER TABLE `incident_archive`
+ALTER TABLE `disaster_archive`
   ADD PRIMARY KEY (`id`),
   ADD KEY `evacuee_id` (`evacuee_id`),
-  ADD KEY `incident_id` (`incident_id`),
+  ADD KEY `disaster_id` (`disaster_id`),
   ADD KEY `evac_id` (`evac_id`),
-  ADD KEY `incident_archive_ibfk_4` (`barangay_id`);
+  ADD KEY `disaster_archive_ibfk_4` (`barangay_id`);
 
 --
 -- Indexes for table `users`
@@ -667,15 +667,15 @@ ALTER TABLE `evac_center`
   MODIFY `id` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT for table `incident`
+-- AUTO_INCREMENT for table `disaster`
 --
-ALTER TABLE `incident`
+ALTER TABLE `disaster`
   MODIFY `id` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
--- AUTO_INCREMENT for table `incident_archive`
+-- AUTO_INCREMENT for table `disaster_archive`
 --
-ALTER TABLE `incident_archive`
+ALTER TABLE `disaster_archive`
   MODIFY `id` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
 
 --
@@ -696,7 +696,7 @@ ALTER TABLE `evacuee`
   ADD CONSTRAINT `evacuee_ibfk_2` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `evacuee_ibfk_3` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `evacuee_ibfk_4` FOREIGN KEY (`evac_id`) REFERENCES `evac_center` (`id`),
-  ADD CONSTRAINT `evacuee_ibfk_5` FOREIGN KEY (`incident_id`) REFERENCES `incident` (`id`),
+  ADD CONSTRAINT `evacuee_ibfk_5` FOREIGN KEY (`disaster_id`) REFERENCES `disaster` (`id`),
   ADD CONSTRAINT `evacuee_ibfk_6` FOREIGN KEY (`barangay_id`) REFERENCES `barangay` (`id`);
 
 --
@@ -708,20 +708,20 @@ ALTER TABLE `evac_center`
   ADD CONSTRAINT `evac_center_ibfk_3` FOREIGN KEY (`barangay_id`) REFERENCES `barangay` (`id`);
 
 --
--- Constraints for table `incident`
+-- Constraints for table `disaster`
 --
-ALTER TABLE `incident`
-  ADD CONSTRAINT `incident_ibfk_1` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `incident_ibfk_2` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`);
+ALTER TABLE `disaster`
+  ADD CONSTRAINT `disaster_ibfk_1` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `disaster_ibfk_2` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`);
 
 --
--- Constraints for table `incident_archive`
+-- Constraints for table `disaster_archive`
 --
-ALTER TABLE `incident_archive`
-  ADD CONSTRAINT `incident_archive_ibfk_1` FOREIGN KEY (`evacuee_id`) REFERENCES `evacuee` (`id`),
-  ADD CONSTRAINT `incident_archive_ibfk_2` FOREIGN KEY (`incident_id`) REFERENCES `incident` (`id`),
-  ADD CONSTRAINT `incident_archive_ibfk_3` FOREIGN KEY (`evac_id`) REFERENCES `evac_center` (`id`),
-  ADD CONSTRAINT `incident_archive_ibfk_4` FOREIGN KEY (`barangay_id`) REFERENCES `barangay` (`id`);
+ALTER TABLE `disaster_archive`
+  ADD CONSTRAINT `disaster_archive_ibfk_1` FOREIGN KEY (`evacuee_id`) REFERENCES `evacuee` (`id`),
+  ADD CONSTRAINT `disaster_archive_ibfk_2` FOREIGN KEY (`disaster_id`) REFERENCES `disaster` (`id`),
+  ADD CONSTRAINT `disaster_archive_ibfk_3` FOREIGN KEY (`evac_id`) REFERENCES `evac_center` (`id`),
+  ADD CONSTRAINT `disaster_archive_ibfk_4` FOREIGN KEY (`barangay_id`) REFERENCES `barangay` (`id`);
 
 --
 -- Constraints for table `users`

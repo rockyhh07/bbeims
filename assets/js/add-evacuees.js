@@ -121,9 +121,9 @@ function openModal(id, body = {}) {
     $("#modal-holder").removeClass("hidden");
 }
 
-async function loadIncident() {
-    const incident = $("#select-incident");
-    await fetch(BASE_URL + `php/incident_get_all.php`)
+async function loadDisaster() {
+    const disaster = $("#select-disaster");
+    await fetch(BASE_URL + `php/disaster_get_all.php`)
     .then(response => response.json())
     .then(response => {
         const result = response.result;
@@ -131,7 +131,7 @@ async function loadIncident() {
         for(let obj of result){
             options += `<option value="${obj.id}">${obj.name}</option>`
         }
-        incident.append(options);
+        disaster.append(options);
     })
     .catch(err => console.error("ERROR: " + err));
     
@@ -154,13 +154,13 @@ async function loadEvacuationCenter() {
 }
 
 async function viewHouseMember(e) {
-    await loadIncident();
+    await loaddisaster();
     await loadEvacuationCenter();
 
     $("#btn-add-evacuee").addClass("hidden")
     $("#btn-add-house").addClass("hidden");
     $("#btn-cancel-view").removeClass("hidden");
-    $("#add-incident-form").removeClass("hidden");
+    $("#add-disaster-form").removeClass("hidden");
     $("#table-title").text("Overall Population");
 
     const id = $(e).data("rep_id");
@@ -172,7 +172,7 @@ function updateHoseMember(e) {
     $("#btn-add-evacuee").removeClass("hidden")
     $("#btn-add-house").addClass("hidden");
     $("#btn-cancel-view").removeClass("hidden");
-    $("#add-incident-form").addClass("hidden");
+    $("#add-disaster-form").addClass("hidden");
     $("#table-title").text("House Information");
 
     const id = $(e).data("rep_id");
@@ -272,7 +272,7 @@ async function loadAllRepresentative() {
     $("#btn-add-evacuee").addClass("hidden")
     $("#btn-cancel-view").addClass("hidden");
     $("#btn-add-house").removeClass("hidden");
-    $("#add-incident-form").addClass("hidden");
+    $("#add-disaster-form").addClass("hidden");
     $("#table-title").text("Representatives");
 
     await fetch(BASE_URL + "php/representative_get_all.php")
@@ -388,17 +388,17 @@ function deleteMember(e) {
     });
 }
 
-$("#add-incident-form").on("submit", async function(e){
+$("#add-disaster-form").on("submit", async function(e){
     e.preventDefault();
     
     show_alert({
-        title : "Report incident",
-        body : "Report incident record for this family?",
+        title : "Report disaster",
+        body : "Report disaster record for this family?",
         buttons : ["Yes", "No"]
     }, async function(ans){
         if(!ans) return;
 
-        const form = new FormData(document.getElementById("add-incident-form"));
+        const form = new FormData(document.getElementById("add-disaster-form"));
         form.append("uid", USER_DATA.id);
         let member_list = [];
         $(".member-list").each(function(){ 
@@ -409,7 +409,7 @@ $("#add-incident-form").on("submit", async function(e){
         });
         form.append("ids", JSON.stringify(member_list));
         
-        await fetch(BASE_URL + 'php/evacuee_new_incident.php', {
+        await fetch(BASE_URL + 'php/evacuee_new_disaster.php', {
             method : 'post',
             body : form
         })
@@ -418,8 +418,8 @@ $("#add-incident-form").on("submit", async function(e){
             const result = response.result;
             console.log({result});
             
-            addNotif("Incident Report", "Evacuees added successfully!", "g");
-            document.getElementById("add-incident-form").reset();
+            addNotif("disaster Report", "Evacuees added successfully!", "g");
+            document.getElementById("add-disaster-form").reset();
 
             // window.location.href = `${BASE_URL}admin/manage-evacuees.html`;
         })

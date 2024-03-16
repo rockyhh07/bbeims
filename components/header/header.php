@@ -186,9 +186,9 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="<?= Core::base_url() ?>/home/report-incident" class="nav-link">
+                  <a href="<?= Core::base_url() ?>/home/report-Disaster" class="nav-link">
                     <i class="nav-icon fa fa-globe-asia"></i>
-                    <p>Evacuees by Incident</p>
+                    <p>Evacuees by Disaster</p>
                   </a>
                 </li>
                 <li class="nav-item">

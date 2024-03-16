@@ -30,7 +30,7 @@
             <h5 class="mt-2">Disaster Information</h5>
           </div>
           <div class="col-md-4 col-sm-6 text-center">
-            <button class="btn btn-primary mb-3" id="btn-open-add" data-toggle="modal" data-target="#add-incident-modal">
+            <button class="btn btn-primary mb-3" id="btn-open-add" data-toggle="modal" data-target="#add-disaster-modal">
               <i class="fas fa-plus"></i> Add Disaster
             </button>
           </div>
@@ -46,7 +46,7 @@
       <div class="card-body">
         <div class="row">
           <div class="col-md-12">
-            <table id="incident" class="table table-bordered table-hover">
+            <table id="disaster" class="table table-bordered table-hover">
               <tr>
                 <th>No Data Found</th>
               </tr>

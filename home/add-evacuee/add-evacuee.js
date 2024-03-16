@@ -9,7 +9,7 @@ let modal_deleteMember = "#delete-modal";
 let modal_editMember = "#edit-modal";
 let modal_add_evacuees = "#add_evacuees-modal";
 let center_list = (await Core.api('/evac_center_get_all', "json")).result;
-let incident_list = (await Core.api('/incident_get_all', "json")).result;
+let disaster_list = (await Core.api('/disaster_get_all', "json")).result;
 
 let selected_rep = {
   id: -1,
@@ -112,11 +112,11 @@ Core.onClick(`${modal_addMember}-btn-add`, async function () {
 
 Core.onClick("#btn-add-report", async function () {
   const replace = {
-    incident: '',
+    disaster: '',
     evac_center: '',
   }
 
-  incident_list.forEach(v => replace.incident += `<option value="${v.id}">${v.name}</option>`);
+  disaster_list.forEach(v => replace.disaster += `<option value="${v.id}">${v.name}</option>`);
   center_list.forEach(v => replace.evac_center += `<option value="${v.id}">${v.name}</option>`);
 
   let layout = (await Core.fetch_data('./modal-add_evacuees.html', "text"));
@@ -127,14 +127,14 @@ Core.onClick("#btn-add-report", async function () {
 Core.onClick(`${modal_add_evacuees}-btn-add_evacuees`, async function () {
   const form_data = Core.createFormData({ uid: Core.user_getData().id, ids: JSON.stringify(selected_rep.mem_ids) }, new FormData(Core.f("#add_evacuees-form")));
 
-  if (!Core.isValidForm(form_data, ["incident_date", "incident", "evac_center"])) {
+  if (!Core.isValidForm(form_data, ["disaster_date", "disaster", "evac_center"])) {
     Helper.Promt_Error("Please fill required fields.");
     return;
   }
 
   Helper.Promt_Clear();
 
-  const res = (await Core.api('/evacuee_new_incident', "json", form_data)).result[0][0];
+  const res = (await Core.api('/evacuee_new_disaster', "json", form_data)).result[0][0];
   if (res) {
     CustomNotification.add("Success!", `Members are added to Evacuation Center!`, "primary");
     Core.f(`${modal_add_evacuees}-hide`).click();

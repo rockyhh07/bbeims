@@ -6,7 +6,7 @@ import { ModalHandler } from "../../core/modalHandler.js";
 const setPasswordModal = "#setPassword";
 const generateModal = "#generate-report-modal";
 CustomNotification.add("BBEIMS", `Welcome <b>${Core.user_getData().username}</b>`, "primary");
-const archived_list_options = (await Core.api('/incident_archived_getAll_options', "json", Core.createFormData({ uid: Core.user_getData().id }))).result;
+const archived_list_options = (await Core.api('/disaster_archived_getAll_options', "json", Core.createFormData({ uid: Core.user_getData().id }))).result;
 
 let show_password = false;
 let show_cpassword = false;
@@ -23,7 +23,7 @@ let show_cpassword = false;
 
   await Load_AgeGraph();
   await Load_GenderGraph();
-  await Load_IncidentGraph();
+  await Load_DisasterGraph();
   await Load_CenterGraph();
   await Load_EvacueesGraph();
 
@@ -84,12 +84,12 @@ Core.f("#btn-generateReport").addEventListener("click", async (e) => {
     tbody: '',
   }
   archived_list_options.forEach(v => {
-    const date = new Date(v.incident_date);
+    const date = new Date(v.disaster_date);
 
     replace.tbody += `
     <tr>
       <td>
-        <input type="checkbox" name="incident_date" value="${v.incident_date},${v.name}" />
+        <input type="checkbox" name="disaster_date" value="${v.disaster_date},${v.name}" />
       </td>
       <td>
         ${v.name}
@@ -107,34 +107,34 @@ Core.f("#btn-generateReport").addEventListener("click", async (e) => {
   layout = Core.replaceLayout(layout, replace)
   Core.f(`${generateModal}-body`).innerHTML = layout;
   Core.onClick("#check-all", () => {
-    Core.fm('input[name="incident_date"]', v => v).forEach(e => e.checked = true);
+    Core.fm('input[name="disaster_date"]', v => v).forEach(e => e.checked = true);
   })
 });
 
 Core.f(`${generateModal}-btn-generate`).addEventListener("click", async () => {
   Core.f(`${generateModal}-hide`).click();
 
-  let incident_dates_list = [];
-  let incident_types_list = [];
-  let incident_dates = '';
-  let incident_types = '';
-  Core.fm('input[name="incident_date"]', v => v)
+  let disaster_dates_list = [];
+  let disaster_types_list = [];
+  let disaster_dates = '';
+  let disaster_types = '';
+  Core.fm('input[name="disaster_date"]', v => v)
     .filter(v => v.checked)
     .map(v => v.value)
     .forEach(v => {
       const [date, type] = String(v).split(',');
-      incident_dates_list.push(date);
-      incident_types_list.push(type);
+      disaster_dates_list.push(date);
+      disaster_types_list.push(type);
     });
-  incident_dates_list = new Set(incident_dates_list)
-  incident_dates_list.forEach(v => incident_dates += `'${v}',`);
-  incident_dates = incident_dates.substring(0, incident_dates.length - 1);
+  disaster_dates_list = new Set(disaster_dates_list)
+  disaster_dates_list.forEach(v => disaster_dates += `'${v}',`);
+  disaster_dates = disaster_dates.substring(0, disaster_dates.length - 1);
 
-  incident_types_list = new Set(incident_types_list)
-  incident_types_list.forEach(v => incident_types += `'${v}',`);
-  incident_types = incident_types.substring(0, incident_types.length - 1);
+  disaster_types_list = new Set(disaster_types_list)
+  disaster_types_list.forEach(v => disaster_types += `'${v}',`);
+  disaster_types = disaster_types.substring(0, disaster_types.length - 1);
 
-  if (incident_dates_list.length == 0 || incident_types_list.length == 0 || incident_dates == '' || incident_types == '') {
+  if (disaster_dates_list.length == 0 || disaster_types_list.length == 0 || disaster_dates == '' || disaster_types == '') {
     CustomNotification.add("Error Generating", "Please select at least 1 disaster.", "danger");
     Core.f("#report-container").innerHTML = '';
     return;
@@ -142,8 +142,8 @@ Core.f(`${generateModal}-btn-generate`).addEventListener("click", async () => {
 
   CustomNotification.add("Generating report", "Report is being generated!", "secondary");
 
-  const resp = (await Core.api('/generate_report_by_incident', "json", Core.createFormData({
-    incident_date: incident_dates
+  const resp = (await Core.api('/generate_report_by_disaster', "json", Core.createFormData({
+    disaster_date: disaster_dates
   }))).result;
 
   if (!resp) {
@@ -177,8 +177,8 @@ Core.f(`${generateModal}-btn-generate`).addEventListener("click", async () => {
 
   let layout = (await Core.fetch_data('reportcontent.html', "text"));
   layout = Core.replaceLayout(layout, {
-    incident_type: String(incident_types).replaceAll("'", ''),
-    incident_date: String(incident_dates).replaceAll("'", ''),
+    disaster_type: String(disaster_types).replaceAll("'", ''),
+    disaster_date: String(disaster_dates).replaceAll("'", ''),
     total: data.length,
     tbody: tbody,
   });
@@ -208,7 +208,7 @@ Core.f(`${generateModal}-btn-generate`).addEventListener("click", async () => {
 
   const pdf_File = new jsPDF("p", "mm", "a4", true);
   pdf_File.addImage(canvas.toDataURL('image/png'), 'PNG', x_offsest + margin, margin, canvas_width, canvas_height);
-  pdf_File.save(`incident_report-${new Date().getTime()}.pdf`);
+  pdf_File.save(`disaster_report-${new Date().getTime()}.pdf`);
 
   CustomNotification.add("Generating report complete!", "Report is ready to download.", "success");
   Core.f("#report-container").innerHTML = '';
@@ -323,16 +323,16 @@ async function Load_GenderGraph() {
 }
 // --</ Gender Graph >--
 
-// --< Incident Graph >--
-async function Load_IncidentGraph() {
+// --< disaster Graph >--
+async function Load_DisasterGraph() {
 
-  const raw_report = (await Core.fetch_data(`${Core.base_url()}/php/report_by_incident.php`, "json")).result[0];
+  const raw_report = (await Core.fetch_data(`${Core.base_url()}/php/report_by_disaster.php`, "json")).result[0];
   if (!raw_report) { console.error("Error"); return; }
 
   const report = Helper.ObjectToArray(raw_report);
   let tbody = '';
   report.forEach(v => tbody += `<tr><td>${v.name}</td><td class="text-${Number(v.value) > 0 ? 'danger' : 'success'}">${v.value}</td></tr>`);
-  Core.f("#incident-graph-table").innerHTML += tbody;
+  Core.f("#disaster-graph-table").innerHTML += tbody;
 
   load_chart(report.map(v => v.value));
 
@@ -348,7 +348,7 @@ async function Load_IncidentGraph() {
       }]
     };
 
-    const ctx = document.getElementById('incident-graph').getContext('2d');
+    const ctx = document.getElementById('disaster-graph').getContext('2d');
     window.myBar = new Chart(ctx, {
       type: 'bar',
       data: barChartData,
@@ -361,7 +361,7 @@ async function Load_IncidentGraph() {
     });
   }
 }
-// --</ Incident Graph >--
+// --</ disaster Graph >--
 
 
 // --< Center Graph >--

@@ -180,10 +180,10 @@ class BBEIMS
       return ["result" => QUERY::run($query)];
     }
 
-    public static function incident_archived(array $post_result) {
+    public static function disaster_archived(array $post_result) {
       $query = new QueryBuilder(
         QUERY_SELECT,
-        "incident",
+        "disaster",
         $post_result,
         ["id", "name"],
         ["deletedflag" => "1"],
@@ -192,10 +192,10 @@ class BBEIMS
       return QUERY::run($query->sql);
     }
 
-    public static function incident_get_all(array $post_result) {
+    public static function disaster_get_all(array $post_result) {
         $query = new QueryBuilder(
             QUERY_SELECT,
-            "incident",
+            "disaster",
             $post_result,
             ["id", "name"],
             ["deletedflag" => "0"],
@@ -204,20 +204,20 @@ class BBEIMS
         return QUERY::run($query->sql);
     }
 
-    public static function incident_new(array $post_result) {
+    public static function disaster_new(array $post_result) {
         QUERY::escape_str_all($post_result);
 
         $uid = $post_result['uid'];
         $name = strtoupper($post_result['name']);
         
-        $currentIncidents = QUERY::run("SELECT `name` FROM `incident`");
+        $currentdisasters = QUERY::run("SELECT `name` FROM `disaster`");
         
         $alreadyExist = false;
-        foreach($currentIncidents as $obj) 
+        foreach($currentdisasters as $obj) 
             if($obj['name'] == $name) { $alreadyExist = true; break; }
 
         if($alreadyExist) {
-            $query = "UPDATE `incident` SET 
+            $query = "UPDATE `disaster` SET 
                     `deletedflag` = 0,
                     `updated_by` = '{$uid}',
                     `updated_date` = CURRENT_TIMESTAMP
@@ -225,7 +225,7 @@ class BBEIMS
                     `name` = '{$name}'
             ";
         }else {
-            $query = "INSERT INTO `incident` SET 
+            $query = "INSERT INTO `disaster` SET 
                 `name` = '{$name}',
                 `created_by` = '{$uid}',
                 `created_date` = CURRENT_TIMESTAMP
@@ -235,7 +235,7 @@ class BBEIMS
         return QUERY::run($query);
     }
 
-    public static function incident_update(array $post_result) {
+    public static function disaster_update(array $post_result) {
         QUERY::escape_str_all($post_result);
 
         $id = $post_result['id'];
@@ -250,7 +250,7 @@ class BBEIMS
         }
         $data = rtrim($data, ",");
 
-        $query = "UPDATE `incident`
+        $query = "UPDATE `disaster`
             SET {$data},
                 `updated_by`='{$uid}',
                 `updated_date`=CURRENT_TIMESTAMP
@@ -261,8 +261,8 @@ class BBEIMS
         return QUERY::run($query);
     }
 
-    public static function incident_delete(array $post_result) {
-        return BBEIMS::delete_data($post_result, 'incident');
+    public static function disaster_delete(array $post_result) {
+        return BBEIMS::delete_data($post_result, 'disaster');
     }
 
     public static function evac_center_get_all(array $post_result) {
@@ -378,17 +378,17 @@ class BBEIMS
                   END `gender`, 
                   e.`civil_status`, 
                   e.`address`, 
-                  a.`incident_date`,
+                  a.`disaster_date`,
                   e.`representative`,
                   e2.`lname` `rep_lname`,
                   e2.`fname` `rep_fname`,
                   e2.`mname` `rep_mname`,
                   ec.`name` `evac_name`,
                   ec.`id` `evac_id`,
-                  i.`name` `incident_name`
-                FROM `incident_archive` a
-                INNER JOIN `incident` i
-                  ON i.`id` = a.`incident_id`
+                  i.`name` `disaster_name`
+                FROM `disaster_archive` a
+                INNER JOIN `disaster` i
+                  ON i.`id` = a.`disaster_id`
                 INNER JOIN `evacuee` e
                   ON e.`id` = a.`evacuee_id`
                 INNER JOIN `evacuee` e2
@@ -397,7 +397,7 @@ class BBEIMS
                   ON ec.`id` = a.`evac_id`
                 WHERE
                   a.`deletedflag` = 0 AND
-                  a.`incident_date` IS NOT NULL AND
+                  a.`disaster_date` IS NOT NULL AND
                   ec.`deletedflag` = 0
       ";
       return QUERY::run($query);
@@ -422,24 +422,24 @@ class BBEIMS
                     END `gender`, 
                     e.`civil_status`, 
                     e.`address`, 
-                    e.`incident_date`,
+                    e.`disaster_date`,
                     e.`representative`,
                     e2.`lname` `rep_lname`,
                     e2.`fname` `rep_fname`,
                     e2.`mname` `rep_mname`,
                     ec.`name` `evac_name`,
                     ec.`id` `evac_id`,
-                    i.`name` `incident_name`
+                    i.`name` `disaster_name`
                 FROM `evacuee` e
-                INNER JOIN `incident` i
-                    ON i.`id` = e.`incident_id`
+                INNER JOIN `disaster` i
+                    ON i.`id` = e.`disaster_id`
                 INNER JOIN `evac_center` ec
                     ON ec.`id` = e.`evac_id`
                 INNER JOIN `evacuee` e2
                     ON e2.`id` = e.`representative`
                 WHERE
                     e.`deletedflag` = 0 AND
-                    e.`incident_date` IS NOT NULL AND
+                    e.`disaster_date` IS NOT NULL AND
                     ec.`deletedflag` = 0
         ";
         return QUERY::run($query);
@@ -506,7 +506,7 @@ class BBEIMS
         return QUERY::run($query);
     }
 
-    public static function evacuee_new_incident(array $post_result) {
+    public static function evacuee_new_disaster(array $post_result) {
         QUERY::escape_str_all($post_result);
 
         $uid = $post_result['uid'];
@@ -514,8 +514,8 @@ class BBEIMS
         $ids = (!empty($post_result['ids'])) ? json_decode($post_result['ids']) : [];
 
         if (count($ids) > 0) {
-            $incident_date = $post_result['incident_date'];
-            $incident_id = $post_result['incident'];
+            $disaster_date = $post_result['disaster_date'];
+            $disaster_id = $post_result['disaster'];
             $evac_id = $post_result['evac_center'];
             $rescuer = strtoupper($post_result['rescuer']);
             foreach ($ids as $mem_id) {
@@ -524,8 +524,8 @@ class BBEIMS
                         SET 
                             `rescuer` =  '{$rescuer}',
                             `evac_id` =  '{$evac_id}',
-                            `incident_id` =  '{$incident_id}',
-                            `incident_date` =  '{$incident_date}',
+                            `disaster_id` =  '{$disaster_id}',
+                            `disaster_date` =  '{$disaster_date}',
                             `updated_by` = '{$uid}',
                             `updated_date` = CURRENT_TIMESTAMP
                         WHERE 
@@ -555,7 +555,7 @@ class BBEIMS
         return QUERY::run($query);
     }
 
-    public static function evacuee_update_incident(array $post_result) {
+    public static function evacuee_update_disaster(array $post_result) {
         QUERY::escape_str_all($post_result);
 
         $uid = $post_result['uid'];
@@ -594,8 +594,8 @@ class BBEIMS
                     FROM `evacuee` e
                     WHERE
                         e.`deletedflag` = 0 AND
-                        e.`incident_date` IS NOT NULL AND
-                        e.`incident_id` IS NOT NULL AND
+                        e.`disaster_date` IS NOT NULL AND
+                        e.`disaster_id` IS NOT NULL AND
                         e.`evac_id` IS NOT NULL
                     ) `male`,
                     (SELECT 
@@ -607,8 +607,8 @@ class BBEIMS
                     FROM `evacuee` e
                     WHERE
                         e.`deletedflag` = 0 AND
-                        e.`incident_date` IS NOT NULL AND
-                        e.`incident_id` IS NOT NULL AND
+                        e.`disaster_date` IS NOT NULL AND
+                        e.`disaster_id` IS NOT NULL AND
                         e.`evac_id` IS NOT NULL
                     ) `female`,
                     (SELECT 
@@ -616,8 +616,8 @@ class BBEIMS
                     FROM `evacuee` e
                     WHERE
                         e.`deletedflag` = 0 AND
-                        e.`incident_date` IS NOT NULL AND
-                        e.`incident_id` IS NOT NULL AND
+                        e.`disaster_date` IS NOT NULL AND
+                        e.`disaster_id` IS NOT NULL AND
                         e.`evac_id` IS NOT NULL
                     ) `evacuees`,
                     (SELECT 
@@ -631,8 +631,8 @@ class BBEIMS
                     FROM `evacuee` e
                     WHERE
                         e.`deletedflag` = 0 AND
-                        e.`incident_date` IS NOT NULL AND
-                        e.`incident_id` IS NOT NULL AND
+                        e.`disaster_date` IS NOT NULL AND
+                        e.`disaster_id` IS NOT NULL AND
                         e.`evac_id` IS NOT NULL
                     ) `evacuees`,
                     (SELECT 
@@ -643,8 +643,8 @@ class BBEIMS
                         FROM `evacuee` e
                         WHERE
                             e.`deletedflag` = 0 AND
-                            e.`incident_date` IS NOT NULL AND
-                            e.`incident_id` IS NOT NULL AND
+                            e.`disaster_date` IS NOT NULL AND
+                            e.`disaster_id` IS NOT NULL AND
                             e.`evac_id` IS NOT NULL
                         GROUP BY `representative`
                         ) `rep_tbl`
@@ -672,8 +672,8 @@ class BBEIMS
                 FROM `evacuee` e
                 WHERE
                     e.`deletedflag` = 0 AND
-                    e.`incident_date` IS NOT NULL AND
-                    e.`incident_id` IS NOT NULL AND
+                    e.`disaster_date` IS NOT NULL AND
+                    e.`disaster_id` IS NOT NULL AND
                     e.`evac_id` IS NOT NULL
                 ";
         return QUERY::run($query);
@@ -686,8 +686,8 @@ class BBEIMS
                 FROM `evacuee` e
                 WHERE
                     e.`deletedflag` = 0 AND
-                    e.`incident_date` IS NOT NULL AND
-                    e.`incident_id` IS NOT NULL AND
+                    e.`disaster_date` IS NOT NULL AND
+                    e.`disaster_id` IS NOT NULL AND
                     e.`evac_id` IS NOT NULL
         ";
         return QUERY::run($query);
@@ -705,8 +705,8 @@ class BBEIMS
                     FROM `evacuee` e
                     WHERE
                         e.`deletedflag` = 0 AND
-                        e.`incident_date` IS NOT NULL AND
-                        e.`incident_id` IS NOT NULL AND
+                        e.`disaster_date` IS NOT NULL AND
+                        e.`disaster_id` IS NOT NULL AND
                         e.`evac_id` IS NOT NULL
                     ) `male`,
                     (SELECT 
@@ -718,29 +718,29 @@ class BBEIMS
                     FROM `evacuee` e
                     WHERE
                         e.`deletedflag` = 0  AND
-                        e.`incident_date` IS NOT NULL AND
-                        e.`incident_id` IS NOT NULL AND
+                        e.`disaster_date` IS NOT NULL AND
+                        e.`disaster_id` IS NOT NULL AND
                         e.`evac_id` IS NOT NULL
                     ) `female`
         ";
         return QUERY::run($query);
     }
 
-    public static function report_by_incident(array $post_result) {
+    public static function report_by_disaster(array $post_result) {
         QUERY::escape_str_all($post_result);
-        $allIncident = QUERY::run("SELECT `id`, `name` FROM incident WHERE `deletedflag` = 0");
+        $alldisaster = QUERY::run("SELECT `id`, `name` FROM disaster WHERE `deletedflag` = 0");
 
         $query = "SELECT";
 
-        foreach ($allIncident as $val) {
-            $query .= " count(CASE WHEN `incident_id` = {$val['id']} THEN 1 END) `{$val['name']}`,";
+        foreach ($alldisaster as $val) {
+            $query .= " count(CASE WHEN `disaster_id` = {$val['id']} THEN 1 END) `{$val['name']}`,";
         }
         $query = rtrim($query, ',');;
 
         $query .= " FROM `evacuee` e WHERE
             e.`deletedflag` = 0 AND
-            e.`incident_date` IS NOT NULL AND
-            e.`incident_id` IS NOT NULL AND
+            e.`disaster_date` IS NOT NULL AND
+            e.`disaster_id` IS NOT NULL AND
             e.`evac_id` IS NOT NULL
         ";
 
@@ -760,8 +760,8 @@ class BBEIMS
 
         $query .= " FROM `evacuee` e WHERE 
             e.`deletedflag` = 0 AND
-            e.`incident_date` IS NOT NULL AND
-            e.`incident_id` IS NOT NULL AND
+            e.`disaster_date` IS NOT NULL AND
+            e.`disaster_id` IS NOT NULL AND
             e.`evac_id` IS NOT NULL
         ";
 
@@ -878,43 +878,43 @@ class BBEIMS
         {
             $query_allEvac = "SELECT 
                             e.`id`,
-                            e.`incident_id`,
-                            e.`incident_date`,
+                            e.`disaster_id`,
+                            e.`disaster_date`,
                             e.`evac_id`,
                             e.`rescuer`
                         FROM `evacuee` e
                         WHERE
                             e.`deletedflag` = 0 AND
-                            e.`incident_date` IS NOT NULL AND
-                            e.`incident_id` IS NOT NULL AND
+                            e.`disaster_date` IS NOT NULL AND
+                            e.`disaster_id` IS NOT NULL AND
                             e.`evac_id` IS NOT NULL
             ";
     
-            $query = "INSERT INTO `incident_archive` 
-                (`evacuee_id`, `incident_id`, `incident_date`,`evac_id`, `created_by`, `rescuer`, `created_date`) VALUES";
+            $query = "INSERT INTO `disaster_archive` 
+                (`evacuee_id`, `disaster_id`, `disaster_date`,`evac_id`, `created_by`, `rescuer`, `created_date`) VALUES";
             foreach(QUERY::run($query_allEvac) as $obj) {
                 $evacuee_id = $obj["id"];
-                $incident_id = $obj["incident_id"];
-                $incident_date = $obj["incident_date"];
+                $disaster_id = $obj["disaster_id"];
+                $disaster_date = $obj["disaster_date"];
                 $evac_id = $obj["evac_id"];
                 $rescuer = strtoupper($obj["rescuer"]);
     
-                $query .= "('{$evacuee_id}', '{$incident_id}', '{$incident_date}', '{$evac_id}', '{$uid}', '{$rescuer}', CURRENT_TIMESTAMP),";
+                $query .= "('{$evacuee_id}', '{$disaster_id}', '{$disaster_date}', '{$evac_id}', '{$uid}', '{$rescuer}', CURRENT_TIMESTAMP),";
             }
             $query = rtrim($query, ",");
     
             array_push($result, QUERY::run($query)[0]);
         }
 
-        // PHASE 2, Clearing incident record
+        // PHASE 2, Clearing disaster record
         {
             $query_repEvacuee = "SELECT 
                         e.`representative`
                     FROM `evacuee` e
                     WHERE
                         e.`deletedflag` = 0 AND
-                        e.`incident_date` IS NOT NULL AND
-                        e.`incident_id` IS NOT NULL AND
+                        e.`disaster_date` IS NOT NULL AND
+                        e.`disaster_id` IS NOT NULL AND
                         e.`evac_id` IS NOT NULL
                     GROUP BY e.`representative`
             ";
@@ -925,8 +925,8 @@ class BBEIMS
                 $query = "UPDATE `evacuee` 
                         SET 
                             `evac_id`=NULL,
-                            `incident_id`=NULL,
-                            `incident_date`=NULL,
+                            `disaster_id`=NULL,
+                            `disaster_date`=NULL,
                             `rescuer`=NULL,
                             `updated_by`='{$uid}',
                             `updated_date`=CURRENT_TIMESTAMP
@@ -942,20 +942,20 @@ class BBEIMS
     public static function generate_report_all(array $post_result) {
         QUERY::escape_str_all($post_result);
 
-        $type = !empty($post_result['incident-type']) ? $post_result['incident-type'] : null;
-        $date = !empty($post_result['incident-date']) ? $post_result['incident-date'] : null;
+        $type = !empty($post_result['disaster-type']) ? $post_result['disaster-type'] : null;
+        $date = !empty($post_result['disaster-date']) ? $post_result['disaster-date'] : null;
         $center = !empty($post_result['evac-center']) ? $post_result['evac-center'] : null;
 
         $con = "";
         switch ($post_result['condition']) {
             case 'type': $con = ($type==null) ? "" : "AND i.`id` = '{$type}'"; break;
-            case 'date': $con = ($date==null) ? "" : "AND i.`incident_date` = '{$date}'"; break;
+            case 'date': $con = ($date==null) ? "" : "AND i.`disaster_date` = '{$date}'"; break;
             case 'center': $con = ($center==null) ? "" : "AND c.`id` = '{$center}'"; break;
             default: $con = ""; break;
         }
 
         $query = "SELECT
-                    e.incident_date `date`,
+                    e.disaster_date `date`,
                     e.lname,
                     e.fname,
                     e.mname,
@@ -965,13 +965,13 @@ class BBEIMS
                     e.civil_status,
                     e.address,
                     i.name `center`,
-                    c.name `incident`,
+                    c.name `disaster`,
                     r.lname `repLname`,
                     r.fname `repFname`,
                     r.mname `repMname`
                 FROM `evacuee`              e
-                INNER JOIN `incident`       i
-                    ON i.id = e.`incident_id`
+                INNER JOIN `disaster`       i
+                    ON i.id = e.`disaster_id`
                 INNER JOIN `evac_center`    c
                     ON c.id = e.`evac_id`
                 INNER JOIN `evacuee`        r
@@ -979,7 +979,7 @@ class BBEIMS
                 WHERE e.`deletedflag` = '0' {$con}
                 UNION (
                     SELECT
-                        a.`incident_date` `date`,
+                        a.`disaster_date` `date`,
                         e.`lname`,
                         e.`fname`,
                         e.`mname`,
@@ -989,15 +989,15 @@ class BBEIMS
                         e.`civil_status`,
                         e.`address`,
                         i.`name` `center`,
-                        c.`name` `incident`,
+                        c.`name` `disaster`,
                         r.lname `repLname`,
                         r.fname `repFname`,
                         r.mname `repMname`
-                    FROM `incident_archive`     a
+                    FROM `disaster_archive`     a
                     INNER JOIN `evacuee`        e
                         ON e.`id` = a.`evacuee_id`
-                    INNER JOIN `incident`       i
-                        ON i.id = a.`incident_id`
+                    INNER JOIN `disaster`       i
+                        ON i.id = a.`disaster_id`
                     INNER JOIN `evac_center`    c
                         ON c.id = a.`evac_id`
                     INNER JOIN `evacuee`        r
@@ -1098,30 +1098,30 @@ class BBEIMS
       return QUERY::run($query);
     }
 
-    public static function incident_archived_getAll() {
-      $query = "SELECT * FROM `incident_archive` WHERE `deletedflag` = 0";
+    public static function disaster_archived_getAll() {
+      $query = "SELECT * FROM `disaster_archive` WHERE `deletedflag` = 0";
       return QUERY::run($query);
     }
 
-    public static function incident_archived_getAll_options() {
+    public static function disaster_archived_getAll_options() {
       $query = "SELECT
           ia.id `id`, 
           i.`name` `name`,
-          ia.`incident_date` `incident_date`
-        FROM `incident_archive` ia
-        INNER JOIN `incident` i
-          ON i.`id` = ia.`incident_id` 
+          ia.`disaster_date` `disaster_date`
+        FROM `disaster_archive` ia
+        INNER JOIN `disaster` i
+          ON i.`id` = ia.`disaster_id` 
         WHERE 
           ia.`deletedflag` = 0 
-        GROUP BY ia.`incident_date` 
-        ORDER BY ia.`incident_id`
+        GROUP BY ia.`disaster_date` 
+        ORDER BY ia.`disaster_id`
       ";
       return QUERY::run($query);
     }
 
-    public static function generate_report_by_incident(array $post_result) {
+    public static function generate_report_by_disaster(array $post_result) {
       // QUERY::escape_str_all($post_result);
-      $incident_date = $post_result['incident_date'];
+      $disaster_date = $post_result['disaster_date'];
 
       $query = "SELECT
           ia.id `id`,
@@ -1138,11 +1138,11 @@ class BBEIMS
           e.`address` `address`,
           e.`address` `address`,
           c.`name` `center`,
-          i.`name` `incident_name`,
-          ia.`incident_date` `incident_date`
-        FROM `incident_archive` ia
-        INNER JOIN `incident` i
-          ON i.`id` = ia.`incident_id`
+          i.`name` `disaster_name`,
+          ia.`disaster_date` `disaster_date`
+        FROM `disaster_archive` ia
+        INNER JOIN `disaster` i
+          ON i.`id` = ia.`disaster_id`
         INNER JOIN `evacuee` e
           ON e.`id` = ia.`evacuee_id`
         INNER JOIN `evacuee` e2
@@ -1151,8 +1151,8 @@ class BBEIMS
           ON c.`id` = ia.`evac_id`
         WHERE 
           ia.`deletedflag` = 0 AND
-          ia.`incident_date` IN ({$incident_date})
-        ORDER BY ia.`incident_id`
+          ia.`disaster_date` IN ({$disaster_date})
+        ORDER BY ia.`disaster_id`
       ";
       return QUERY::run($query);
 

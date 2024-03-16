@@ -3,12 +3,12 @@ import { CustomNotification } from "../../core/customNotification.js";
 import { Helper } from "../../core/helper.js";
 import { ModalHandler } from "../../core/modalHandler.js";
 
-(await Load_Incidents)();
+(await Load_Disasters)();
 
-async function Load_Incidents() {
-  const data = (await Core.fetch_data(`${Core.base_url()}/php/incident_get_all.php`, "json")).result;
+async function Load_Disasters() {
+  const data = (await Core.fetch_data(`${Core.base_url()}/php/disaster_get_all.php`, "json")).result;
 
-  Helper.DataTable_Reset('#incident');
+  Helper.DataTable_Reset('#disaster');
 
   const thead = `
     <thead>
@@ -34,7 +34,7 @@ async function Load_Incidents() {
           data-binder-id="${row.id}"
           data-binder-name="${row.name}"
           data-toggle="modal" 
-          data-target="#edit-incident-modal"
+          data-target="#edit-disaster-modal"
         >
           <i class="fa fa-edit"></i> Edit
         </button> `;
@@ -44,7 +44,7 @@ async function Load_Incidents() {
         data-binder-id="${row.id}"
         data-binder-name="${row.name}"
         data-toggle="modal"
-        data-target="#delete-incident-modal"
+        data-target="#delete-disaster-modal"
       >
         <i class="fas fa-minus"></i> Hide
       </button>`: '');
@@ -56,7 +56,7 @@ async function Load_Incidents() {
   });
   tbody += "</tbody>";
 
-  Helper.DataTable_Init('#incident', thead + tbody, Load_Functions);
+  Helper.DataTable_Init('#disaster', thead + tbody, Load_Functions);
 }
 
 let tableToggler = true;
@@ -66,15 +66,15 @@ Core.onClick("#btn-toggle-table", async () => {
     Load_Archived();
   } else {
     Core.f("#btn-toggle-table").innerHTML = "Show Archived";
-    Load_Incidents();
+    Load_Disasters();
   }
   tableToggler = !tableToggler;
 });
 
 async function Load_Archived() {
-  const data = (await Core.fetch_data(`${Core.base_url()}/php/incident_archived.php`, "json")).result;
+  const data = (await Core.fetch_data(`${Core.base_url()}/php/disaster_archived.php`, "json")).result;
 
-  Helper.DataTable_Reset('#incident');
+  Helper.DataTable_Reset('#disaster');
 
   const thead = `
     <thead>
@@ -110,11 +110,11 @@ async function Load_Archived() {
   });
   tbody += "</tbody>";
 
-  Helper.DataTable_Init('#incident', thead + tbody, () => {
+  Helper.DataTable_Init('#disaster', thead + tbody, () => {
     async function recover() {
       const raw_data = { deletedflag: 0, name: Core.data(this, "binder-name"), id: Core.data(this, "binder-id") };
       const form_data = Core.createFormData({ ...raw_data, uid: Core.user_getData().id });
-      await Core.fetch_data(`${Core.base_url()}/php/incident_update.php`, null, form_data).then(async data => {
+      await Core.fetch_data(`${Core.base_url()}/php/disaster_update.php`, null, form_data).then(async data => {
         CustomNotification.add("Success!", `Item recovered!`, "primary");
         await Load_Archived();
       })
@@ -132,91 +132,91 @@ function Load_Functions() {
   Core.clearClick(`#btn-open-add`, open_add_listerner);
   Core.onClick(`#btn-open-add`, open_add_listerner);
 
-  Core.clearClick(`${modal_addIncident}-btn-add`, submit_add_listener);
-  Core.onClick(`${modal_addIncident}-btn-add`, submit_add_listener);
+  Core.clearClick(`${modal_adddisaster}-btn-add`, submit_add_listener);
+  Core.onClick(`${modal_adddisaster}-btn-add`, submit_add_listener);
 
   Core.clearClick(".btn-open-edit", open_edit_listener, true);
   Core.onClick(".btn-open-edit", open_edit_listener, true);
 
-  Core.clearClick(`${modal_editIncident}-btn-edit`, submit_edit_listener);
-  Core.onClick(`${modal_editIncident}-btn-edit`, submit_edit_listener);
+  Core.clearClick(`${modal_editdisaster}-btn-edit`, submit_edit_listener);
+  Core.onClick(`${modal_editdisaster}-btn-edit`, submit_edit_listener);
 
   Core.clearClick(".btn-open-delete", open_delete_listener, true);
   Core.onClick(".btn-open-delete", open_delete_listener, true);
 
-  Core.clearClick(`${modal_deleteIncident}-btn-delete`, submit_delete_listener);
-  Core.onClick(`${modal_deleteIncident}-btn-delete`, submit_delete_listener);
+  Core.clearClick(`${modal_deletedisaster}-btn-delete`, submit_delete_listener);
+  Core.onClick(`${modal_deletedisaster}-btn-delete`, submit_delete_listener);
 
 }
 
-const modal_addIncident = "#add-incident-modal";
-const modal_editIncident = "#edit-incident-modal";
-const modal_deleteIncident = "#delete-incident-modal";
+const modal_adddisaster = "#add-disaster-modal";
+const modal_editdisaster = "#edit-disaster-modal";
+const modal_deletedisaster = "#delete-disaster-modal";
 
-// <Add Incident>
+// <Add disaster>
 const open_add_listerner = async function (e) {
-  let layout = (await Core.fetch_data('modal-add-incident.html', "text"));
-  Core.f(`${modal_addIncident}-body`).innerHTML = layout;
+  let layout = (await Core.fetch_data('modal-add-disaster.html', "text"));
+  Core.f(`${modal_adddisaster}-body`).innerHTML = layout;
 }
 
 const submit_add_listener = async function (e) {
-  const form = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#incident-add-form")));
+  const form = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#disaster-add-form")));
 
   if (!Core.isValidForm(form, ["name"])) {
     Helper.Promt_Error("Please fill required fields.");
     return;
   }
 
-  await Core.fetch_data(`${Core.base_url()}/php/incident_new.php`, null, form).then(async data => {
+  await Core.fetch_data(`${Core.base_url()}/php/disaster_new.php`, null, form).then(async data => {
     CustomNotification.add("Success!", `New item added!`, "primary");
-    Core.f(`${modal_addIncident}-hide`).click();
+    Core.f(`${modal_adddisaster}-hide`).click();
     Helper.Promt_Clear();
-    await Load_Incidents();
+    await Load_Disasters();
   });
 }
-// </Add Incident>
+// </Add disaster>
 
-// <Edit Incident>
+// <Edit disaster>
 const open_edit_listener = async function (e) {
   const replace = { name: Core.data(this, "binder-name"), id: Core.data(this, "binder-id") };
-  let layout = (await Core.fetch_data('modal-edit-incident.html', "text"));
+  let layout = (await Core.fetch_data('modal-edit-disaster.html', "text"));
   layout = Core.replaceLayout(layout, replace);
-  Core.f(`${modal_editIncident}-body`).innerHTML = layout;
+  Core.f(`${modal_editdisaster}-body`).innerHTML = layout;
 }
 
 const submit_edit_listener = async function (e) {
-  const form = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#incident-edit-form")));
+  const form = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#disaster-edit-form")));
 
   if (!Core.isValidForm(form, ["name"])) {
     Helper.Promt_Error("Please fill required fields.");
     return;
   }
 
-  await Core.fetch_data(`${Core.base_url()}/php/incident_update.php`, null, form).then(async data => {
+  await Core.fetch_data(`${Core.base_url()}/php/disaster_update.php`, null, form).then(async data => {
     CustomNotification.add("Success!", `Item updated!`, "primary");
-    Core.f(`${modal_editIncident}-hide`).click();
+    Core.f(`${modal_editdisaster}-hide`).click();
     Helper.Promt_Clear();
-    await Load_Incidents();
+    await Load_Disasters();
   });
 }
-// </Edit Incident>
+// </Edit disaster>
 
-// </Delete Incident>
+// </Delete disaster>
 const open_delete_listener = async function (e) {
   const replace = { name: Core.data(this, "binder-name"), id: Core.data(this, "binder-id") };
-  let layout = (await Core.fetch_data('modal-delete-incident.html', "text"));
+  let layout = (await Core.fetch_data('modal-delete-disaster.html', "text"));
   layout = Core.replaceLayout(layout, replace);
-  Core.f(`${modal_deleteIncident}-body`).innerHTML = layout;
+  Core.f(`${modal_deletedisaster}-body`).innerHTML = layout;
 }
 
 const submit_delete_listener = async function (e) {
-  const form = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#incident-delete-form")));
+  const form = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#disaster-delete-form")));
 
-  await Core.fetch_data(`${Core.base_url()}/php/incident_delete.php`, null, form).then(async data => {
+  await Core.fetch_data(`${Core.base_url()}/php/disaster_delete.php`, null, form).then(async data => {
     CustomNotification.add("Success!", `Item archived!`, "primary");
-    Core.f(`${modal_deleteIncident}-hide`).click();
+    Core.f(`${modal_deletedisaster}-hide`).click();
     Helper.Promt_Clear();
-    await Load_Incidents();
+    await Load_Disasters();
   });
 }
-// </Delete Incident>
+// </Delete disaster>

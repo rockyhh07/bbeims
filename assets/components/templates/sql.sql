@@ -28,7 +28,7 @@ AFTER
   `contact`;
 
 ALTER TABLE
-  `incident_archive`
+  `disaster_archive`
 ADD
   `barangay_id` INT(6)
 AFTER
@@ -52,9 +52,9 @@ ADD
   CONSTRAINT `evac_center_ibfk_3` FOREIGN KEY (`barangay_id`) REFERENCES `barangay` (`id`);
 
 ALTER TABLE
-  `incident_archive`
+  `disaster_archive`
 ADD
-  CONSTRAINT `incident_archive_ibfk_4` FOREIGN KEY (`barangay_id`) REFERENCES `barangay` (`id`);
+  CONSTRAINT `disaster_archive_ibfk_4` FOREIGN KEY (`barangay_id`) REFERENCES `barangay` (`id`);
 
 ALTER TABLE
   `users`
@@ -72,7 +72,7 @@ SET
   `barangay_id` = '1';
 
 UPDATE
-  `incident_archive`
+  `disaster_archive`
 SET
   `barangay_id` = '1';
 

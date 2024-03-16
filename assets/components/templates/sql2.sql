@@ -6,7 +6,7 @@
 --   `barangay_id`;
 
 -- ALTER TABLE
---   `incident_archive`
+--   `disaster_archive`
 -- ADD
 --   `rescuer` VARCHAR(255)
 -- AFTER

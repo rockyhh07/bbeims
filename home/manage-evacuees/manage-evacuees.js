@@ -71,8 +71,8 @@ async function Load_EvacueeList() {
           </div>
         </div>
       </td>
-      <td>${v.incident_name}</td>
-      <td>${new Date(v.incident_date).toDateString()}</td>
+      <td>${v.disaster_name}</td>
+      <td>${new Date(v.disaster_date).toDateString()}</td>
       <td class="text-center" style="width: 160px !important;">
         <button 
           class="btn btn-sm btn-success btn-open-edit"
@@ -81,9 +81,9 @@ async function Load_EvacueeList() {
           data-binder-rep_lname="${v.rep_lname}"
           data-binder-rep_fname="${v.rep_fname}"
           data-binder-rep_mname="${v.rep_mname}"
-          data-binder-incident_name="${v.incident_name}"
+          data-binder-disaster_name="${v.disaster_name}"
           data-binder-evac_id="${v.evac_id}"
-          data-binder-incident_date="${v.incident_date}"
+          data-binder-disaster_date="${v.disaster_date}"
           data-toggle="modal"
           data-target="#edit-modal"
         > 
@@ -108,8 +108,8 @@ async function open_edit_listener() {
   const replace = {
     representative: Core.data(this, "binder-representative"),
     rep_name: `${Core.data(this, "binder-rep_lname")}, ${Core.data(this, "binder-rep_fname")} ${Core.data(this, "binder-rep_mname")}`,
-    incident_name: Core.data(this, "binder-incident_name"),
-    incident_date: Helper.toInputDate(Core.data(this, "binder-incident_date")),
+    disaster_name: Core.data(this, "binder-disaster_name"),
+    disaster_date: Helper.toInputDate(Core.data(this, "binder-disaster_date")),
     evac_id: Core.data(this, "binder-evac_id"),
   };
   let layout = (await Core.fetch_data('./modal-edit.html', "text"));
@@ -121,12 +121,12 @@ async function open_edit_listener() {
 
 async function submit_edit_listener() {
   const form_data = Core.createFormData({ uid: Core.user_getData().id }, new FormData(Core.f("#edit-form")));
-  if (!Core.isValidForm(form_data, ["incident_date", "evac_id"])) {
+  if (!Core.isValidForm(form_data, ["disaster_date", "evac_id"])) {
     Helper.Promt_Error("Please fill required fields.");
     return;
   }
 
-  await Core.api('/evacuee_update_incident', null, form_data).then(async data => {
+  await Core.api('/evacuee_update_disaster', null, form_data).then(async data => {
     CustomNotification.add("Success!", `Item updated!`, "primary");
     Core.f(`${modal_edit}-hide`).click();
     Helper.Promt_Clear();
@@ -159,7 +159,7 @@ async function Load_Archived() {
       <tr>
         <th>ID</th>
         <th style="min-width: 225px;">Evacuee's Information</th>
-        <th>Incident</th>
+        <th>disaster</th>
         <th>Date</th>
       </tr>
     </thead>
@@ -201,8 +201,8 @@ async function Load_Archived() {
           </div>
         </div>
       </td>
-      <td>${v.incident_name}</td>
-      <td>${new Date(v.incident_date).toDateString()}</td>
+      <td>${v.disaster_name}</td>
+      <td>${new Date(v.disaster_date).toDateString()}</td>
     </tr>
   `);
 
